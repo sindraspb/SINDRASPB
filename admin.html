@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Painel Premium</title>
+
+<style>
+body { margin:0; font-family:Arial; background:#eef1f5; }
+
+/* LOGIN */
+.login {
+    max-width:320px;
+    margin:100px auto;
+    background:#fff;
+    padding:25px;
+    border-radius:10px;
+    text-align:center;
+}
+
+/* DASHBOARD */
+.dashboard { display:none; }
+
+/* TOPO */
+.topo {
+    background:#1e1e2f;
+    color:#fff;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+}
+
+/* LAYOUT */
+.main { display:flex; }
+
+/* SIDEBAR */
+.sidebar {
+    width:220px;
+    background:#2b2b3c;
+    color:#fff;
+    min-height:100vh;
+    padding:20px;
+}
+
+.sidebar p {
+    cursor:pointer;
+    margin:15px 0;
+}
+
+/* CONTENT */
+.content { flex:1; padding:20px; }
+
+.card {
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+/* INPUT */
+input, textarea {
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+}
+
+/* BOTÃO */
+button {
+    background:#d62828;
+    color:#fff;
+    border:none;
+    padding:10px;
+    cursor:pointer;
+}
+
+/* LISTA */
+.noticia {
+    display:flex;
+    justify-content:space-between;
+    background:#fff;
+    padding:10px;
+    margin-top:10px;
+}
+
+/* ESCONDER TELAS */
+.tela { display:none; }
+.tela.active { display:block; }
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div class="login" id="login">
+    <h2>Login</h2>
+    <input id="email" placeholder="Email">
+    <input id="senha" type="password">
+    <button onclick="entrar()">Entrar</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+
+<div class="topo">
+    <h3>Painel SINDRAS</h3>
+    <button onclick="sair()">Sair</button>
+</div>
+
+<div class="main">
+
+<div class="sidebar">
+    <p onclick="mostrar('home')">📊 Dashboard</p>
+    <p onclick="mostrar('noticias')">📰 Notícias</p>
+    <p onclick="mostrar('nova')">➕ Nova</p>
+</div>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+<div id="home" class="tela active">
+    <div class="card">
+        <h3>Total de notícias</h3>
+        <p id="total"></p>
+    </div>
+</div>
+
+<!-- LISTA -->
+<div id="noticias" class="tela">
+    <div class="card">
+        <h3>Buscar</h3>
+        <input id="busca" placeholder="Digite...">
+    </div>
+
+    <div id="lista"></div>
+</div>
+
+<!-- NOVA -->
+<div id="nova" class="tela">
+    <div class="card">
+        <h3>Nova Notícia</h3>
+        <input id="titulo">
+        <textarea id="conteudo"></textarea>
+        <input id="imagem" placeholder="Link da imagem">
+        <img id="preview" style="width:100%; display:none;">
+        <button onclick="salvar()">Publicar</button>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
+  authDomain: "sindraspb-35551.firebaseapp.com",
+  projectId: "sindraspb-35551",
+  storageBucket: "sindraspb-35551.firebasestorage.app",
+  messagingSenderId: "1001203695194",
+  appId: "1:1001203695194:web:b490ae077f26a83673e263"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+/* LOGIN */
+window.entrar = async () => {
+    await signInWithEmailAndPassword(auth, email.value, senha.value);
+};
+
+/* LOGOUT */
+window.sair = () => signOut(auth);
+
+/* CONTROLE */
+onAuthStateChanged(auth, user=>{
+    login.style.display = user ? "none" : "block";
+    dashboard.style.display = user ? "block" : "none";
+});
+
+/* NAVEGAÇÃO */
+window.mostrar = (tela)=>{
+    document.querySelectorAll(".tela").forEach(t=>t.classList.remove("active"));
+    document.getElementById(tela).classList.add("active");
+};
+
+/* PREVIEW IMAGEM */
+imagem.oninput = ()=>{
+    preview.src = imagem.value;
+    preview.style.display = "block";
+};
+
+/* SALVAR */
+window.salvar = async ()=>{
+    await addDoc(collection(db,"noticias"),{
+        titulo: titulo.value,
+        conteudo: conteudo.value,
+        imagem: imagem.value
+    });
+};
+
+/* LISTAR */
+let dados = [];
+
+onSnapshot(collection(db,"noticias"), snap=>{
+    lista.innerHTML="";
+    total.innerText = snap.size;
+
+    dados = [];
+
+    snap.forEach(docSnap=>{
+        const d = docSnap.data();
+        d.id = docSnap.id;
+        dados.push(d);
+    });
+
+    render(dados);
+});
+
+/* BUSCA */
+busca.oninput = ()=>{
+    const filtro = dados.filter(n=> n.titulo.toLowerCase().includes(busca.value.toLowerCase()));
+    render(filtro);
+};
+
+/* RENDER */
+function render(listaDados){
+    lista.innerHTML="";
+
+    listaDados.forEach(d=>{
+        lista.innerHTML += `
+        <div class="noticia">
+            <span>${d.titulo}</span>
+            <div>
+                <button onclick="editar('${d.id}')">✏️</button>
+                <button onclick="excluir('${d.id}')">🗑️</button>
+            </div>
+        </div>`;
+    });
+}
+
+/* EXCLUIR */
+window.excluir = async(id)=>{
+    await deleteDoc(doc(db,"noticias",id));
+};
+
+/* EDITAR */
+window.editar = async(id)=>{
+    const novo = prompt("Novo título:");
+    if(novo){
+        await updateDoc(doc(db,"noticias",id),{
+            titulo: novo
+        });
+    }
+};
+</script>
+
+</body>
+</html>
