@@ -1,59 +1,150 @@
 body {
   margin:0;
   font-family: Arial;
+  background:#f5f5f5;
 }
 
-header {
+.container {
+  width:90%;
+  max-width:1200px;
+  margin:auto;
+}
+
+/* HEADER */
+.header {
   background:#f7941d;
-  padding:20px;
-  color:#fff;
+  padding:15px 0;
 }
 
-.banner {
-  height:300px;
-  background:url('banner.jpg') center/cover;
+.nav {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo {
+  height:40px;
+}
+
+.menu {
+  display:flex;
+  gap:25px;
+  list-style:none;
+  font-weight:bold;
+}
+
+.actions {
+  display:flex;
+  gap:10px;
+}
+
+.btn-black {
+  background:black;
+  color:white;
+  padding:8px 15px;
+  border-radius:20px;
+  text-decoration:none;
+}
+
+/* HERO */
+.hero {
+  height:500px;
+  background:url('banner.JPG') center/cover;
+  position:relative;
   display:flex;
   align-items:center;
-  justify-content:center;
-  color:white;
 }
 
+.overlay {
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+}
+
+.hero-content {
+  position:relative;
+  color:white;
+  max-width:600px;
+}
+
+.hero h1 {
+  font-size:38px;
+}
+
+.hero-buttons {
+  margin-top:20px;
+}
+
+.btn-orange {
+  background:#f7941d;
+  padding:10px 20px;
+  text-decoration:none;
+  color:black;
+  margin-right:10px;
+}
+
+.btn-outline {
+  border:2px solid #f7941d;
+  padding:10px 20px;
+  color:white;
+  text-decoration:none;
+}
+
+/* NOTICIAS */
 .noticias {
-  padding:40px;
+  padding:60px 0;
+}
+
+.cards {
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
 }
 
 .card {
-  background:#fff;
-  padding:20px;
-  margin:20px 0;
+  background:white;
+  padding:15px;
   border-radius:10px;
+  width:30%;
 }
-/* SOCIAL BUTTONS */
+
+/* SOCIAL */
 .social {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  padding: 30px;
-  flex-wrap: wrap;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:30px;
+  flex-wrap:wrap;
 }
 
-.btn-social {
-  padding: 12px 20px;
-  border-radius: 8px;
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  transition: 0.3s;
+/* CTA */
+.cta {
+  background:black;
+  color:white;
+  text-align:center;
+  padding:60px 20px;
 }
 
-/* CORES */
-.insta { background: #E1306C; }
-.face { background: #1877F2; }
-.yt { background: #FF0000; }
-.whats { background: #25D366; }
+/* FOOTER */
+.footer {
+  background:black;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
 
-/* HOVER */
-.btn-social:hover {
-  transform: scale(1.08);
-  opacity: 0.9;
+/* RESPONSIVO */
+@media(max-width:768px){
+  .cards {
+    flex-direction:column;
+  }
+
+  .card {
+    width:100%;
+  }
+
+  .menu {
+    display:none;
+  }
 }

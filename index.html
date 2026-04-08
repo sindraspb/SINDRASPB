@@ -2,45 +2,73 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SINDRAS-PB</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>
-  <h2>SINDRAS-PB</h2>
+<!-- HEADER -->
+<header class="header">
+  <div class="container nav">
+    <img src="logo.png" class="logo">
+
+    <ul class="menu">
+      <li>Início</li>
+      <li>Notícias</li>
+      <li>Nossa cultura</li>
+      <li>Quem somos</li>
+    </ul>
+
+    <div class="actions">
+      <a href="admin.html" class="btn-black">Blog</a>
+      <a href="#" class="btn-black">Filie-se</a>
+    </div>
+  </div>
 </header>
 
-<section class="banner">
-  <h1>                </h1>
+<!-- HERO -->
+<section class="hero">
+  <div class="overlay"></div>
+
+  <div class="hero-content container">
+    <h1>Ser associado ao SINDRAS traz inúmeras vantagens.</h1>
+    <p>Além de contar com nossa representatividade em negociações trabalhistas e na defesa de seus direitos, você terá acesso a benefícios exclusivos</p>
+
+    <div class="hero-buttons">
+      <a href="#" class="btn-orange">Filie-se</a>
+      <a href="#" class="btn-outline">Contato</a>
+    </div>
+  </div>
 </section>
 
-<section class="social">
-  
-  <a href="https://www.instagram.com/sindraspb/" target="_blank" class="btn-social insta">
-    📸 Instagram
-  </a>
-
-  <a href="https://www.facebook.com/p/Sindraspb-61553589940838/" target="_blank" class="btn-social face">
-    👍 Facebook
-  </a>
-
-  <a href="https://www.youtube.com/watch?v=iu5_eBhW4_s" target="_blank" class="btn-social yt">
-    ▶️ YouTube
-  </a>
-
-  <a href="https://wa.me/558330997966" target="_blank" class="btn-social whats">
-    💬 WhatsApp
-  </a>
-
-</section>
-
-<section class="noticias">
+<!-- NOTICIAS -->
+<section class="noticias container">
   <h2>Notícias</h2>
-  <div id="noticias"></div>
+  <div id="noticias" class="cards"></div>
 </section>
 
+<!-- SOCIAL -->
+<section class="social">
+  <a href="https://www.instagram.com/sindraspb/" target="_blank" class="btn-social insta">Instagram</a>
+  <a href="https://www.facebook.com/p/Sindraspb-61553589940838/" target="_blank" class="btn-social face">Facebook</a>
+  <a href="https://www.youtube.com/watch?v=iu5_eBhW4_s" target="_blank" class="btn-social yt">YouTube</a>
+  <a href="https://wa.me/558330997966" target="_blank" class="btn-social whats">WhatsApp</a>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Compromisso com a comunidade e bem-estar.</h2>
+  <p>Somos uma equipe unida pela missão de apoiar e valorizar os agentes comunitários de saúde.</p>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© Sindras-PB 2024</p>
+</footer>
+
+<!-- FIREBASE (MANTIDO) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -64,7 +92,7 @@ onSnapshot(collection(db,"noticias"), snap=>{
 
     container.innerHTML += `
       <div class="card">
-        <img src="${n.imagem}" style="width:100%">
+        <img src="${n.imagem}">
         <h3>${n.titulo}</h3>
         <p>${n.conteudo}</p>
       </div>
