@@ -28,50 +28,17 @@
   </div>
 </header>
 
-<!-- HERO -->
+<!-- HERO (CARROSSEL) -->
 <section class="hero">
 
   <div class="slides">
-<div class="slides">
 
-  <div class="slide" style="background-image:url('banner1.jpg')"></div>
-  <div class="slide" style="background-image:url('banner2.jpg')"></div>
-  <div class="slide" style="background-image:url('banner3.jpg')"></div>
-  <div class="slide" style="background-image:url('banner4.jpg')"></div>
-  <div class="slide" style="background-image:url('banner5.jpg')"></div>
-  <div class="slide" style="background-image:url('banner6.jpg')"></div>
-
-</div>
-
-<!-- BOLINHAS -->
-<div class="controls">
-  <span onclick="mudarSlide(0)"></span>
-  <span onclick="mudarSlide(1)"></span>
-  <span onclick="mudarSlide(2)"></span>
-  <span onclick="mudarSlide(3)"></span>
-  <span onclick="mudarSlide(4)"></span>
-  <span onclick="mudarSlide(5)"></span>
-</div>
-
-    <div class="slide active" style="background-image:url('banner.JPG')">
-      <div class="overlay"></div>
-      <div class="hero-content container">
-        <h1>Ser associado ao SINDRAS traz inúmeras vantagens.</h1>
-        <p>Defesa dos seus direitos e benefícios exclusivos.</p>
-        <div class="hero-buttons">
-          <a href="#" class="btn-orange">Filie-se</a>
-          <a href="#" class="btn-outline">Contato</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="slide" style="background-image:url('banner2.jpg')">
-      <div class="overlay"></div>
-      <div class="hero-content container">
-        <h1>Fortalecendo a categoria</h1>
-        <p>União e valorização dos agentes de saúde.</p>
-      </div>
-    </div>
+    <div class="slide" style="background-image:url('banner1.jpg')"></div>
+    <div class="slide" style="background-image:url('banner2.jpg')"></div>
+    <div class="slide" style="background-image:url('banner3.jpg')"></div>
+    <div class="slide" style="background-image:url('banner4.jpg')"></div>
+    <div class="slide" style="background-image:url('banner5.jpg')"></div>
+    <div class="slide" style="background-image:url('banner6.jpg')"></div>
 
   </div>
 
@@ -79,6 +46,10 @@
   <div class="controls">
     <span onclick="mudarSlide(0)"></span>
     <span onclick="mudarSlide(1)"></span>
+    <span onclick="mudarSlide(2)"></span>
+    <span onclick="mudarSlide(3)"></span>
+    <span onclick="mudarSlide(4)"></span>
+    <span onclick="mudarSlide(5)"></span>
   </div>
 
 </section>
@@ -108,7 +79,7 @@
   <p>© Sindras-PB 2024</p>
 </footer>
 
-<!-- FIREBASE (MANTIDO) -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -141,9 +112,10 @@ onSnapshot(collection(db,"noticias"), snap=>{
 });
 </script>
 
-</body>
-</html>
+<!-- CARROSSEL -->
 <script>
+window.addEventListener("load", () => {
+
 let index = 0;
 const slides = document.querySelector('.slides');
 const total = document.querySelectorAll('.slide').length;
@@ -156,7 +128,7 @@ function atualizar(){
   if(dots[index]) dots[index].classList.add('active');
 }
 
-function mudarSlide(i){
+window.mudarSlide = (i) => {
   index = i;
   atualizar();
 }
@@ -167,4 +139,9 @@ setInterval(()=>{
 }, 4000);
 
 atualizar();
+
+});
 </script>
+
+</body>
+</html>
