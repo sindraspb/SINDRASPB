@@ -46,26 +46,44 @@ body {
   text-decoration:none;
 }
 
-/* HERO */
+/* HERO (CARROSSEL) */
 .hero {
-  height:500px;
-  background:url('banner.JPG') center/cover;
-  position:relative;
-  display:flex;
-  align-items:center;
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
 }
 
+.slides {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.slide {
+  flex: 0 0 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+/* OVERLAY */
 .overlay {
   position:absolute;
   width:100%;
   height:100%;
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.5);
 }
 
+/* TEXTO HERO */
 .hero-content {
-  position:relative;
-  color:white;
-  max-width:600px;
+  position: absolute;
+  color: white;
+  max-width: 600px;
+  left: 10%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .hero h1 {
@@ -91,102 +109,6 @@ body {
   text-decoration:none;
 }
 
-/* NOTICIAS */
-.noticias {
-  padding:60px 0;
-}
-
-.cards {
-  display:flex;
-  gap:20px;
-  flex-wrap:wrap;
-}
-
-.card {
-  background:white;
-  padding:15px;
-  border-radius:10px;
-  width:30%;
-}
-
-/* SOCIAL */
-.social {
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  padding:30px;
-  flex-wrap:wrap;
-}
-
-/* CTA */
-.cta {
-  background:black;
-  color:white;
-  text-align:center;
-  padding:60px 20px;
-}
-
-/* FOOTER */
-.footer {
-  background:black;
-  color:white;
-  text-align:center;
-  padding:20px;
-}
-
-/* RESPONSIVO */
-@media(max-width:768px){
-  .cards {
-    flex-direction:column;
-  }
-
-  .card {
-    width:100%;
-  }
-
-  .menu {
-    display:none;
-  }
-}
-.hero {
-.hero {
-  position: relative;
-  width: 100%;
-  height: 500px;
-  overflow: hidden;
-}
-
-.slides {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.6s ease;
-}
-
-.slide {
-  flex: 0 0 100%; /* ESSA LINHA É A CHAVE */
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-}
-
-/* OPCIONAL */
-.overlay {
-  position:absolute;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
-}
-
-.hero-content {
-  position: absolute;
-  color: white;
-  max-width: 600px;
-  left: 10%;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
 /* BOLINHAS */
 .controls {
   position: absolute;
@@ -209,71 +131,115 @@ body {
 .controls span.active {
   opacity: 1;
 }
-/* MOBILE AJUSTES */
-@media(max-width:768px){
 
-  /* HERO AJUSTADO */
-  .hero {
-    height: 60vh; /* usa altura da tela (RESPONSIVO REAL) */
-    min-height: 220px;
-    max-height: 350px;
-  }
-
-.slides {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1); /* animação premium */
+/* NOTICIAS */
+.noticias {
+  padding:60px 0;
 }
 
-  .slide {
-    height: 100%;
-    background-size: cover;
-    background-position: center;
+.cards {
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.card {
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  width:30%;
+}
+
+.card img {
+  width:100%;
+  border-radius:10px;
+}
+
+/* SOCIAL */
+.social {
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  padding:40px 0;
+}
+
+.social-btn {
+  width:60px;
+  height:60px;
+  background:black;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  transition:0.3s;
+}
+
+.social-btn i {
+  color:white;
+  font-size:24px;
+}
+
+.social-btn:hover {
+  transform:scale(1.1);
+}
+
+/* CORES DAS REDES */
+.social-btn:nth-child(1):hover { background:#E1306C; }
+.social-btn:nth-child(2):hover { background:#1877F2; }
+.social-btn:nth-child(3):hover { background:#FF0000; }
+.social-btn:nth-child(4):hover { background:#25D366; }
+
+/* CTA */
+.cta {
+  background:black;
+  color:white;
+  text-align:center;
+  padding:60px 20px;
+}
+
+/* FOOTER */
+.footer {
+  background:black;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
+
+/* RESPONSIVO */
+@media(max-width:768px){
+
+  .menu {
+    display:none;
   }
 
-  /* TEXTO */
+  .hero {
+    height:60vh;
+    min-height:220px;
+    max-height:350px;
+  }
+
   .hero-content {
-    left: 5%;
-    right: 5%;
-    top: 50%;
-    transform: translateY(-50%);
-    max-width: 100%;
+    left:5%;
+    right:5%;
+    max-width:100%;
   }
 
   .hero h1 {
-    font-size: 18px;
-    line-height: 1.3;
+    font-size:18px;
   }
 
-  .hero p {
-    font-size: 14px;
-  }
-
-  /* BOTÕES */
-  .btn-orange, .btn-outline {
-    padding: 8px 12px;
-    font-size: 12px;
-  }
-
-  /* MENU */
-  .menu {
-    display: none;
-  }
-
-  /* CARDS */
   .cards {
-    flex-direction: column;
+    flex-direction:column;
   }
 
   .card {
-    width: 100%;
+    width:100%;
   }
 
-  /* SOCIAL */
   .social {
-    flex-direction: column;
-    align-items: center;
+    flex-direction:column;
+    align-items:center;
   }
 
 }

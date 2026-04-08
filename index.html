@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SINDRAS-PB</title>
+
 <link rel="stylesheet" href="style.css">
+
+<!-- ICONES (CORRETO AQUI) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
 <body>
@@ -32,14 +37,12 @@
 <section class="hero">
 
   <div class="slides">
-
     <div class="slide" style="background-image:url('banner1.jpg')"></div>
     <div class="slide" style="background-image:url('banner2.jpg')"></div>
     <div class="slide" style="background-image:url('banner3.jpg')"></div>
     <div class="slide" style="background-image:url('banner4.jpg')"></div>
     <div class="slide" style="background-image:url('banner5.jpg')"></div>
     <div class="slide" style="background-image:url('banner6.jpg')"></div>
-
   </div>
 
   <!-- CONTROLES -->
@@ -62,10 +65,21 @@
 
 <!-- SOCIAL -->
 <section class="social">
-  <a href="https://www.instagram.com/sindraspb/" target="_blank" class="btn-social insta">Instagram</a>
-  <a href="https://www.facebook.com/p/Sindraspb-61553589940838/" target="_blank" class="btn-social face">Facebook</a>
-  <a href="https://www.youtube.com/watch?v=iu5_eBhW4_s" target="_blank" class="btn-social yt">YouTube</a>
-  <a href="https://wa.me/558330997966" target="_blank" class="btn-social whats">WhatsApp</a>
+  <a href="https://www.instagram.com/sindraspb/" target="_blank" class="social-btn">
+    <i class="fab fa-instagram"></i>
+  </a>
+
+  <a href="https://www.facebook.com/p/Sindraspb-61553589940838/" target="_blank" class="social-btn">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+
+  <a href="https://www.youtube.com/watch?v=iu5_eBhW4_s" target="_blank" class="social-btn">
+    <i class="fab fa-youtube"></i>
+  </a>
+
+  <a href="https://wa.me/558330997966" target="_blank" class="social-btn">
+    <i class="fab fa-whatsapp"></i>
+  </a>
 </section>
 
 <!-- CTA -->
@@ -114,31 +128,39 @@ onSnapshot(collection(db,"noticias"), snap=>{
 
 <!-- CARROSSEL -->
 <script>
-window.addEventListener("load", () => {
+document.addEventListener("DOMContentLoaded", function(){
 
-let index = 0;
-const slides = document.querySelector('.slides');
-const total = document.querySelectorAll('.slide').length;
-const dots = document.querySelectorAll('.controls span');
+  let index = 0;
 
-function atualizar(){
-  slides.style.transform = `translateX(-${index * 100}%)`;
+  const slides = document.querySelector('.slides');
+  const slideItems = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.controls span');
 
-  dots.forEach(d => d.classList.remove('active'));
-  if(dots[index]) dots[index].classList.add('active');
-}
+  const total = slideItems.length;
 
-window.mudarSlide = (i) => {
-  index = i;
-  atualizar();
-}
+  function showSlide(i){
+    slides.style.transform = "translateX(" + (-i * 100) + "%)";
 
-setInterval(()=>{
-  index = (index + 1) % total;
-  atualizar();
-}, 4000);
+    dots.forEach(d => d.classList.remove("active"));
+    if(dots[i]) dots[i].classList.add("active");
+  }
 
-atualizar();
+  function nextSlide(){
+    index++;
+    if(index >= total){
+      index = 0;
+    }
+    showSlide(index);
+  }
+
+  window.mudarSlide = function(i){
+    index = i;
+    showSlide(index);
+  }
+
+  setInterval(nextSlide, 4000);
+
+  showSlide(index);
 
 });
 </script>
