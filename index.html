@@ -30,17 +30,57 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="overlay"></div>
 
-  <div class="hero-content container">
-    <h1>Ser associado ao SINDRAS traz inúmeras vantagens.</h1>
-    <p>Além de contar com nossa representatividade em negociações trabalhistas e na defesa de seus direitos, você terá acesso a benefícios exclusivos</p>
+  <div class="slides">
+<div class="slides">
 
-    <div class="hero-buttons">
-      <a href="#" class="btn-orange">Filie-se</a>
-      <a href="#" class="btn-outline">Contato</a>
+  <div class="slide" style="background-image:url('banner1.jpg')"></div>
+  <div class="slide" style="background-image:url('banner2.jpg')"></div>
+  <div class="slide" style="background-image:url('banner3.jpg')"></div>
+  <div class="slide" style="background-image:url('banner4.jpg')"></div>
+  <div class="slide" style="background-image:url('banner5.jpg')"></div>
+  <div class="slide" style="background-image:url('banner6.jpg')"></div>
+
+</div>
+
+<!-- BOLINHAS -->
+<div class="controls">
+  <span onclick="mudarSlide(0)"></span>
+  <span onclick="mudarSlide(1)"></span>
+  <span onclick="mudarSlide(2)"></span>
+  <span onclick="mudarSlide(3)"></span>
+  <span onclick="mudarSlide(4)"></span>
+  <span onclick="mudarSlide(5)"></span>
+</div>
+
+    <div class="slide active" style="background-image:url('banner.JPG')">
+      <div class="overlay"></div>
+      <div class="hero-content container">
+        <h1>Ser associado ao SINDRAS traz inúmeras vantagens.</h1>
+        <p>Defesa dos seus direitos e benefícios exclusivos.</p>
+        <div class="hero-buttons">
+          <a href="#" class="btn-orange">Filie-se</a>
+          <a href="#" class="btn-outline">Contato</a>
+        </div>
+      </div>
     </div>
+
+    <div class="slide" style="background-image:url('banner2.jpg')">
+      <div class="overlay"></div>
+      <div class="hero-content container">
+        <h1>Fortalecendo a categoria</h1>
+        <p>União e valorização dos agentes de saúde.</p>
+      </div>
+    </div>
+
   </div>
+
+  <!-- CONTROLES -->
+  <div class="controls">
+    <span onclick="mudarSlide(0)"></span>
+    <span onclick="mudarSlide(1)"></span>
+  </div>
+
 </section>
 
 <!-- NOTICIAS -->
@@ -103,3 +143,28 @@ onSnapshot(collection(db,"noticias"), snap=>{
 
 </body>
 </html>
+<script>
+let index = 0;
+const slides = document.querySelector('.slides');
+const total = document.querySelectorAll('.slide').length;
+const dots = document.querySelectorAll('.controls span');
+
+function atualizar(){
+  slides.style.transform = `translateX(-${index * 100}%)`;
+
+  dots.forEach(d => d.classList.remove('active'));
+  if(dots[index]) dots[index].classList.add('active');
+}
+
+function mudarSlide(i){
+  index = i;
+  atualizar();
+}
+
+setInterval(()=>{
+  index = (index + 1) % total;
+  atualizar();
+}, 4000);
+
+atualizar();
+</script>
