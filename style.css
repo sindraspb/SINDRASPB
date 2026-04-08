@@ -156,12 +156,14 @@ body {
 
 .slides {
   display: flex;
+  width: 600vw; /* 6 banners = 600vw */
   transition: transform 0.6s ease;
 }
 
 .slide {
-  min-width: 100%;
+  width: 100vw; /* cada slide ocupa a tela inteira */
   height: 500px;
+  flex-shrink: 0;
   background-size: cover;
   background-position: center;
 }
