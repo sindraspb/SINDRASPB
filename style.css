@@ -28,3 +28,32 @@ header {
   margin:20px 0;
   border-radius:10px;
 }
+/* SOCIAL BUTTONS */
+.social {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 30px;
+  flex-wrap: wrap;
+}
+
+.btn-social {
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+/* CORES */
+.insta { background: #E1306C; }
+.face { background: #1877F2; }
+.yt { background: #FF0000; }
+.whats { background: #25D366; }
+
+/* HOVER */
+.btn-social:hover {
+  transform: scale(1.08);
+  opacity: 0.9;
+}
