@@ -23,12 +23,12 @@ body {
 }
 
 .logo {
-  height:40px;
+  height:60px;
 }
 
 .menu {
   display:flex;
-  gap:25px;
+  gap:30px;
   list-style:none;
   font-weight:bold;
 }
@@ -213,11 +213,11 @@ body {
     display:none;
   }
 
-  .hero {
-    height:60vh;
-    min-height:220px;
-    max-height:350px;
-  }
+.hero {
+  height: 70vh; /* usa altura da tela */
+  min-height: 400px;
+  max-height: 700px;
+}
 
   .hero-content {
     left:5%;
