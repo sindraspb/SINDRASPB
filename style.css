@@ -137,6 +137,12 @@ body {
   padding:60px 0;
 }
 
+.container {
+  width:90%;
+  max-width:1200px;
+  margin:auto;
+}
+
 .cards {
   display:flex;
   gap:20px;
@@ -229,9 +235,9 @@ body {
     font-size:18px;
   }
 
-  .cards {
-    flex-direction:column;
-  }
+  .card {
+  flex:1 1 calc(33.333% - 20px);
+}
 
   .card {
     width:100%;
