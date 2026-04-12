@@ -343,3 +343,6 @@ html {
   transform: scale(1.05);
   background: rgba(255,255,255,0.25);
 }
+.agenda {
+  padding: 60px 0;
+}
