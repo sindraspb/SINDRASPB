@@ -7,25 +7,23 @@
 
 <link rel="stylesheet" href="style.css">
 
+<!-- ICONES (CORRETO AQUI) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
 <body>
 
+<!-- HEADER -->
 <header class="header">
   <div class="container nav">
     <img src="logo.png" class="logo">
 
     <ul class="menu">
-      <li><a href="#">Quem Somos</a></li>
-      <li><a href="#agenda">Agenda</a></li>
-      <li><a href="#">Nossa cultura</a></li>
-      <li>
-        <a href="https://www.unasus.gov.br/cursos/busca?status=com%20oferta%20aberta&busca=&ordenacao=Relev%C3%A2ncia%20na%20busca" target="_blank">
-          Cursos
-        </a>
-      </li>
-      <li><a href="#">Parcerias</a></li>
+      <li>Início</li>
+      <li>Notícias</li>
+      <li>Nossa cultura</li>
+      <li>Quem somos</li>
     </ul>
 
     <div class="actions">
@@ -35,7 +33,9 @@
   </div>
 </header>
 
+<!-- HERO (CARROSSEL) -->
 <section class="hero">
+
   <div class="slides">
     <div class="slide" style="background-image:url('banner1.jpg')"></div>
     <div class="slide" style="background-image:url('banner2.jpg')"></div>
@@ -45,6 +45,7 @@
     <div class="slide" style="background-image:url('banner6.jpg')"></div>
   </div>
 
+  <!-- CONTROLES -->
   <div class="controls">
     <span onclick="mudarSlide(0)"></span>
     <span onclick="mudarSlide(1)"></span>
@@ -53,38 +54,25 @@
     <span onclick="mudarSlide(4)"></span>
     <span onclick="mudarSlide(5)"></span>
   </div>
+
 </section>
 
 <section class="video container">
   <iframe 
     src="https://www.youtube.com/embed/iu5_eBhW4_s"
+    title="YouTube video"
     frameborder="0"
     allowfullscreen>
   </iframe>
-</section>
+</div>
 
+<!-- NOTICIAS -->
 <section class="noticias container">
   <h2>Notícias</h2>
   <div id="noticias" class="cards"></div>
 </section>
 
-<!-- 🔥 AGENDA EM BANNER -->
-<section id="agenda" class="agenda">
-  <div class="container agenda-banner">
-
-    <h2>Agenda</h2>
-
-   <section id="agenda" class="agenda">
-  <div class="container agenda-banner">
-
-    <h2>Agenda</h2>
-
-    <!-- AQUI VAI CARREGAR DO FIREBASE -->
-    <div id="listaAgenda" class="agenda-lista"></div>
-
-  </div>
-</section>
-
+<!-- SOCIAL -->
 <section class="social">
   <a href="https://www.instagram.com/sindraspb/" target="_blank" class="social-btn">
     <i class="fab fa-instagram"></i>
@@ -103,11 +91,13 @@
   </a>
 </section>
 
+<!-- CTA -->
 <section class="cta">
-  <h2>Em defesa dos nossos agentes.</h2>
-  <p>Unidos pela missão de fortalecer, apoiar e valorizar os Agentes Comunitários de Saúde e de Combate às Endemias.</p>
+  <h2> Em defesa dos nossos agentes.</h2>
+  <p>Unidos pela missão de fortalecer, apoiar e valorizar os Agentes Comunitários de Saúde e de Combate às Endemias..</p>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer">
   <p>© Sindras-PB 2023</p>
 </footer>
@@ -126,49 +116,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ================= NOTICIAS ================= */
-const noticiasContainer = document.getElementById("noticias");
+const container = document.getElementById("noticias");
 
-if(noticiasContainer){
-  onSnapshot(collection(db,"noticias"), snap=>{
-    noticiasContainer.innerHTML = "";
+onSnapshot(collection(db,"noticias"), snap=>{
+  container.innerHTML = "";
 
-    snap.forEach(doc=>{
-      const n = doc.data();
+  snap.forEach(doc=>{
+    const n = doc.data();
 
-      noticiasContainer.innerHTML += `
-        <div class="card">
-          <img src="${n.imagem}">
-          <h3>${n.titulo}</h3>
-          <p>${n.conteudo}</p>
-        </div>
-      `;
-    });
+    container.innerHTML += `
+      <div class="card">
+        <img src="${n.imagem}">
+        <h3>${n.titulo}</h3>
+        <p>${n.conteudo}</p>
+      </div>
+    `;
   });
-}
-
-/* ================= AGENDA ================= */
-const agendaContainer = document.getElementById("listaAgenda");
-
-if(agendaContainer){
-  onSnapshot(collection(db,"agenda"), snap=>{
-    agendaContainer.innerHTML = "";
-
-    snap.forEach(doc=>{
-      const e = doc.data();
-
-      agendaContainer.innerHTML += `
-        <div class="evento">
-          <h3>${e.titulo}</h3>
-          <p>📅 ${e.dataInicio || ""} até ${e.dataFim || ""}</p>
-          <p>📍 ${e.local || ""}</p>
-        </div>
-      `;
-    });
-  });
-}
-
+});
 </script>
+
 <!-- CARROSSEL -->
 <script>
 document.addEventListener("DOMContentLoaded", function(){
@@ -183,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   function showSlide(i){
     slides.style.transform = "translateX(" + (-i * 100) + "%)";
+
     dots.forEach(d => d.classList.remove("active"));
     if(dots[i]) dots[i].classList.add("active");
   }
@@ -201,7 +168,9 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   setInterval(nextSlide, 4000);
+
   showSlide(index);
+
 });
 </script>
 
