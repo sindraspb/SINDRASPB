@@ -74,27 +74,13 @@
 
     <h2>Agenda</h2>
 
-    <div class="agenda-lista">
+   <section id="agenda" class="agenda">
+  <div class="container agenda-banner">
 
-      <div class="evento">
-        <h3>Assembleias</h3>
-        <p>📅 20 de Abril de 2026</p>
-        <p>📍 Campina Grande - PB</p>
-      </div>
+    <h2>Agenda</h2>
 
-      <div class="evento">
-        <h3>Reunião com Agentes</h3>
-        <p>📅 25 de Abril de 2026</p>
-        <p>📍 João Pessoa - PB</p>
-      </div>
-
-      <div class="evento">
-        <h3>Eventos Nacionais</h3>
-        <p>📅 30 de Abril de 2026</p>
-        <p>📍 Brasília - DF</p>
-      </div>
-
-    </div>
+    <!-- AQUI VAI CARREGAR DO FIREBASE -->
+    <div id="listaAgenda" class="agenda-lista"></div>
 
   </div>
 </section>
@@ -158,6 +144,25 @@ onSnapshot(collection(db,"noticias"), snap=>{
   });
 });
 </script>
+
+/* ================= AGENDA ================= */
+const agendaContainer = document.getElementById("listaAgenda");
+
+onSnapshot(collection(db,"agenda"), snap=>{
+  agendaContainer.innerHTML = "";
+
+  snap.forEach(doc=>{
+    const e = doc.data();
+
+    agendaContainer.innerHTML += `
+      <div class="evento">
+        <h3>${e.titulo}</h3>
+        <p>📅 ${e.dataInicio} até ${e.dataFim}</p>
+        <p>📍 ${e.local}</p>
+      </div>
+    `;
+  });
+});
 
 <!-- CARROSSEL -->
 <script>
