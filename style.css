@@ -28,17 +28,21 @@ html {
   display:flex;
   justify-content:space-between;
   align-items:center;
+  flex-wrap:wrap;
 }
 
 .logo {
   height:60px;
 }
 
+/* MENU */
 .menu {
   display:flex;
-  gap:30px;
+  gap:20px;
   list-style:none;
   font-weight:bold;
+  flex-wrap:wrap;
+  justify-content:center;
 }
 
 .menu li a {
@@ -51,9 +55,11 @@ html {
   color:#f7941d;
 }
 
+/* ACTIONS */
 .actions {
   display:flex;
   gap:10px;
+  flex-wrap:wrap;
 }
 
 .btn-black {
@@ -62,6 +68,7 @@ html {
   padding:8px 15px;
   border-radius:20px;
   text-decoration:none;
+  font-size:14px;
 }
 
 /* HERO */
@@ -319,68 +326,45 @@ html {
   background:#d97f14;
 }
 
-/* MOBILE AJUSTADO (SEM QUEBRAR O BANNER) */
+/* MOBILE FINAL (COM TODOS OS BOTÕES VISÍVEIS) */
 @media(max-width:768px){
+
+  .nav {
+    flex-direction:column;
+    gap:8px;
+  }
 
   .menu {
     display:flex;
-    flex-direction:column;
-    gap:8px;
-    position:absolute;
-    top:70px;
-    left:0;
-    width:100%;
-    z-index:999;
-  }
-
-  .menu li {
-    text-align:center;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
   }
 
   .menu li a {
-    display:inline-block;
     background:#ff6a00;
     color:white;
-    padding:6px 14px;
-    font-size:14px;
+    padding:5px 10px;
+    font-size:12px;
     border-radius:20px;
     font-weight:bold;
   }
 
-  .menu li a:active {
-    transform:scale(0.95);
+  .actions {
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    flex-wrap:wrap;
   }
 
-  .actions {
-    display:none;
+  .btn-black {
+    padding:5px 10px;
+    font-size:12px;
+    border-radius:20px;
   }
 
   .hero {
-    height:60vh;
-    min-height:250px;
-  }
-
-  .hero-content {
-    left:5%;
-    right:5%;
-    max-width:100%;
-  }
-
-  .hero h1 {
-    font-size:20px;
-  }
-
-  .cards {
-    flex-direction:column;
-  }
-
-  .card {
-    width:100%;
-  }
-
-  .social {
-    flex-direction:column;
-    align-items:center;
+    height:55vh;
   }
 }
 
