@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Painel Premium</title>
+
+<style>
+body { margin:0; font-family:Arial; background:#eef1f5; }
+
+.login {
+    max-width:320px;
+    margin:100px auto;
+    background:#fff;
+    padding:25px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.dashboard { display:none; }
+
+.topo {
+    background:#1e1e2f;
+    color:#fff;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.main { display:flex; }
+
+.sidebar {
+    width:220px;
+    background:#2b2b3c;
+    color:#fff;
+    min-height:100vh;
+    padding:20px;
+}
+
+.sidebar p {
+    cursor:pointer;
+    margin:15px 0;
+}
+
+.content { flex:1; padding:20px; }
+
+.card {
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+input, textarea {
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+}
+
+button {
+    background:#d62828;
+    color:#fff;
+    border:none;
+    padding:10px;
+    cursor:pointer;
+}
+
+.noticia {
+    display:flex;
+    justify-content:space-between;
+    background:#fff;
+    padding:10px;
+    margin-top:10px;
+}
+
+.tela { display:none; }
+.tela.active { display:block; }
+</style>
+</head>
+
+<body>
+
+<div class="login" id="login">
+    <h2>Login</h2>
+    <input id="email" placeholder="Email">
+    <input id="senha" type="password">
+    <button onclick="entrar()">Entrar</button>
+</div>
+
+<div class="dashboard" id="dashboard">
+
+<div class="topo">
+    <h3>Painel SINDRAS</h3>
+    <button onclick="sair()">Sair</button>
+</div>
+
+<div class="main">
+
+<div class="sidebar">
+    <p onclick="mostrar('home')">📊 Dashboard</p>
+    <p onclick="mostrar('noticias')">📰 Notícias</p>
+    <p onclick="mostrar('nova')">➕ Nova Notícia</p>
+
+    <hr>
+
+    <p onclick="mostrar('agenda')">📅 Agenda</p>
+    <p onclick="mostrar('novaAgenda')">➕ Novo Evento</p>
+</div>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+<div id="home" class="tela active">
+    <div class="card">
+        <h3>Total de notícias</h3>
+        <p id="total"></p>
+    </div>
+
+    <div class="card">
+        <h3>Total de eventos</h3>
+        <p id="totalAgenda"></p>
+    </div>
+</div>
+
+<!-- NOTICIAS -->
+<div id="noticias" class="tela">
+    <div id="lista"></div>
+</div>
+
+<!-- NOVA NOTICIA -->
+<div id="nova" class="tela">
+    <div class="card">
+        <h3>Nova Notícia</h3>
+        <input id="titulo">
+        <textarea id="conteudo"></textarea>
+        <input id="imagem" placeholder="Link da imagem">
+        <button onclick="salvar()">Publicar</button>
+    </div>
+</div>
+
+<!-- LISTA AGENDA -->
+<div id="agenda" class="tela">
+    <div id="listaAgenda"></div>
+</div>
+
+<!-- NOVA AGENDA -->
+<div id="novaAgenda" class="tela">
+    <div class="card">
+        <h3>Novo Evento</h3>
+        <input id="tituloAgenda" placeholder="Título">
+        <input id="dataInicio" placeholder="Data início (20/04/2026)">
+        <input id="dataFim" placeholder="Data fim (22/04/2026)">
+        <input id="localAgenda" placeholder="Local">
+        <button onclick="salvarAgenda()">Salvar Evento</button>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
+  authDomain: "sindraspb-35551.firebaseapp.com",
+  projectId: "sindraspb-35551"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+/* LOGIN */
+window.entrar = async () => {
+    await signInWithEmailAndPassword(auth, email.value, senha.value);
+};
+
+window.sair = () => signOut(auth);
+
+onAuthStateChanged(auth, user=>{
+    login.style.display = user ? "none" : "block";
+    dashboard.style.display = user ? "block" : "none";
+});
+
+window.mostrar = (tela)=>{
+    document.querySelectorAll(".tela").forEach(t=>t.classList.remove("active"));
+    document.getElementById(tela).classList.add("active");
+};
+
+/* ================= NOTICIAS ================= */
+window.salvar = async ()=>{
+    await addDoc(collection(db,"noticias"),{
+        titulo: titulo.value,
+        conteudo: conteudo.value,
+        imagem: imagem.value
+    });
+};
+
+onSnapshot(collection(db,"noticias"), snap=>{
+    lista.innerHTML="";
+    total.innerText = snap.size;
+
+    snap.forEach(docSnap=>{
+        const d = docSnap.data();
+        lista.innerHTML += `
+        <div class="noticia">
+            <span>${d.titulo}</span>
+            <button onclick="excluir('${docSnap.id}')">🗑️</button>
+        </div>`;
+    });
+});
+
+window.excluir = async(id)=>{
+    await deleteDoc(doc(db,"noticias",id));
+};
+
+/* ================= AGENDA ================= */
+window.salvarAgenda = async ()=>{
+    await addDoc(collection(db,"agenda"),{
+        titulo: tituloAgenda.value,
+        dataInicio: dataInicio.value,
+        dataFim: dataFim.value,
+        local: localAgenda.value
+    });
+};
+
+onSnapshot(collection(db,"agenda"), snap=>{
+    listaAgenda.innerHTML="";
+    totalAgenda.innerText = snap.size;
+
+    snap.forEach(docSnap=>{
+        const d = docSnap.data();
+        listaAgenda.innerHTML += `
+        <div class="noticia">
+            <span>${d.titulo} (${d.dataInicio} até ${d.dataFim})</span>
+            <div>
+                <button onclick="editarAgenda('${docSnap.id}','${d.titulo}','${d.dataInicio}','${d.dataFim}','${d.local}')">✏️</button>
+                <button onclick="excluirAgenda('${docSnap.id}')">🗑️</button>
+            </div>
+        </div>`;
+    });
+});
+
+window.excluirAgenda = async(id)=>{
+    await deleteDoc(doc(db,"agenda",id));
+};
+
+window.editarAgenda = async(id, tituloAtual, inicioAtual, fimAtual, localAtual)=>{
+    const novoTitulo = prompt("Título:", tituloAtual);
+    const novaInicio = prompt("Data início:", inicioAtual);
+    const novaFim = prompt("Data fim:", fimAtual);
+    const novoLocal = prompt("Local:", localAtual);
+
+    if(novoTitulo && novaInicio && novaFim){
+        await updateDoc(doc(db,"agenda",id),{
+            titulo: novoTitulo,
+            dataInicio: novaInicio,
+            dataFim: novaFim,
+            local: novoLocal
+        });
+    }
+};
+</script>
+
+</body>
+</html>
