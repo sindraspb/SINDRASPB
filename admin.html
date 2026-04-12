@@ -2,12 +2,11 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Painel Premium</title>
+<title>Painel SINDRAS</title>
 
 <style>
 body { margin:0; font-family:Arial; background:#eef1f5; }
 
-/* LOGIN */
 .login {
     max-width:320px;
     margin:100px auto;
@@ -17,10 +16,8 @@ body { margin:0; font-family:Arial; background:#eef1f5; }
     text-align:center;
 }
 
-/* DASHBOARD */
 .dashboard { display:none; }
 
-/* TOPO */
 .topo {
     background:#1e1e2f;
     color:#fff;
@@ -29,10 +26,8 @@ body { margin:0; font-family:Arial; background:#eef1f5; }
     justify-content:space-between;
 }
 
-/* LAYOUT */
 .main { display:flex; }
 
-/* SIDEBAR */
 .sidebar {
     width:220px;
     background:#2b2b3c;
@@ -46,7 +41,6 @@ body { margin:0; font-family:Arial; background:#eef1f5; }
     margin:15px 0;
 }
 
-/* CONTENT */
 .content { flex:1; padding:20px; }
 
 .card {
@@ -56,14 +50,12 @@ body { margin:0; font-family:Arial; background:#eef1f5; }
     margin-bottom:20px;
 }
 
-/* INPUT */
 input, textarea {
     width:100%;
     padding:10px;
     margin-bottom:10px;
 }
 
-/* BOTÃO */
 button {
     background:#d62828;
     color:#fff;
@@ -72,16 +64,15 @@ button {
     cursor:pointer;
 }
 
-/* LISTA */
-.noticia {
+.item {
     display:flex;
     justify-content:space-between;
     background:#fff;
     padding:10px;
     margin-top:10px;
+    border-radius:6px;
 }
 
-/* ESCONDER TELAS */
 .tela { display:none; }
 .tela.active { display:block; }
 </style>
@@ -109,8 +100,14 @@ button {
 
 <div class="sidebar">
     <p onclick="mostrar('home')">📊 Dashboard</p>
+
     <p onclick="mostrar('noticias')">📰 Notícias</p>
-    <p onclick="mostrar('nova')">➕ Nova</p>
+    <p onclick="mostrar('novaNoticia')">➕ Nova Notícia</p>
+
+    <hr>
+
+    <p onclick="mostrar('agenda')">📅 Agenda</p>
+    <p onclick="mostrar('novaAgenda')">➕ Novo Evento</p>
 </div>
 
 <div class="content">
@@ -119,29 +116,45 @@ button {
 <div id="home" class="tela active">
     <div class="card">
         <h3>Total de notícias</h3>
-        <p id="total"></p>
+        <p id="totalNoticias"></p>
     </div>
-</div>
 
-<!-- LISTA -->
-<div id="noticias" class="tela">
     <div class="card">
-        <h3>Buscar</h3>
-        <input id="busca" placeholder="Digite...">
+        <h3>Total de eventos</h3>
+        <p id="totalAgenda"></p>
     </div>
-
-    <div id="lista"></div>
 </div>
 
-<!-- NOVA -->
-<div id="nova" class="tela">
+<!-- LISTA NOTICIAS -->
+<div id="noticias" class="tela">
+    <div id="listaNoticias"></div>
+</div>
+
+<!-- NOVA NOTICIA -->
+<div id="novaNoticia" class="tela">
     <div class="card">
         <h3>Nova Notícia</h3>
-        <input id="titulo">
-        <textarea id="conteudo"></textarea>
-        <input id="imagem" placeholder="Link da imagem">
-        <img id="preview" style="width:100%; display:none;">
-        <button onclick="salvar()">Publicar</button>
+        <input id="tituloNoticia" placeholder="Título">
+        <textarea id="conteudoNoticia" placeholder="Conteúdo"></textarea>
+        <input id="imagemNoticia" placeholder="Link da imagem">
+        <button onclick="salvarNoticia()">Publicar</button>
+    </div>
+</div>
+
+<!-- LISTA AGENDA -->
+<div id="agenda" class="tela">
+    <div id="listaAgenda"></div>
+</div>
+
+<!-- NOVA AGENDA -->
+<div id="novaAgenda" class="tela">
+    <div class="card">
+        <h3>Novo Evento</h3>
+        <input id="tituloAgenda" placeholder="Título">
+        <input id="dataInicio" placeholder="Data início (20/04/2026)">
+        <input id="dataFim" placeholder="Data fim (22/04/2026)">
+        <input id="localAgenda" placeholder="Local">
+        <button onclick="salvarAgenda()">Salvar Evento</button>
     </div>
 </div>
 
@@ -157,10 +170,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from
 const firebaseConfig = {
   apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
   authDomain: "sindraspb-35551.firebaseapp.com",
-  projectId: "sindraspb-35551",
-  storageBucket: "sindraspb-35551.firebasestorage.app",
-  messagingSenderId: "1001203695194",
-  appId: "1:1001203695194:web:b490ae077f26a83673e263"
+  projectId: "sindraspb-35551"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -172,10 +182,8 @@ window.entrar = async () => {
     await signInWithEmailAndPassword(auth, email.value, senha.value);
 };
 
-/* LOGOUT */
 window.sair = () => signOut(auth);
 
-/* CONTROLE */
 onAuthStateChanged(auth, user=>{
     login.style.display = user ? "none" : "block";
     dashboard.style.display = user ? "block" : "none";
@@ -187,74 +195,88 @@ window.mostrar = (tela)=>{
     document.getElementById(tela).classList.add("active");
 };
 
-/* PREVIEW IMAGEM */
-imagem.oninput = ()=>{
-    preview.src = imagem.value;
-    preview.style.display = "block";
-};
-
-/* SALVAR */
-window.salvar = async ()=>{
+/* ================= NOTICIAS ================= */
+window.salvarNoticia = async ()=>{
     await addDoc(collection(db,"noticias"),{
-        titulo: titulo.value,
-        conteudo: conteudo.value,
-        imagem: imagem.value
+        titulo: tituloNoticia.value,
+        conteudo: conteudoNoticia.value,
+        imagem: imagemNoticia.value
     });
-
-    alert("Notícia publicada!");
 };
-
-/* LISTAR */
-let dados = [];
 
 onSnapshot(collection(db,"noticias"), snap=>{
-    lista.innerHTML="";
-    total.innerText = snap.size;
-
-    dados = [];
+    listaNoticias.innerHTML="";
+    totalNoticias.innerText = snap.size;
 
     snap.forEach(docSnap=>{
         const d = docSnap.data();
-        d.id = docSnap.id;
-        dados.push(d);
-    });
 
-    render(dados);
-});
-
-/* BUSCA */
-busca.oninput = ()=>{
-    const filtro = dados.filter(n=> n.titulo.toLowerCase().includes(busca.value.toLowerCase()));
-    render(filtro);
-};
-
-/* RENDER */
-function render(listaDados){
-    lista.innerHTML="";
-
-    listaDados.forEach(d=>{
-        lista.innerHTML += `
-        <div class="noticia">
+        listaNoticias.innerHTML += `
+        <div class="item">
             <span>${d.titulo}</span>
             <div>
-                <button onclick="editar('${d.id}')">✏️</button>
-                <button onclick="excluir('${d.id}')">🗑️</button>
+                <button onclick="editarNoticia('${docSnap.id}','${d.titulo}')">✏️</button>
+                <button onclick="excluirNoticia('${docSnap.id}')">🗑️</button>
             </div>
         </div>`;
     });
-}
+});
 
-/* EXCLUIR */
-window.excluir = async(id)=>{
+window.excluirNoticia = async(id)=>{
     await deleteDoc(doc(db,"noticias",id));
 };
 
-/* EDITAR */
-window.editar = async(id)=>{
-    const novo = prompt("Novo título:");
+window.editarNoticia = async(id, tituloAtual)=>{
+    const novo = prompt("Novo título:", tituloAtual);
     if(novo){
-        await updateDoc(doc(db,"noticias",id),{
-            titulo: novo
+        await updateDoc(doc(db,"noticias",id),{ titulo: novo });
+    }
+};
+
+/* ================= AGENDA ================= */
+window.salvarAgenda = async ()=>{
+    await addDoc(collection(db,"agenda"),{
+        titulo: tituloAgenda.value,
+        dataInicio: dataInicio.value,
+        dataFim: dataFim.value,
+        local: localAgenda.value
+    });
+};
+
+onSnapshot(collection(db,"agenda"), snap=>{
+    listaAgenda.innerHTML="";
+    totalAgenda.innerText = snap.size;
+
+    snap.forEach(docSnap=>{
+        const d = docSnap.data();
+
+        listaAgenda.innerHTML += `
+        <div class="item">
+            <span>${d.titulo} (${d.dataInicio} até ${d.dataFim})</span>
+            <div>
+                <button onclick="editarAgenda('${docSnap.id}','${d.titulo}','${d.dataInicio}','${d.dataFim}','${d.local}')">✏️</button>
+                <button onclick="excluirAgenda('${docSnap.id}')">🗑️</button>
+            </div>
+        </div>`;
+    });
+});
+
+window.excluirAgenda = async(id)=>{
+    await deleteDoc(doc(db,"agenda",id));
+};
+
+window.editarAgenda = async(id, tituloAtual, inicioAtual, fimAtual, localAtual)=>{
+    const novoTitulo = prompt("Título:", tituloAtual);
+    const novaInicio = prompt("Data início:", inicioAtual);
+    const novaFim = prompt("Data fim:", fimAtual);
+    const novoLocal = prompt("Local:", localAtual);
+
+    if(novoTitulo && novaInicio && novaFim){
+        await updateDoc(doc(db,"agenda",id),{
+            titulo: novoTitulo,
+            dataInicio: novaInicio,
+            dataFim: novaFim,
+            local: novoLocal
         });
     }
 };
