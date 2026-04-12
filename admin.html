@@ -147,7 +147,8 @@ button {
     <div class="card">
         <h3>Novo Evento</h3>
         <input id="tituloAgenda" placeholder="Título">
-        <input id="dataAgenda" placeholder="Data (20/04/2026)">
+        <input id="dataInicio" placeholder="Data início (20/04/2026)">
+        <input id="dataFim" placeholder="Data fim (22/04/2026)">
         <input id="localAgenda" placeholder="Local">
         <button onclick="salvarAgenda()">Salvar Evento</button>
     </div>
@@ -190,14 +191,12 @@ window.mostrar = (tela)=>{
 };
 
 /* ================= NOTICIAS ================= */
-
 window.salvar = async ()=>{
     await addDoc(collection(db,"noticias"),{
         titulo: titulo.value,
         conteudo: conteudo.value,
         imagem: imagem.value
     });
-    alert("Notícia publicada!");
 };
 
 onSnapshot(collection(db,"noticias"), snap=>{
@@ -219,14 +218,13 @@ window.excluir = async(id)=>{
 };
 
 /* ================= AGENDA ================= */
-
 window.salvarAgenda = async ()=>{
     await addDoc(collection(db,"agenda"),{
         titulo: tituloAgenda.value,
-        data: dataAgenda.value,
+        dataInicio: dataInicio.value,
+        dataFim: dataFim.value,
         local: localAgenda.value
     });
-    alert("Evento salvo!");
 };
 
 onSnapshot(collection(db,"agenda"), snap=>{
@@ -237,14 +235,33 @@ onSnapshot(collection(db,"agenda"), snap=>{
         const d = docSnap.data();
         listaAgenda.innerHTML += `
         <div class="noticia">
-            <span>${d.titulo} - ${d.data}</span>
-            <button onclick="excluirAgenda('${docSnap.id}')">🗑️</button>
+            <span>${d.titulo} (${d.dataInicio} até ${d.dataFim})</span>
+            <div>
+                <button onclick="editarAgenda('${docSnap.id}','${d.titulo}','${d.dataInicio}','${d.dataFim}','${d.local}')">✏️</button>
+                <button onclick="excluirAgenda('${docSnap.id}')">🗑️</button>
+            </div>
         </div>`;
     });
 });
 
 window.excluirAgenda = async(id)=>{
     await deleteDoc(doc(db,"agenda",id));
+};
+
+window.editarAgenda = async(id, tituloAtual, inicioAtual, fimAtual, localAtual)=>{
+    const novoTitulo = prompt("Título:", tituloAtual);
+    const novaInicio = prompt("Data início:", inicioAtual);
+    const novaFim = prompt("Data fim:", fimAtual);
+    const novoLocal = prompt("Local:", localAtual);
+
+    if(novoTitulo && novaInicio && novaFim){
+        await updateDoc(doc(db,"agenda",id),{
+            titulo: novoTitulo,
+            dataInicio: novaInicio,
+            dataFim: novaFim,
+            local: novoLocal
+        });
+    }
 };
 </script>
 
