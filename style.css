@@ -313,12 +313,74 @@ html {
 }
 
 /* RESPONSIVO */
+/* MOBILE MENU BONITO */
 @media(max-width:768px){
 
   .menu {
-    display:none;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    background:#fff;
+    position:absolute;
+    top:80px;
+    left:0;
+    width:100%;
+    padding:15px 0;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
   }
 
+  .menu li {
+    text-align:center;
+  }
+
+  .menu li a {
+    display:inline-block;
+    background:#ff6a00; /* LARANJA MAIS FORTE */
+    color:white;
+    padding:10px 20px;
+    border-radius:30px; /* OVAL */
+    text-decoration:none;
+    font-weight:bold;
+  }
+
+  .menu li a:hover {
+    background:#e55a00;
+  }
+
+  .actions {
+    flex-direction:column;
+    gap:10px;
+    margin-top:10px;
+  }
+
+  .hero {
+    height:60vh;
+    min-height:250px;
+  }
+
+  .hero-content {
+    left:5%;
+    right:5%;
+    max-width:100%;
+  }
+
+  .hero h1 {
+    font-size:20px;
+  }
+
+  .cards {
+    flex-direction:column;
+  }
+
+  .card {
+    width:100%;
+  }
+
+  .social {
+    flex-direction:column;
+    align-items:center;
+  }
+}
   .hero {
     height:60vh;
     min-height:250px;
@@ -351,4 +413,8 @@ html {
 /* AJUSTE DE SCROLL */
 section {
   scroll-margin-top: 100px;
+}
+
+.menu li a:active {
+  transform:scale(0.95);
 }
