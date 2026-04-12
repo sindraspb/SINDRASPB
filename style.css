@@ -256,3 +256,93 @@ body {
   }
 
 }
+  function nextSlide(){
+    index++;
+    if(index >= total){
+      index = 0;
+    }
+    showSlide(index);
+  }
+
+  window.mudarSlide = function(i){
+    index = i;
+    showSlide(index);
+  }
+
+  setInterval(nextSlide, 4000);
+  showSlide(index);
+});
+</script>
+
+</body>
+</html>
+
+/* SCROLL SUAVE */
+html {
+  scroll-behavior: smooth;
+}
+
+/* LINKS DO MENU */
+.menu li a {
+  text-decoration: none;
+  color: black;
+}
+
+/* AGENDA */
+.agenda {
+  padding: 60px 0;
+}
+
+.agenda h2 {
+  margin-bottom: 20px;
+}
+
+.agenda-lista {
+  display: grid;
+  gap: 15px;
+}
+
+.evento {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+/* AGENDA BANNER */
+.agenda {
+  padding: 60px 0;
+}
+
+.agenda-banner {
+  background: linear-gradient(135deg, #f7941d, #ffb347);
+  padding: 40px;
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.agenda-banner h2 {
+  margin-bottom: 20px;
+}
+
+.agenda-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.evento {
+  background: rgba(255,255,255,0.15);
+  padding: 20px;
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  transition: 0.3s;
+}
+
+.evento:hover {
+  transform: scale(1.05);
+  background: rgba(255,255,255,0.25);
+}
+.agenda {
+  padding: 60px 0;
+}

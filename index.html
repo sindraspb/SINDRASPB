@@ -6,173 +6,67 @@
 <title>SINDRAS-PB</title>
 
 <link rel="stylesheet" href="style.css">
-
-<!-- ICONES (CORRETO AQUI) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 </head>
 
 <body>
 
-<!-- HEADER -->
 <header class="header">
   <div class="container nav">
     <img src="logo.png" class="logo">
 
     <ul class="menu">
-      <li>Início</li>
-      <li>Notícias</li>
-      <li>Nossa cultura</li>
-      <li>Quem somos</li>
+      <li><a href="#quemSomos">Quem Somos</a></li>
+      <li><a href="#agenda">Agenda</a></li>
+      <li><a href="#">Nossa cultura</a></li>
+      <li><a href="#">Parcerias</a></li>
     </ul>
-
-    <div class="actions">
-      <a href="admin.html" class="btn-black">ADM</a>
-      <a href="https://app.progess.com.br/afiliado/link/957e313492593b3377cc051c6e3a51e8b1a3412022af588965303e96ae29934b" class="btn-black">Filie-se</a>
-    </div>
   </div>
 </header>
 
-<!-- HERO (CARROSSEL) -->
+<!-- HERO -->
 <section class="hero">
-
   <div class="slides">
     <div class="slide" style="background-image:url('banner1.jpg')"></div>
     <div class="slide" style="background-image:url('banner2.jpg')"></div>
-    <div class="slide" style="background-image:url('banner3.jpg')"></div>
-    <div class="slide" style="background-image:url('banner4.jpg')"></div>
-    <div class="slide" style="background-image:url('banner5.jpg')"></div>
-    <div class="slide" style="background-image:url('banner6.jpg')"></div>
   </div>
-
-  <!-- CONTROLES -->
-  <div class="controls">
-    <span onclick="mudarSlide(0)"></span>
-    <span onclick="mudarSlide(1)"></span>
-    <span onclick="mudarSlide(2)"></span>
-    <span onclick="mudarSlide(3)"></span>
-    <span onclick="mudarSlide(4)"></span>
-    <span onclick="mudarSlide(5)"></span>
-  </div>
-
 </section>
 
+<!-- VIDEO -->
 <section class="video container">
-  <iframe 
-    src="https://www.youtube.com/embed/iu5_eBhW4_s"
-    title="YouTube video"
-    frameborder="0"
-    allowfullscreen>
-  </iframe>
-</div>
+  <iframe src="https://www.youtube.com/embed/iu5_eBhW4_s" allowfullscreen></iframe>
+</section>
 
 <!-- NOTICIAS -->
 <section class="noticias container">
   <h2>Notícias</h2>
-  <div id="noticias" class="cards"></div>
+  <div class="cards"></div>
 </section>
 
-<!-- SOCIAL -->
-<section class="social">
-  <a href="https://www.instagram.com/sindraspb/" target="_blank" class="social-btn">
-    <i class="fab fa-instagram"></i>
-  </a>
-
-  <a href="https://www.facebook.com/p/Sindraspb-61553589940838/" target="_blank" class="social-btn">
-    <i class="fab fa-facebook-f"></i>
-  </a>
-
-  <a href="https://www.youtube.com/watch?v=iu5_eBhW4_s" target="_blank" class="social-btn">
-    <i class="fab fa-youtube"></i>
-  </a>
-
-  <a href="https://wa.me/558330997966" target="_blank" class="social-btn">
-    <i class="fab fa-whatsapp"></i>
-  </a>
+<!-- QUEM SOMOS -->
+<section id="quemSomos" class="agenda">
+  <div class="container agenda-banner">
+    <h2>Quem Somos</h2>
+    <div class="evento">
+      <p>
+        O Sindras-PB representa os Agentes Comunitários de Saúde e de Combate às Endemias,
+        defendendo direitos, promovendo valorização e fortalecendo a categoria.
+      </p>
+    </div>
+  </div>
 </section>
 
-<!-- CTA -->
-<section class="cta">
-  <h2> Em defesa dos nossos agentes.</h2>
-  <p>Unidos pela missão de fortalecer, apoiar e valorizar os Agentes Comunitários de Saúde e de Combate às Endemias..</p>
+<!-- AGENDA -->
+<section id="agenda" class="agenda">
+  <div class="container agenda-banner">
+    <h2>Agenda</h2>
+    <div class="agenda-lista"></div>
+  </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
-  <p>© Sindras-PB 2023</p>
+  <p>© Sindras-PB</p>
 </footer>
-
-<!-- FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
-  authDomain: "sindraspb-35551.firebaseapp.com",
-  projectId: "sindraspb-35551"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const container = document.getElementById("noticias");
-
-onSnapshot(collection(db,"noticias"), snap=>{
-  container.innerHTML = "";
-
-  snap.forEach(doc=>{
-    const n = doc.data();
-
-    container.innerHTML += `
-      <div class="card">
-        <img src="${n.imagem}">
-        <h3>${n.titulo}</h3>
-        <p>${n.conteudo}</p>
-      </div>
-    `;
-  });
-});
-</script>
-
-<!-- CARROSSEL -->
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-
-  let index = 0;
-
-  const slides = document.querySelector('.slides');
-  const slideItems = document.querySelectorAll('.slide');
-  const dots = document.querySelectorAll('.controls span');
-
-  const total = slideItems.length;
-
-  function showSlide(i){
-    slides.style.transform = "translateX(" + (-i * 100) + "%)";
-
-    dots.forEach(d => d.classList.remove("active"));
-    if(dots[i]) dots[i].classList.add("active");
-  }
-
-  function nextSlide(){
-    index++;
-    if(index >= total){
-      index = 0;
-    }
-    showSlide(index);
-  }
-
-  window.mudarSlide = function(i){
-    index = i;
-    showSlide(index);
-  }
-
-  setInterval(nextSlide, 4000);
-
-  showSlide(index);
-
-});
-</script>
 
 </body>
 </html>
