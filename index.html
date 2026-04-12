@@ -6,12 +6,13 @@
 <title>SINDRAS-PB</title>
 
 <link rel="stylesheet" href="style.css">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
 <body>
 
+<!-- HEADER -->
 <header class="header">
   <div class="container nav">
     <img src="logo.png" class="logo">
@@ -35,6 +36,7 @@
   </div>
 </header>
 
+<!-- HERO -->
 <section class="hero">
   <div class="slides">
     <div class="slide" style="background-image:url('banner1.jpg')"></div>
@@ -55,73 +57,37 @@
   </div>
 </section>
 
+<!-- VIDEO -->
 <section class="video container">
-  <iframe 
-    src="https://www.youtube.com/embed/iu5_eBhW4_s"
-    frameborder="0"
-    allowfullscreen>
-  </iframe>
+  <iframe src="https://www.youtube.com/embed/iu5_eBhW4_s" frameborder="0" allowfullscreen></iframe>
 </section>
 
+<!-- NOTICIAS -->
 <section class="noticias container">
   <h2>Notícias</h2>
   <div id="noticias" class="cards"></div>
 </section>
 
-<!-- 🔥 AGENDA EM BANNER -->
-<section id="agenda" class="agenda">
-  <div class="container agenda-banner">
-
-    <h2>Agenda</h2>
-
-    <div class="agenda-lista">
-
-      <div class="evento">
-        <h3>Assembleias</h3>
-        <p>📅 20 de Abril de 2026</p>
-        <p>📍 Campina Grande - PB</p>
-      </div>
-
-      <div class="evento">
-        <h3>Reunião com Agentes</h3>
-        <p>📅 25 de Abril de 2026</p>
-        <p>📍 João Pessoa - PB</p>
-      </div>
-
-      <div class="evento">
-        <h3>Eventos Nacionais</h3>
-        <p>📅 30 de Abril de 2026</p>
-        <p>📍 Brasília - DF</p>
-      </div>
-
-    </div>
-
-  </div>
+<!-- AGENDA -->
+<section id="agenda" class="agenda container">
+  <h2>Agenda</h2>
+  <div id="listaAgenda" class="cards"></div>
 </section>
 
+<!-- SOCIAL -->
 <section class="social">
-  <a href="https://www.instagram.com/sindraspb/" target="_blank" class="social-btn">
-    <i class="fab fa-instagram"></i>
-  </a>
-
-  <a href="https://www.facebook.com/p/Sindraspb-61553589940838/" target="_blank" class="social-btn">
-    <i class="fab fa-facebook-f"></i>
-  </a>
-
-  <a href="https://www.youtube.com/watch?v=iu5_eBhW4_s" target="_blank" class="social-btn">
-    <i class="fab fa-youtube"></i>
-  </a>
-
-  <a href="https://wa.me/558330997966" target="_blank" class="social-btn">
-    <i class="fab fa-whatsapp"></i>
-  </a>
+  <a href="https://www.instagram.com/sindraspb/" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
+  <a href="https://www.facebook.com/p/Sindraspb-61553589940838/" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+  <a href="https://www.youtube.com/watch?v=iu5_eBhW4_s" target="_blank" class="social-btn"><i class="fab fa-youtube"></i></a>
+  <a href="https://wa.me/558330997966" target="_blank" class="social-btn"><i class="fab fa-whatsapp"></i></a>
 </section>
 
+<!-- CTA -->
 <section class="cta">
   <h2>Em defesa dos nossos agentes.</h2>
-  <p>Unidos pela missão de fortalecer, apoiar e valorizar os Agentes Comunitários de Saúde e de Combate às Endemias.</p>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer">
   <p>© Sindras-PB 2023</p>
 </footer>
@@ -140,19 +106,39 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const container = document.getElementById("noticias");
+/* ================= NOTICIAS ================= */
+const noticiasContainer = document.getElementById("noticias");
 
 onSnapshot(collection(db,"noticias"), snap=>{
-  container.innerHTML = "";
+  noticiasContainer.innerHTML = "";
 
   snap.forEach(doc=>{
     const n = doc.data();
 
-    container.innerHTML += `
+    noticiasContainer.innerHTML += `
       <div class="card">
         <img src="${n.imagem}">
         <h3>${n.titulo}</h3>
         <p>${n.conteudo}</p>
+      </div>
+    `;
+  });
+});
+
+/* ================= AGENDA ================= */
+const agendaContainer = document.getElementById("listaAgenda");
+
+onSnapshot(collection(db,"agenda"), snap=>{
+  agendaContainer.innerHTML = "";
+
+  snap.forEach(doc=>{
+    const e = doc.data();
+
+    agendaContainer.innerHTML += `
+      <div class="card">
+        <h3>${e.titulo}</h3>
+        <p>📅 ${e.dataInicio} até ${e.dataFim}</p>
+        <p>📍 ${e.local}</p>
       </div>
     `;
   });
@@ -192,6 +178,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   setInterval(nextSlide, 4000);
   showSlide(index);
+
 });
 </script>
 
