@@ -372,3 +372,15 @@ html {
 section {
   scroll-margin-top: 100px;
 }
+/* NOTICIAS EM COLUNA NO CELULAR */
+@media(max-width:768px){
+
+  .cards {
+    flex-direction:column;
+  }
+
+  .card {
+    width:100%;
+  }
+
+}
