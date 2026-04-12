@@ -126,44 +126,49 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const container = document.getElementById("noticias");
+/* ================= NOTICIAS ================= */
+const noticiasContainer = document.getElementById("noticias");
 
-onSnapshot(collection(db,"noticias"), snap=>{
-  container.innerHTML = "";
+if(noticiasContainer){
+  onSnapshot(collection(db,"noticias"), snap=>{
+    noticiasContainer.innerHTML = "";
 
-  snap.forEach(doc=>{
-    const n = doc.data();
+    snap.forEach(doc=>{
+      const n = doc.data();
 
-    container.innerHTML += `
-      <div class="card">
-        <img src="${n.imagem}">
-        <h3>${n.titulo}</h3>
-        <p>${n.conteudo}</p>
-      </div>
-    `;
+      noticiasContainer.innerHTML += `
+        <div class="card">
+          <img src="${n.imagem}">
+          <h3>${n.titulo}</h3>
+          <p>${n.conteudo}</p>
+        </div>
+      `;
+    });
   });
-});
-</script>
+}
 
 /* ================= AGENDA ================= */
 const agendaContainer = document.getElementById("listaAgenda");
 
-onSnapshot(collection(db,"agenda"), snap=>{
-  agendaContainer.innerHTML = "";
+if(agendaContainer){
+  onSnapshot(collection(db,"agenda"), snap=>{
+    agendaContainer.innerHTML = "";
 
-  snap.forEach(doc=>{
-    const e = doc.data();
+    snap.forEach(doc=>{
+      const e = doc.data();
 
-    agendaContainer.innerHTML += `
-      <div class="evento">
-        <h3>${e.titulo}</h3>
-        <p>📅 ${e.dataInicio} até ${e.dataFim}</p>
-        <p>📍 ${e.local}</p>
-      </div>
-    `;
+      agendaContainer.innerHTML += `
+        <div class="evento">
+          <h3>${e.titulo}</h3>
+          <p>📅 ${e.dataInicio || ""} até ${e.dataFim || ""}</p>
+          <p>📍 ${e.local || ""}</p>
+        </div>
+      `;
+    });
   });
-});
+}
 
+</script>
 <!-- CARROSSEL -->
 <script>
 document.addEventListener("DOMContentLoaded", function(){
