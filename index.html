@@ -66,17 +66,16 @@
 
     <div class="conteudo-quem">
       <p>
-          O Sindras-PB é o Sindicato dos Agentes Comunitários de Saúde (ACS) e dos Agentes de Combate às Endemias (ACE) Regional de Saúde da Paraíba. Surgiu da necessidade de organização da categoria, com o propósito de construir uma entidade própria, forte e representativa, dedicada exclusivamente à defesa dos interesses desses profissionais.
+O Sindras-PB representa os Agentes Comunitários de Saúde (ACS) e de Combate às Endemias (ACE) na Paraíba. A entidade nasceu da necessidade de uma organização própria e forte, dedicada exclusivamente à defesa dos interesses desses profissionais.
 
-Desde sua fundação, o Sindras-PB atua de forma firme na defesa, mobilização e garantia de direitos dos ACS e ACE, promovendo assembleias, acompanhando demandas da categoria e lutando por conquistas importantes, como o piso salarial salárials e o pagamento do Incentivo Financeiro Adicional (IFA)..
-        </p>
+Desde sua fundação, o sindicato atua firmemente na mobilização e garantia de direitos, liderando assembleias e conquistando vitórias essenciais, como o piso salarial e o Incentivo Financeiro Adicional (IFA).
+      </p>
 
-        <p>
-         O Sindras-PB se destaca pela sua atuação ativa tanto nas pautas locais quanto nas lutas nacionais. Filiado à CONACS (Confederação Nacional dos Agentes Comunitários de Saúde e de Combate às Endemias) e sob a presidência de Giovanni Freire, o Sindras-PB participa de mobilizações em Brasília, defendendo projetos e propostas importantes para a categoria, como a PEC 18 e o PLP 185.
+      <p>
+Sob a presidência de Giovanni Freire e filiado à CONACS, o Sindras-PB destaca-se pela atuação em pautas locais e nacionais. A entidade participa ativamente de mobilizações em Brasília, defendendo projetos estratégicos como a PEC 18 e o PLP 185.
 
-Comprometido com a transparência e a proximidade com seus filiados, o Sindras-PB hoje é mais do que um sindicato, o Sindras-PB é a voz dos ACS e ACE na Paraíba, fortalecendo a luta nacional e intensificando a defesa dos direitos em cada município..
-        </p>
-      </div>
+Comprometido com a transparência, o Sindras-PB consolidou-se como a voz dos ACS e ACE na Paraíba, fortalecendo a categoria em cada município e elevando a relevância da luta nacional.
+      </p>
     </div>
 
   </div>
@@ -100,12 +99,13 @@ Comprometido com a transparência e a proximidade com seus filiados, o Sindras-P
   <p>© Sindras-PB 2023</p>
 </footer>
 
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const app = initializeApp({
-  apiKey: "AIzaSyBmwz...",
+  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
   authDomain: "sindraspb-35551.firebaseapp.com",
   projectId: "sindraspb-35551"
 });
@@ -149,6 +149,45 @@ if(agendaContainer){
     });
   });
 }
+</script>
+
+<!-- 🔥 SCRIPT DO BANNER (ÚNICA CORREÇÃO REAL) -->
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  let index = 0;
+
+  const slides = document.querySelector('.slides');
+  const slideItems = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.controls span');
+
+  const total = slideItems.length;
+
+  function showSlide(i){
+    if(!slides) return;
+
+    slides.style.transform = "translateX(" + (-i * 100) + "%)";
+
+    dots.forEach(d => d.classList.remove("active"));
+    if(dots[i]) dots[i].classList.add("active");
+  }
+
+  function nextSlide(){
+    index++;
+    if(index >= total){
+      index = 0;
+    }
+    showSlide(index);
+  }
+
+  window.mudarSlide = function(i){
+    index = i;
+    showSlide(index);
+  }
+
+  setInterval(nextSlide, 4000);
+  showSlide(index);
+});
 </script>
 
 </body>
