@@ -95,34 +95,6 @@ html {
   background-position:center;
 }
 
-.hero-content {
-  position: absolute;
-  color: white;
-  max-width: 600px;
-  left: 10%;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.hero h1 {
-  font-size:38px;
-}
-
-/* BOTÕES */
-.btn-orange {
-  background:#f7941d;
-  padding:10px 20px;
-  text-decoration:none;
-  color:black;
-}
-
-.btn-outline {
-  border:2px solid #f7941d;
-  padding:10px 20px;
-  color:white;
-  text-decoration:none;
-}
-
 /* CONTROLES */
 .controls {
   position: absolute;
@@ -183,12 +155,25 @@ html {
 }
 
 .card:hover {
-  transform:translateY(-5px);
+  transform:translateY(-8px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
+/* 🔥 IMAGENS CORRIGIDAS */
 .card img {
   width:100%;
+  height:180px;
+  object-fit:cover;
+  object-position:top;
   border-radius:10px;
+}
+
+.card h3 {
+  margin:10px 0;
+}
+
+.card p {
+  color:#555;
 }
 
 /* SOCIAL */
@@ -273,70 +258,35 @@ html {
   background: rgba(255,255,255,0.25);
 }
 
-/* QUEM SOMOS */
-#quemSomos .agenda-banner {
-  background: linear-gradient(135deg, #1e1e2f, #3a3a5a);
-}
-
-/* PARCEIROS */
-.topo {
-  background:#f7941d;
+/* 🔥 QUEM SOMOS CORRIGIDO */
+.quem-somos {
+  background: linear-gradient(135deg, #d35400, #f7941d);
+  padding:60px 0;
   color:#fff;
-  padding:20px;
+}
+
+.quem-somos h2 {
   text-align:center;
+  margin-bottom:20px;
 }
 
-.parceiros-grid {
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap:20px;
-  padding:40px 0;
+.conteudo-quem {
+  max-width:900px;
+  margin:auto;
+  line-height:1.6;
+  text-align:justify;
 }
 
-.parceiro-card {
-  background:#fff;
-  border-radius:12px;
-  padding:20px;
-  text-align:center;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
-  transition:0.3s;
-}
-
-.parceiro-card:hover {
-  transform:translateY(-5px);
-}
-
-.parceiro-card img {
-  width:140px;
-  height:80px;
-  object-fit:contain;
-  margin-bottom:15px;
-}
-
-.parceiro-card a {
-  display:inline-block;
-  background:#f7941d;
-  color:#fff;
-  padding:10px 15px;
-  border-radius:6px;
-  text-decoration:none;
-}
-
-.parceiro-card a:hover {
-  background:#d97f14;
-}
-
-/* MOBILE FINAL (COM TODOS OS BOTÕES VISÍVEIS) */
+/* MOBILE */
 @media(max-width:768px){
 
   .nav {
     flex-direction:column;
-    gap:8px;
+    align-items:center;
+    text-align:center;
   }
 
   .menu {
-    display:flex;
-    flex-wrap:wrap;
     justify-content:center;
     gap:6px;
   }
@@ -347,33 +297,15 @@ html {
     padding:5px 10px;
     font-size:12px;
     border-radius:20px;
-    font-weight:bold;
   }
 
   .actions {
-    display:flex;
     justify-content:center;
-    gap:6px;
-    flex-wrap:wrap;
-  }
-
-  .btn-black {
-    padding:5px 10px;
-    font-size:12px;
-    border-radius:20px;
   }
 
   .hero {
     height:55vh;
   }
-}
-
-/* SCROLL */
-section {
-  scroll-margin-top: 100px;
-}
-/* NOTICIAS EM COLUNA NO CELULAR */
-@media(max-width:768px){
 
   .cards {
     flex-direction:column;
@@ -383,66 +315,12 @@ section {
     width:100%;
   }
 
-}
-/* AJUSTE CENTRALIZAÇÃO MOBILE */
-@media(max-width:768px){
-
-  /* CENTRALIZA HEADER */
-  .nav {
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-  }
-
-  .logo {
-    display:block;
-    margin:0 auto;
-  }
-
-  /* GARANTE MENU CENTRAL */
-  .menu {
-    justify-content:center;
-    align-items:center;
-  }
-
-  /* BOTÕES CENTRALIZADOS */
-  .actions {
-    justify-content:center;
-  }
-
-  /* REMOVE POSSÍVEL "DESLOCAMENTO" */
   body, html {
     overflow-x:hidden;
   }
-
-  /* AJUSTE DO VÍDEO */
-  .video {
-    width:100%;
-    padding:0 10px;
-    box-sizing:border-box;
-  }
-
-  .video iframe {
-    width:100%;
-    display:block;
-  }
-
-}
-.card img {
-  width:100%;
-  height:auto;
-  object-fit:contain;
 }
 
-.card h3 {
-  margin:10px 0;
+/* SCROLL AJUSTE */
+section {
+  scroll-margin-top: 100px;
 }
-
-.card p {
-  color:#555;
-}
- </p>
-    </div>
-
-  </div>
-</section>
