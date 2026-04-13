@@ -197,11 +197,25 @@ window.mostrar = (tela)=>{
 
 /* ================= NOTICIAS ================= */
 window.salvarNoticia = async ()=>{
-    await addDoc(collection(db,"noticias"),{
-        titulo: tituloNoticia.value,
-        conteudo: conteudoNoticia.value,
-        imagem: imagemNoticia.value
-    });
+
+   if(!tituloNoticia.value || !conteudoNoticia.value){
+     alert("Preencha todos os campos!");
+     return;
+   }
+
+   await addDoc(collection(db,"noticias"),{
+    titulo: tituloNoticia.value,
+    conteudo: conteudoNoticia.value,
+    imagem: imagemNoticia.value,
+    criadoEm: new Date()
+   });
+
+   // 🔥 LIMPEZA AUTOMÁTICA
+   tituloNoticia.value = "";
+   conteudoNoticia.value = "";
+   imagemNoticia.value = "";
+
+   alert("Notícia publicada com sucesso!");
 };
 
 onSnapshot(collection(db,"noticias"), snap=>{

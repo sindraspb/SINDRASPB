@@ -428,3 +428,15 @@ section {
   }
 
 }
+.card img {
+  height:180px;
+  object-fit:cover;
+}
+
+.card h3 {
+  margin:10px 0;
+}
+
+.card p {
+  color:#555;
+}
