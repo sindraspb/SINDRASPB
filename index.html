@@ -26,6 +26,7 @@
         </p>
       </div>
     </div>
+
     <ul class="menu">
       <li><a href="noticias.html">Notícias</a></li>
       <li><a href="#quemSomos">Quem Somos</a></li>
@@ -72,23 +73,15 @@
 
 <section id="quemSomos" class="quem-somos">
   <div class="container">
-
     <h2>Quem Somos</h2>
-
     <div class="conteudo-quem">
       <p>
-O Sindras-PB representa os Agentes Comunitários de Saúde (ACS) e de Combate às Endemias (ACE) na Paraíba. A entidade nasceu da necessidade de uma organização própria e forte, dedicada exclusivamente à defesa dos interesses desses profissionais.
-
-Desde sua fundação, o sindicato atua firmemente na mobilização e garantia de direitos, liderando assembleias e conquistando vitórias essenciais, como o piso salarial e o Incentivo Financeiro Adicional (IFA).
+O Sindras-PB representa os Agentes Comunitários de Saúde (ACS) e de Combate às Endemias (ACE) na Paraíba...
       </p>
-
       <p>
-Sob a presidência de Giovanni Freire e filiado à CONACS, o Sindras-PB destaca-se pela atuação em pautas locais e nacionais. A entidade participa ativamente de mobilizações em Brasília, defendendo projetos estratégicos como a PEC 18 e o PLP 185.
-
-Comprometido com a transparência, o Sindras-PB consolidou-se como a voz dos ACS e ACE na Paraíba, fortalecendo a categoria em cada município e elevando a relevância da luta nacional.
+Sob a presidência de Giovanni Freire...
       </p>
     </div>
-
   </div>
 </section>
 
@@ -107,11 +100,9 @@ Comprometido com a transparência, o Sindras-PB consolidou-se como a voz dos ACS
 </section>
 
 <footer class="footer">
-  <p>  Edifício Arius, Rua Maciel Pinheiro, 102 - 5º Andar, Centro, Campina Grande - PB, CEP 58400-100.  </p>
-  <p>  Telefone 833099-7966 E-mail sindraspb@.com </p>
-
+  <p>Edifício Arius, Rua Maciel Pinheiro...</p>
+  <p>Telefone 833099-7966</p>
   <p>© Sindras-PB 2023</p>
-
 </footer>
 
 <!-- FIREBASE -->
@@ -119,12 +110,16 @@ Comprometido com a transparência, o Sindras-PB consolidou-se como a voz dos ACS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const app = initializeApp({
+const firebaseConfig = {
   apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
   authDomain: "sindraspb-35551.firebaseapp.com",
-  projectId: "sindraspb-35551"
-});
+  projectId: "sindraspb-35551",
+  storageBucket: "sindraspb-35551.firebasestorage.app",
+  messagingSenderId: "1001203695194",
+  appId: "1:1001203695194:web:b490ae077f26a83673e263"
+};
 
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 /* NOTICIAS */
@@ -148,6 +143,8 @@ if(noticiasContainer){
 }
 
 /* AGENDA */
+const agendaContainer = document.getElementById("listaAgenda");
+
 if(agendaContainer){
   onSnapshot(collection(db,"agenda"), snap=>{
     agendaContainer.innerHTML = "";
@@ -164,7 +161,7 @@ if(agendaContainer){
 
           <p>📍 ${e.local || ""}</p>
 
-          ${e.aviso ? `<p style="color:#ffdddd; font-weight:bold;">⚠️ ${e.aviso}</p>` : ""}
+          ${e.aviso ? `<p class="aviso">⚠️ ${e.aviso}</p>` : ""}
         </div>
       `;
     });
@@ -172,12 +169,11 @@ if(agendaContainer){
 }
 </script>
 
-<!-- 🔥 SCRIPT DO BANNER (ÚNICA CORREÇÃO REAL) -->
+<!-- SCRIPT DO BANNER -->
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
   let index = 0;
-
   const slides = document.querySelector('.slides');
   const slideItems = document.querySelectorAll('.slide');
   const dots = document.querySelectorAll('.controls span');
@@ -186,18 +182,14 @@ document.addEventListener("DOMContentLoaded", function(){
 
   function showSlide(i){
     if(!slides) return;
-
     slides.style.transform = "translateX(" + (-i * 100) + "%)";
-
     dots.forEach(d => d.classList.remove("active"));
     if(dots[i]) dots[i].classList.add("active");
   }
 
   function nextSlide(){
     index++;
-    if(index >= total){
-      index = 0;
-    }
+    if(index >= total) index = 0;
     showSlide(index);
   }
 

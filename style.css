@@ -392,3 +392,8 @@ section {
   line-height: 1.2;
   font-weight: bold;
 }
+.aviso {
+  color: #fff;
+  font-weight: bold;
+  margin-top: 5px;
+}
