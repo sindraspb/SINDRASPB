@@ -381,13 +381,13 @@ section {
 }
 
 .logo-text strong {
-  font-size: 12px;
+  font-size: 15px;
   display: block;
   font-weight: bold;
 }
 
 .logo-text p {
-  font-size: 9px;
+  font-size: 12px;
   margin: 0;
   line-height: 1.2;
   font-weight: bold;
