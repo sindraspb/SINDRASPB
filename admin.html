@@ -249,12 +249,26 @@ window.editarNoticia = async(id, tituloAtual)=>{
 
 /* ================= AGENDA ================= */
 window.salvarAgenda = async ()=>{
+
+    if(!tituloAgenda.value || !dataInicio.value || !dataFim.value){
+        alert("Preencha todos os campos!");
+        return;
+    }
+
     await addDoc(collection(db,"agenda"),{
         titulo: tituloAgenda.value,
         dataInicio: dataInicio.value,
         dataFim: dataFim.value,
         local: localAgenda.value
     });
+
+    // 🔥 LIMPAR CAMPOS (igual notícias)
+    tituloAgenda.value = "";
+    dataInicio.value = "";
+    dataFim.value = "";
+    localAgenda.value = "";
+
+    alert("Evento salvo com sucesso!");
 };
 
 onSnapshot(collection(db,"agenda"), snap=>{
