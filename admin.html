@@ -266,7 +266,7 @@ onSnapshot(collection(db,"agenda"), snap=>{
 
         listaAgenda.innerHTML += `
         <div class="item">
-            <span>${d.titulo} (${d.dataInicio} até ${d.dataFim})</span>
+            <span>${d.titulo} (${d.dataInicio} a ${d.dataFim})</span>
             <div>
                 <button onclick="editarAgenda('${docSnap.id}','${d.titulo}','${d.dataInicio}','${d.dataFim}','${d.local}')">✏️</button>
                 <button onclick="excluirAgenda('${docSnap.id}')">🗑️</button>
