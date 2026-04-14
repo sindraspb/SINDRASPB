@@ -372,3 +372,23 @@ section {
   font-weight:bold;
   color:#f7941d;
 }
+/* TEXTO AO LADO DO LOGO */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 500px;
+}
+
+.logo-text strong {
+  font-size: 12px;
+  display: block;
+  font-weight: bold;
+}
+
+.logo-text p {
+  font-size: 9px;
+  margin: 0;
+  line-height: 1.2;
+  font-weight: bold;
+}
