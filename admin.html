@@ -68,9 +68,15 @@ button {
     display:flex;
     justify-content:space-between;
     background:#fff;
-    padding:10px;
+    padding:15px;
     margin-top:10px;
-    border-radius:6px;
+    border-radius:8px;
+    align-items:flex-start;
+}
+
+.item span {
+    font-size:14px;
+    line-height:1.4;
 }
 
 .tela { display:none; }
@@ -154,6 +160,7 @@ button {
         <input id="dataInicio" placeholder="Data início (20/04/2026)">
         <input id="dataFim" placeholder="Data fim (22/04/2026)">
         <input id="localAgenda" placeholder="Local">
+        <textarea id="avisoAgenda" placeholder="Aviso"></textarea>
         <button onclick="salvarAgenda()">Salvar Evento</button>
     </div>
 </div>
@@ -168,9 +175,9 @@ import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
-  authDomain: "sindraspb-35551.firebaseapp.com",
-  projectId: "sindraspb-35551"
+  apiKey: "SUA_API",
+  authDomain: "SEU_AUTH",
+  projectId: "SEU_PROJECT"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -195,9 +202,8 @@ window.mostrar = (tela)=>{
     document.getElementById(tela).classList.add("active");
 };
 
-/* ================= NOTICIAS ================= */
+/* NOTICIAS */
 window.salvarNoticia = async ()=>{
-
    if(!tituloNoticia.value || !conteudoNoticia.value){
      alert("Preencha todos os campos!");
      return;
@@ -210,12 +216,11 @@ window.salvarNoticia = async ()=>{
     criadoEm: new Date()
    });
 
-   // 🔥 LIMPEZA AUTOMÁTICA
    tituloNoticia.value = "";
    conteudoNoticia.value = "";
    imagemNoticia.value = "";
 
-   alert("Notícia publicada com sucesso!");
+   alert("Notícia publicada!");
 };
 
 onSnapshot(collection(db,"noticias"), snap=>{
@@ -247,7 +252,7 @@ window.editarNoticia = async(id, tituloAtual)=>{
     }
 };
 
-/* ================= AGENDA ================= */
+/* AGENDA */
 window.salvarAgenda = async ()=>{
 
     if(!tituloAgenda.value || !dataInicio.value || !dataFim.value){
@@ -259,16 +264,17 @@ window.salvarAgenda = async ()=>{
         titulo: tituloAgenda.value,
         dataInicio: dataInicio.value,
         dataFim: dataFim.value,
-        local: localAgenda.value
+        local: localAgenda.value,
+        aviso: avisoAgenda.value
     });
 
-    // 🔥 LIMPAR CAMPOS (igual notícias)
     tituloAgenda.value = "";
     dataInicio.value = "";
     dataFim.value = "";
     localAgenda.value = "";
+    avisoAgenda.value = "";
 
-    alert("Evento salvo com sucesso!");
+    alert("Evento salvo!");
 };
 
 onSnapshot(collection(db,"agenda"), snap=>{
@@ -280,9 +286,14 @@ onSnapshot(collection(db,"agenda"), snap=>{
 
         listaAgenda.innerHTML += `
         <div class="item">
-            <span>${d.titulo} (${d.dataInicio} a ${d.dataFim})</span>
+            <span>
+                <strong>${d.titulo}</strong><br>
+                📅 ${d.dataInicio} a ${d.dataFim}<br>
+                📍 ${d.local}<br>
+                ⚠️ ${d.aviso || ""}
+            </span>
             <div>
-                <button onclick="editarAgenda('${docSnap.id}','${d.titulo}','${d.dataInicio}','${d.dataFim}','${d.local}')">✏️</button>
+                <button onclick="editarAgenda('${docSnap.id}','${d.titulo}','${d.dataInicio}','${d.dataFim}','${d.local}','${d.aviso || ""}')">✏️</button>
                 <button onclick="excluirAgenda('${docSnap.id}')">🗑️</button>
             </div>
         </div>`;
@@ -293,18 +304,21 @@ window.excluirAgenda = async(id)=>{
     await deleteDoc(doc(db,"agenda",id));
 };
 
-window.editarAgenda = async(id, tituloAtual, inicioAtual, fimAtual, localAtual)=>{
+window.editarAgenda = async(id, tituloAtual, inicioAtual, fimAtual, localAtual, avisoAtual)=>{
+
     const novoTitulo = prompt("Título:", tituloAtual);
     const novaInicio = prompt("Data início:", inicioAtual);
     const novaFim = prompt("Data fim:", fimAtual);
     const novoLocal = prompt("Local:", localAtual);
+    const novoAviso = prompt("Aviso:", avisoAtual);
 
     if(novoTitulo && novaInicio && novaFim){
         await updateDoc(doc(db,"agenda",id),{
             titulo: novoTitulo,
             dataInicio: novaInicio,
             dataFim: novaFim,
-            local: novoLocal
+            local: novoLocal,
+            aviso: novoAviso
         });
     }
 };
