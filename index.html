@@ -148,19 +148,25 @@ if(noticiasContainer){
 }
 
 /* AGENDA */
-const agendaContainer = document.getElementById("listaAgenda");
-
 if(agendaContainer){
   onSnapshot(collection(db,"agenda"), snap=>{
     agendaContainer.innerHTML = "";
+
     snap.forEach(doc=>{
       const e = doc.data();
+
       agendaContainer.innerHTML += `
         <div class="evento">
           <h3>${e.titulo}</h3>
-          <p>${e.dataInicio || ""} até ${e.dataFim || ""}</p>
-          <p>${e.local || ""}</p>
-        </div>`;
+
+          <p>📅 ${e.dataInicio || ""} 
+          ${e.dataFim ? "até " + e.dataFim : ""}</p>
+
+          <p>📍 ${e.local || ""}</p>
+
+          ${e.aviso ? `<p style="color:#ffdddd; font-weight:bold;">⚠️ ${e.aviso}</p>` : ""}
+        </div>
+      `;
     });
   });
 }
