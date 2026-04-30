@@ -186,45 +186,29 @@ window.mostrar = (tela)=>{
 /* SALVAR NOTICIA */
 window.salvarNoticia = async ()=>{
   const imagens = imagensNoticia.value
-    .split("\n")
-    .map(i=>i.trim())
-    .filter(i=>i);
+    .split(/\r?\n|\s+/)
+    .map(i => i.trim())
+    .filter(i => i.startsWith("http"));
+
+  if(imagens.length === 0){
+    alert("Adicione pelo menos uma imagem válida");
+    return;
+  }
 
   await addDoc(collection(db,"noticias"),{
     titulo: tituloNoticia.value,
     conteudo: conteudoNoticia.value,
     imagens: imagens,
-    imagem: imagens[0] || "", // imagem principal
+    imagem: imagens[0],
     criadoEm: new Date()
   });
 
-  alert("Publicado com sucesso!");
+  alert("Publicado com várias imagens!");
 
-  // limpar campos
   tituloNoticia.value="";
   conteudoNoticia.value="";
   imagensNoticia.value="";
 };
-
-/* LISTAR NOTICIAS */
-onSnapshot(collection(db,"noticias"), snap=>{
-  listaNoticias.innerHTML="";
-  totalNoticias.innerText = snap.size;
-
-  snap.forEach(docSnap=>{
-    const n = docSnap.data();
-
-    listaNoticias.innerHTML += `
-      <div class="item">
-        <div>
-          <strong>${n.titulo}</strong>
-        </div>
-
-        <button onclick="excluir('${docSnap.id}')">Excluir</button>
-      </div>
-    `;
-  });
-});
 
 /* EXCLUIR */
 window.excluir = async (id)=>{
