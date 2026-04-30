@@ -5,6 +5,7 @@
 <title>Painel SINDRAS</title>
 
 <style>
+<button onclick="addImagem()">TESTE BOTÃO</button>
 body { margin:0; font-family:Arial; background:#eef1f5; }
 
 .login {
@@ -80,6 +81,24 @@ button {
 
 .tela { display:none; }
 .tela.active { display:block; }
+
+/* 🔥 NOVO SISTEMA DE IMAGENS */
+.imagem-item {
+  display:flex;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.imagem-item input {
+  flex:1;
+}
+
+.imagem-item img {
+  width:60px;
+  height:60px;
+  object-fit:cover;
+  border-radius:5px;
+}
 </style>
 </head>
 
@@ -103,14 +122,12 @@ button {
 
 <div class="main">
 
-<!-- MENU -->
 <div class="sidebar">
   <p onclick="mostrar('home')">📊 Dashboard</p>
   <p onclick="mostrar('noticias')">📰 Notícias</p>
   <p onclick="mostrar('novaNoticia')">➕ Nova Notícia</p>
 </div>
 
-<!-- CONTEÚDO -->
 <div class="content">
 
 <!-- DASH -->
@@ -134,13 +151,11 @@ button {
     <input id="tituloNoticia" placeholder="Título">
     <textarea id="conteudoNoticia" placeholder="Conteúdo"></textarea>
 
-    <textarea id="imagensNoticia"
-  rows="6"
-  placeholder="Cole os links das imagens (um por linha)
-Ex:
-https://site.com/img1.jpg
-https://site.com/img2.jpg"></textarea>
+    <!-- 🔥 NOVO SISTEMA -->
+    <div id="listaImagens"></div>
+    <button type="button" onclick="addImagem()">+ Adicionar imagem</button>
 
+    <br><br>
     <button onclick="salvarNoticia()">Publicar</button>
   </div>
 </div>
@@ -187,15 +202,43 @@ window.mostrar = (tela)=>{
   document.getElementById(tela).classList.add("active");
 };
 
+/* 🔥 ADICIONAR IMAGEM */
+window.addImagem = () => {
+  const div = document.createElement("div");
+  div.className = "imagem-item";
+
+  div.innerHTML = `
+    <input type="text" placeholder="Link da imagem">
+    <img style="display:none;">
+    <button type="button">X</button>
+  `;
+
+  const input = div.querySelector("input");
+  const img = div.querySelector("img");
+  const btn = div.querySelector("button");
+
+  input.oninput = () => {
+    if(input.value.startsWith("http")){
+      img.src = input.value;
+      img.style.display = "block";
+    }
+  };
+
+  btn.onclick = () => div.remove();
+
+  listaImagens.appendChild(div);
+};
+
 /* SALVAR NOTICIA */
 window.salvarNoticia = async ()=>{
-  const imagens = imagensNoticia.value
-    .split(/\r?\n|\s+/)
-    .map(i => i.trim())
+  const inputs = document.querySelectorAll("#listaImagens input");
+
+  const imagens = Array.from(inputs)
+    .map(i => i.value.trim())
     .filter(i => i.startsWith("http"));
 
   if(imagens.length === 0){
-    alert("Adicione pelo menos uma imagem válida");
+    alert("Adicione pelo menos uma imagem");
     return;
   }
 
@@ -207,12 +250,29 @@ window.salvarNoticia = async ()=>{
     criadoEm: new Date()
   });
 
-  alert("Publicado com várias imagens!");
+  alert("Publicado com sucesso!");
 
   tituloNoticia.value="";
   conteudoNoticia.value="";
-  imagensNoticia.value="";
+  listaImagens.innerHTML="";
 };
+
+/* LISTAR */
+onSnapshot(collection(db,"noticias"), snap=>{
+  listaNoticias.innerHTML="";
+  totalNoticias.innerText = snap.size;
+
+  snap.forEach(docSnap=>{
+    const n = docSnap.data();
+
+    listaNoticias.innerHTML += `
+      <div class="item">
+        <strong>${n.titulo}</strong>
+        <button onclick="excluir('${docSnap.id}')">Excluir</button>
+      </div>
+    `;
+  });
+});
 
 /* EXCLUIR */
 window.excluir = async (id)=>{
