@@ -15,23 +15,16 @@
   <div class="container header-content">
 
     <div class="logo-area">
-      <img src="logo.png" alt="SINDRAS-PB" class="logo">
-
+      <img src="logo.png" class="logo">
       <div class="logo-text">
         <strong>SINDRAS-PB</strong>
-        <p>
-          SINDICATO DOS AGENTES COMUNITÁRIOS DE SAÚDE<br>
-          E DOS AGENTES DE COMBATE ÀS ENDEMIAS<br>
-          REGIONAL DE SAÚDE DA PARAÍBA
-        </p>
+        <p>Sindicato dos ACS e ACE</p>
       </div>
     </div>
 
     <ul class="menu">
       <li><a href="noticias.html">Notícias</a></li>
-      <li><a href="#quemSomos">Quem Somos</a></li>
       <li><a href="#agenda">Agenda</a></li>
-      <li><a href="https://www.unasus.gov.br/" target="_blank">Cursos</a></li>
       <li><a href="parceiros.html">Parceiros</a></li>
     </ul>
 
@@ -39,54 +32,13 @@
       <a href="admin.html" class="btn-black">ADM</a>
       <a href="filiacao.html" class="btn-black">Filie-se</a>
     </div>
+
   </div>
 </header>
 
-<section class="hero">
-  <div class="slides">
-    <div class="slide" style="background-image:url('banner1.jpg')"></div>
-    <div class="slide" style="background-image:url('banner2.jpg')"></div>
-    <div class="slide" style="background-image:url('banner3.jpg')"></div>
-    <div class="slide" style="background-image:url('banner4.jpg')"></div>
-    <div class="slide" style="background-image:url('banner5.jpg')"></div>
-    <div class="slide" style="background-image:url('banner6.jpg')"></div>
-  </div>
-
-  <div class="controls">
-    <span onclick="mudarSlide(0)"></span>
-    <span onclick="mudarSlide(1)"></span>
-    <span onclick="mudarSlide(2)"></span>
-    <span onclick="mudarSlide(3)"></span>
-    <span onclick="mudarSlide(4)"></span>
-    <span onclick="mudarSlide(5)"></span>
-  </div>
-</section>
-
-<section class="video container">
-  <iframe src="https://www.youtube.com/embed/iu5_eBhW4_s" allowfullscreen></iframe>
-</section>
-
 <section class="noticias container">
-  <h2>Notícias</h2>
+  <h2>Últimas Notícias</h2>
   <div id="noticias" class="cards"></div>
-</section>
-
-<section id="quemSomos" class="quem-somos">
-  <div class="container">
-    <h2>Quem Somos</h2>
-    <div class="conteudo-quem">
-      <p>
-O Sindras-PB é o Sindicato dos Agentes Comunitários de Saúde (ACS) e dos Agentes de Combate às Endemias (ACE) da Regional de Saúde da Paraíba. Surgiu com o objetivo de representar de forma exclusiva a categoria, fortalecendo a luta por direitos e valorização profissional.
- <p>
-A entidade atua na defesa, mobilização e garantia de direitos dos ACS e ACE, promovendo assembleias e lutando por conquistas como o piso salarial e o pagamento do Incentivo Financeiro Adicional (IFA).
- <p>
-Com atuação em diversos municípios, o Sindras-PB também participa de mobilizações nacionais, defendendo pautas importantes para a categoria. Filiado à CONACS e presidido por Giovanni Freire, o sindicato mantém transparência e diálogo constante com seus filiados por meio das assembleias e das redes sociais.
- <p>
-O Sindras-PB é a voz dos ACS e ACE na Paraíba.      </p>
-      <p>
-      </p>
-    </div>
-  </div>
 </section>
 
 <section id="agenda" class="agenda">
@@ -96,126 +48,62 @@ O Sindras-PB é a voz dos ACS e ACE na Paraíba.      </p>
   </div>
 </section>
 
-<section class="social">
-  <a href="https://www.instagram.com/sindraspb/" target="_blank" class="social-btn">
-    <i class="fab fa-instagram"></i>
-  </a>
-
-  <a href="https://www.facebook.com/p/Sindraspb-61553589940838/" target="_blank" class="social-btn">
-    <i class="fab fa-facebook-f"></i>
-  </a>
-
-  <a href="https://www.youtube.com/watch?v=iu5_eBhW4_s" target="_blank" class="social-btn">
-    <i class="fab fa-youtube"></i>
-  </a>
-
-  <a href="https://wa.me/558330997966" target="_blank" class="social-btn">
-    <i class="fab fa-whatsapp"></i>
-  </a>
-</section>
-
 <footer class="footer">
-  <p>Edifício Arius, Rua Maciel Pinheiro, 102 - 5º Andar, Centro, Campina Grande - PB, CEP 58400-100.</p>
-  <p>Telefone (83) 3099-7966 E-mail sindraspb@gmail.com</p>
-  <p> </p>
-  <p>© Sindras-PB 2023</p>
+  <p>© Sindras-PB</p>
 </footer>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
-  authDomain: "sindraspb-35551.firebaseapp.com",
-  projectId: "sindraspb-35551",
-  storageBucket: "sindraspb-35551.firebasestorage.app",
-  messagingSenderId: "1001203695194",
-  appId: "1:1001203695194:web:b490ae077f26a83673e263"
-};
+const app = initializeApp({
+  apiKey: "SUA_API",
+  authDomain: "SEU_DOMINIO",
+  projectId: "SEU_ID"
+});
 
-const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 /* NOTICIAS */
 const noticiasContainer = document.getElementById("noticias");
 
-if(noticiasContainer){
-  const q = query(collection(db,"noticias"), orderBy("criadoEm","desc"), limit(3));
-
-  onSnapshot(q, snap=>{
-    noticiasContainer.innerHTML = "";
+onSnapshot(
+  query(collection(db,"noticias"), orderBy("criadoEm","desc"), limit(3)),
+  snap=>{
+    noticiasContainer.innerHTML="";
     snap.forEach(doc=>{
       const n = doc.data();
+
       noticiasContainer.innerHTML += `
         <div class="card">
           <img src="${n.imagem}">
           <h3>${n.titulo}</h3>
-          <p>${n.conteudo}</p>
-        </div>`;
+          <p>${n.conteudo.substring(0,100)}...</p>
+          <a href="noticias.html" class="btn-black">Ver mais</a>
+        </div>
+      `;
     });
-  });
-}
+});
 
 /* AGENDA */
 const agendaContainer = document.getElementById("listaAgenda");
 
-if(agendaContainer){
-  onSnapshot(collection(db,"agenda"), snap=>{
-    agendaContainer.innerHTML = "";
-
+onSnapshot(
+  query(collection(db,"agenda"), orderBy("dataInicio","asc")),
+  snap=>{
+    agendaContainer.innerHTML="";
     snap.forEach(doc=>{
       const e = doc.data();
 
       agendaContainer.innerHTML += `
         <div class="evento">
           <h3>${e.titulo}</h3>
-
-          <p>📅 ${e.dataInicio || ""} 
-          ${e.dataFim ? "   " + e.dataFim : ""}</p>
-
-          <p>📍 ${e.local || ""}</p>
-
-          ${e.aviso ? `<p class="aviso">⚠️ ${e.aviso}</p>` : ""}
+          <p>${e.dataInicio}</p>
+          <p>${e.local}</p>
+          ${e.aviso ? `<p>⚠️ ${e.aviso}</p>` : ""}
         </div>
       `;
     });
-  });
-}
-</script>
-
-<!-- SCRIPT DO BANNER -->
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-
-  let index = 0;
-  const slides = document.querySelector('.slides');
-  const slideItems = document.querySelectorAll('.slide');
-  const dots = document.querySelectorAll('.controls span');
-
-  const total = slideItems.length;
-
-  function showSlide(i){
-    if(!slides) return;
-    slides.style.transform = "translateX(" + (-i * 100) + "%)";
-    dots.forEach(d => d.classList.remove("active"));
-    if(dots[i]) dots[i].classList.add("active");
-  }
-
-  function nextSlide(){
-    index++;
-    if(index >= total) index = 0;
-    showSlide(index);
-  }
-
-  window.mudarSlide = function(i){
-    index = i;
-    showSlide(index);
-  }
-
-  setInterval(nextSlide, 4000);
-  showSlide(index);
 });
 </script>
 
