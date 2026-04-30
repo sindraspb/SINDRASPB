@@ -202,3 +202,6 @@ textarea {
 #imagensNoticia {
   height: 150px !important;
 }
+button {
+  display:block !important;
+}
