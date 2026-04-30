@@ -199,3 +199,6 @@ textarea {
   min-height:120px; /* 🔥 ESSENCIAL */
   resize:vertical;
 }
+#imagensNoticia {
+  height: 150px !important;
+}
