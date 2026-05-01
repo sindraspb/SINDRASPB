@@ -165,7 +165,7 @@ button {
     </div>
 </div>
 
-<!-- 🔥 YOUTUBE -->
+<!-- YOUTUBE -->
 <div id="youtube" class="tela">
     <div class="card">
         <h3>Vídeo do YouTube</h3>
@@ -184,7 +184,7 @@ import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
+  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0f3C8cPTVvTzE6Hk",
   authDomain: "sindraspb-35551.firebaseapp.com",
   projectId: "sindraspb-35551",
   storageBucket: "sindraspb-35551.firebasestorage.app",
@@ -218,7 +218,7 @@ window.mostrar = (tela)=>{
   document.getElementById(tela).classList.add("active");
 };
 
-/* 🔥 YOUTUBE */
+/* YOUTUBE */
 window.salvarYoutube = async () => {
   let link = linkYoutube.value;
 
@@ -269,9 +269,51 @@ window.salvarNoticia = async ()=>{
   alert("Salvo!");
 };
 
+/* 🔥 LISTAR + EDITAR + EXCLUIR NOTÍCIAS */
 onSnapshot(collection(db,"noticias"), snap=>{
   totalNoticias.innerText = snap.size;
+
+  listaNoticias.innerHTML = "";
+
+  snap.forEach(docItem=>{
+    const n = docItem.data();
+
+    const div = document.createElement("div");
+    div.className = "item";
+
+    div.innerHTML = `
+      <div>
+        <strong>${n.titulo}</strong><br>
+        <small>${n.conteudo}</small>
+      </div>
+
+      <div>
+        <button onclick="editarNoticia('${docItem.id}', '${n.titulo}', \`${n.conteudo}\`)">Editar</button>
+        <button onclick="excluirNoticia('${docItem.id}')">Excluir</button>
+      </div>
+    `;
+
+    listaNoticias.appendChild(div);
+  });
 });
+
+window.editarNoticia = async (id, titulo, conteudo) => {
+  const novoTitulo = prompt("Novo título:", titulo);
+  const novoConteudo = prompt("Novo conteúdo:", conteudo);
+
+  if(novoTitulo && novoConteudo){
+    await updateDoc(doc(db,"noticias",id),{
+      titulo: novoTitulo,
+      conteudo: novoConteudo
+    });
+  }
+};
+
+window.excluirNoticia = async (id) => {
+  if(confirm("Excluir notícia?")){
+    await deleteDoc(doc(db,"noticias",id));
+  }
+};
 
 /* AGENDA */
 window.salvarAgenda = async ()=>{
@@ -286,9 +328,54 @@ window.salvarAgenda = async ()=>{
   alert("Evento salvo!");
 };
 
+/* 🔥 LISTAR + EDITAR + EXCLUIR AGENDA */
 onSnapshot(collection(db,"agenda"), snap=>{
   totalAgenda.innerText = snap.size;
+
+  listaAgenda.innerHTML = "";
+
+  snap.forEach(docItem=>{
+    const a = docItem.data();
+
+    const div = document.createElement("div");
+    div.className = "item";
+
+    div.innerHTML = `
+      <div>
+        <strong>${a.titulo}</strong><br>
+        ${a.dataInicio} até ${a.dataFim}<br>
+        ${a.local}<br>
+        <small>${a.aviso}</small>
+      </div>
+
+      <div>
+        <button onclick="editarAgenda('${docItem.id}', '${a.titulo}', '${a.local}')">Editar</button>
+        <button onclick="excluirAgenda('${docItem.id}')">Excluir</button>
+      </div>
+    `;
+
+    listaAgenda.appendChild(div);
+  });
 });
+
+window.editarAgenda = async (id, titulo, local) => {
+  const novoTitulo = prompt("Título:", titulo);
+  const novoLocal = prompt("Local:", local);
+
+  if(novoTitulo && novoLocal){
+    await updateDoc(doc(db,"agenda",id),{
+      titulo: novoTitulo,
+      local: novoLocal
+    });
+  }
+};
+
+window.excluirAgenda = async (id) => {
+  if(confirm("Excluir evento?")){
+    await deleteDoc(doc(db,"agenda",id));
+  }
+};
+
 </script>
 
 </body>
