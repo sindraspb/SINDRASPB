@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Painel SINDRAS</title>
+
+<style>
+body { margin:0; font-family:Arial; background:#eef1f5; }
+
+.login {
+  max-width:320px;
+  margin:100px auto;
+  background:#fff;
+  padding:25px;
+  border-radius:10px;
+  text-align:center;
+}
+
+.dashboard { display:none; }
+
+.topo {
+  background:#1e1e2f;
+  color:#fff;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.main { display:flex; }
+
+.sidebar {
+  width:220px;
+  background:#2b2b3c;
+  color:#fff;
+  min-height:100vh;
+  padding:20px;
+}
+
+.sidebar p {
+  cursor:pointer;
+  margin:15px 0;
+}
+
+.content { flex:1; padding:20px; }
+
+.card {
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+
+input, textarea {
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+}
+
+button {
+  background:#d62828;
+  color:#fff;
+  border:none;
+  padding:10px;
+  cursor:pointer;
+}
+
+.item {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#fff;
+  padding:15px;
+  margin-top:10px;
+  border-radius:8px;
+}
+
+.item button {
+  background:black;
+}
+
+.tela { display:none; }
+.tela.active { display:block; }
+
+/* IMAGENS */
+.imagem-item {
+  display:flex;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.imagem-item input {
+  flex:1;
+}
+
+.imagem-item img {
+  width:60px;
+  height:60px;
+  object-fit:cover;
+  border-radius:5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login" id="login">
+  <h2>Login</h2>
+  <input id="email" placeholder="Email">
+  <input id="senha" type="password" placeholder="Senha">
+  <button onclick="entrar()">Entrar</button>
+</div>
+
+<div class="dashboard" id="dashboard">
+
+<div class="topo">
+  <h3>Painel SINDRAS</h3>
+  <button onclick="sair()">Sair</button>
+</div>
+
+<div class="main">
+
+<div class="sidebar">
+  <p onclick="mostrar('home')">📊 Dashboard</p>
+  <p onclick="mostrar('noticias')">📰 Notícias</p>
+  <p onclick="mostrar('novaNoticia')">➕ Nova Notícia</p>
+</div>
+
+<div class="content">
+
+<div id="home" class="tela active">
+  <div class="card">
+    <h3>Total de notícias</h3>
+    <p id="totalNoticias">0</p>
+  </div>
+</div>
+
+<div id="noticias" class="tela">
+  <div id="listaNoticias"></div>
+</div>
+
+<div id="novaNoticia" class="tela">
+  <div class="card">
+    <h3>Nova Notícia</h3>
+
+    <input id="tituloNoticia" placeholder="Título">
+    <textarea id="conteudoNoticia" placeholder="Conteúdo"></textarea>
+
+    <div id="listaImagens"></div>
+    <button type="button" onclick="addImagem()">+ Adicionar imagem</button>
+
+    <br><br>
+    <button onclick="salvarNoticia()">Publicar</button>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "SUA_API",
+  authDomain: "SUA_AUTH",
+  projectId: "sindraspb-35551"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+/* ELEMENTOS */
+const login = document.getElementById("login");
+const dashboard = document.getElementById("dashboard");
+const listaNoticias = document.getElementById("listaNoticias");
+const totalNoticias = document.getElementById("totalNoticias");
+const listaImagens = document.getElementById("listaImagens");
+
+/* LOGIN */
+window.entrar = async () => {
+  try {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+
+    await signInWithEmailAndPassword(auth, email, senha);
+  } catch(e){
+    alert("Erro no login");
+    console.error(e);
+  }
+};
+
+window.sair = () => signOut(auth);
+
+/* CONTROLE */
+onAuthStateChanged(auth, user=>{
+  login.style.display = user ? "none" : "block";
+  dashboard.style.display = user ? "block" : "none";
+});
+
+/* TELAS */
+window.mostrar = (tela)=>{
+  document.querySelectorAll(".tela").forEach(t=>t.classList.remove("active"));
+  const el = document.getElementById(tela);
+  if(el) el.classList.add("active");
+};
+
+/* ADD IMAGEM */
+window.addImagem = () => {
+  const div = document.createElement("div");
+  div.className = "imagem-item";
+
+  div.innerHTML = `
+    <input type="text" placeholder="Link da imagem">
+    <img style="display:none;">
+    <button type="button">X</button>
+  `;
+
+  const input = div.querySelector("input");
+  const img = div.querySelector("img");
+  const btn = div.querySelector("button");
+
+  input.oninput = () => {
+    if(input.value.startsWith("http")){
+      img.src = input.value;
+      img.style.display = "block";
+    }
+  };
+
+  btn.onclick = () => div.remove();
+
+  listaImagens.appendChild(div);
+};
+
+/* SALVAR */
+window.salvarNoticia = async ()=>{
+  const inputs = document.querySelectorAll("#listaImagens input");
+
+  const imagens = Array.from(inputs)
+    .map(i => i.value.trim())
+    .filter(i => i.startsWith("http"));
+
+  if(imagens.length === 0){
+    alert("Adicione pelo menos uma imagem");
+    return;
+  }
+
+  await addDoc(collection(db,"noticias"),{
+    titulo: tituloNoticia.value,
+    conteudo: conteudoNoticia.value,
+    imagens: imagens,
+    imagem: imagens[0],
+    criadoEm: new Date()
+  });
+
+  alert("Publicado!");
+
+  tituloNoticia.value="";
+  conteudoNoticia.value="";
+  listaImagens.innerHTML="";
+};
+
+/* LISTAR */
+onSnapshot(collection(db,"noticias"), snap=>{
+  listaNoticias.innerHTML="";
+  totalNoticias.innerText = snap.size;
+
+  snap.forEach(docSnap=>{
+    const n = docSnap.data();
+
+    listaNoticias.innerHTML += `
+      <div class="item">
+        <strong>${n.titulo}</strong>
+        <button onclick="excluir('${docSnap.id}')">Excluir</button>
+      </div>
+    `;
+  });
+});
+
+/* EXCLUIR */
+window.excluir = async (id)=>{
+  if(confirm("Deseja excluir?")){
+    await deleteDoc(doc(db,"noticias",id));
+  }
+};
+</script>
+
+</body>
+</html>
