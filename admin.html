@@ -8,149 +8,161 @@
 body { margin:0; font-family:Arial; background:#eef1f5; }
 
 .login {
-  max-width:320px;
-  margin:100px auto;
-  background:#fff;
-  padding:25px;
-  border-radius:10px;
-  text-align:center;
+    max-width:320px;
+    margin:100px auto;
+    background:#fff;
+    padding:25px;
+    border-radius:10px;
+    text-align:center;
 }
 
 .dashboard { display:none; }
 
 .topo {
-  background:#1e1e2f;
-  color:#fff;
-  padding:15px;
-  display:flex;
-  justify-content:space-between;
+    background:#1e1e2f;
+    color:#fff;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
 }
 
 .main { display:flex; }
 
 .sidebar {
-  width:220px;
-  background:#2b2b3c;
-  color:#fff;
-  min-height:100vh;
-  padding:20px;
+    width:220px;
+    background:#2b2b3c;
+    color:#fff;
+    min-height:100vh;
+    padding:20px;
 }
 
 .sidebar p {
-  cursor:pointer;
-  margin:15px 0;
+    cursor:pointer;
+    margin:15px 0;
 }
 
 .content { flex:1; padding:20px; }
 
 .card {
-  background:#fff;
-  padding:20px;
-  border-radius:10px;
-  margin-bottom:20px;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
 }
 
 input, textarea {
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
 }
 
 button {
-  background:#d62828;
-  color:#fff;
-  border:none;
-  padding:10px;
-  cursor:pointer;
+    background:#d62828;
+    color:#fff;
+    border:none;
+    padding:10px;
+    cursor:pointer;
 }
 
 .item {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#fff;
-  padding:15px;
-  margin-top:10px;
-  border-radius:8px;
+    display:flex;
+    justify-content:space-between;
+    background:#fff;
+    padding:15px;
+    margin-top:10px;
+    border-radius:8px;
+    align-items:flex-start;
 }
 
-.item button {
-  background:black;
+.item span {
+    font-size:14px;
+    line-height:1.4;
 }
 
 .tela { display:none; }
 .tela.active { display:block; }
-
-/* IMAGENS */
-.imagem-item {
-  display:flex;
-  gap:10px;
-  margin-bottom:10px;
-}
-
-.imagem-item input {
-  flex:1;
-}
-
-.imagem-item img {
-  width:60px;
-  height:60px;
-  object-fit:cover;
-  border-radius:5px;
-}
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
 <div class="login" id="login">
-  <h2>Login</h2>
-  <input id="email" placeholder="Email">
-  <input id="senha" type="password" placeholder="Senha">
-  <button onclick="entrar()">Entrar</button>
+    <h2>Login</h2>
+    <input id="email" placeholder="Email">
+    <input id="senha" type="password">
+    <button onclick="entrar()">Entrar</button>
 </div>
 
+<!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
 
 <div class="topo">
-  <h3>Painel SINDRAS</h3>
-  <button onclick="sair()">Sair</button>
+    <h3>Painel SINDRAS</h3>
+    <button onclick="sair()">Sair</button>
 </div>
 
 <div class="main">
 
 <div class="sidebar">
-  <p onclick="mostrar('home')">📊 Dashboard</p>
-  <p onclick="mostrar('noticias')">📰 Notícias</p>
-  <p onclick="mostrar('novaNoticia')">➕ Nova Notícia</p>
+    <p onclick="mostrar('home')">📊 Dashboard</p>
+
+    <p onclick="mostrar('noticias')">📰 Notícias</p>
+    <p onclick="mostrar('novaNoticia')">➕ Nova Notícia</p>
+
+    <hr>
+
+    <p onclick="mostrar('agenda')">📅 Agenda</p>
+    <p onclick="mostrar('novaAgenda')">➕ Novo Evento</p>
 </div>
 
 <div class="content">
 
+<!-- DASHBOARD -->
 <div id="home" class="tela active">
-  <div class="card">
-    <h3>Total de notícias</h3>
-    <p id="totalNoticias">0</p>
-  </div>
+    <div class="card">
+        <h3>Total de notícias</h3>
+        <p id="totalNoticias"></p>
+    </div>
+
+    <div class="card">
+        <h3>Total de eventos</h3>
+        <p id="totalAgenda"></p>
+    </div>
 </div>
 
+<!-- LISTA NOTICIAS -->
 <div id="noticias" class="tela">
-  <div id="listaNoticias"></div>
+    <div id="listaNoticias"></div>
 </div>
 
+<!-- NOVA NOTICIA -->
 <div id="novaNoticia" class="tela">
-  <div class="card">
-    <h3>Nova Notícia</h3>
+    <div class="card">
+        <h3>Nova Notícia</h3>
+        <input id="tituloNoticia" placeholder="Título">
+        <textarea id="conteudoNoticia" placeholder="Conteúdo"></textarea>
+        <input id="imagemNoticia" placeholder="Link da imagem">
+        <button onclick="salvarNoticia()">Publicar</button>
+    </div>
+</div>
 
-    <input id="tituloNoticia" placeholder="Título">
-    <textarea id="conteudoNoticia" placeholder="Conteúdo"></textarea>
+<!-- LISTA AGENDA -->
+<div id="agenda" class="tela">
+    <div id="listaAgenda"></div>
+</div>
 
-    <div id="listaImagens"></div>
-    <button type="button" onclick="addImagem()">+ Adicionar imagem</button>
-
-    <br><br>
-    <button onclick="salvarNoticia()">Publicar</button>
-  </div>
+<!-- NOVA AGENDA -->
+<div id="novaAgenda" class="tela">
+    <div class="card">
+        <h3>Novo Evento</h3>
+        <input id="tituloAgenda" placeholder="Título">
+        <input id="dataInicio" placeholder="Data início (20/04/2026)">
+        <input id="dataFim" placeholder="Data fim (22/04/2026)">
+        <input id="localAgenda" placeholder="Local">
+        <textarea id="avisoAgenda" placeholder="Aviso"></textarea>
+        <button onclick="salvarAgenda()">Salvar Evento</button>
+    </div>
 </div>
 
 </div>
@@ -159,131 +171,159 @@ button {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "SUA_API",
-  authDomain: "SUA_AUTH",
-  projectId: "sindraspb-35551"
+  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
+  authDomain: "sindraspb-35551.firebaseapp.com",
+  projectId: "sindraspb-35551",
+  storageBucket: "sindraspb-35551.firebasestorage.app",
+  messagingSenderId: "1001203695194",
+  appId: "1:1001203695194:web:b490ae077f26a83673e263"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-/* ELEMENTOS */
-const login = document.getElementById("login");
-const dashboard = document.getElementById("dashboard");
-const listaNoticias = document.getElementById("listaNoticias");
-const totalNoticias = document.getElementById("totalNoticias");
-const listaImagens = document.getElementById("listaImagens");
-
 /* LOGIN */
 window.entrar = async () => {
-  try {
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
-
-    await signInWithEmailAndPassword(auth, email, senha);
-  } catch(e){
-    alert("Erro no login");
-    console.error(e);
-  }
+    await signInWithEmailAndPassword(auth, email.value, senha.value);
 };
 
 window.sair = () => signOut(auth);
 
-/* CONTROLE */
 onAuthStateChanged(auth, user=>{
-  login.style.display = user ? "none" : "block";
-  dashboard.style.display = user ? "block" : "none";
+    login.style.display = user ? "none" : "block";
+    dashboard.style.display = user ? "block" : "none";
 });
 
-/* TELAS */
+/* NAVEGAÇÃO */
 window.mostrar = (tela)=>{
-  document.querySelectorAll(".tela").forEach(t=>t.classList.remove("active"));
-  const el = document.getElementById(tela);
-  if(el) el.classList.add("active");
+    document.querySelectorAll(".tela").forEach(t=>t.classList.remove("active"));
+    document.getElementById(tela).classList.add("active");
 };
 
-/* ADD IMAGEM */
-window.addImagem = () => {
-  const div = document.createElement("div");
-  div.className = "imagem-item";
-
-  div.innerHTML = `
-    <input type="text" placeholder="Link da imagem">
-    <img style="display:none;">
-    <button type="button">X</button>
-  `;
-
-  const input = div.querySelector("input");
-  const img = div.querySelector("img");
-  const btn = div.querySelector("button");
-
-  input.oninput = () => {
-    if(input.value.startsWith("http")){
-      img.src = input.value;
-      img.style.display = "block";
-    }
-  };
-
-  btn.onclick = () => div.remove();
-
-  listaImagens.appendChild(div);
-};
-
-/* SALVAR */
+/* NOTICIAS */
 window.salvarNoticia = async ()=>{
-  const inputs = document.querySelectorAll("#listaImagens input");
+   if(!tituloNoticia.value || !conteudoNoticia.value){
+     alert("Preencha todos os campos!");
+     return;
+   }
 
-  const imagens = Array.from(inputs)
-    .map(i => i.value.trim())
-    .filter(i => i.startsWith("http"));
-
-  if(imagens.length === 0){
-    alert("Adicione pelo menos uma imagem");
-    return;
-  }
-
-  await addDoc(collection(db,"noticias"),{
+   await addDoc(collection(db,"noticias"),{
     titulo: tituloNoticia.value,
     conteudo: conteudoNoticia.value,
-    imagens: imagens,
-    imagem: imagens[0],
+    imagem: imagemNoticia.value,
     criadoEm: new Date()
-  });
+   });
 
-  alert("Publicado!");
+   tituloNoticia.value = "";
+   conteudoNoticia.value = "";
+   imagemNoticia.value = "";
 
-  tituloNoticia.value="";
-  conteudoNoticia.value="";
-  listaImagens.innerHTML="";
+   alert("Notícia publicada!");
 };
 
-/* LISTAR */
 onSnapshot(collection(db,"noticias"), snap=>{
-  listaNoticias.innerHTML="";
-  totalNoticias.innerText = snap.size;
+    listaNoticias.innerHTML="";
+    totalNoticias.innerText = snap.size;
 
-  snap.forEach(docSnap=>{
-    const n = docSnap.data();
+    snap.forEach(docSnap=>{
+        const d = docSnap.data();
 
-    listaNoticias.innerHTML += `
-      <div class="item">
-        <strong>${n.titulo}</strong>
-        <button onclick="excluir('${docSnap.id}')">Excluir</button>
-      </div>
-    `;
-  });
+        listaNoticias.innerHTML += `
+        <div class="item">
+            <span>${d.titulo}</span>
+            <div>
+                <button onclick="editarNoticia('${docSnap.id}','${d.titulo}')">✏️</button>
+                <button onclick="excluirNoticia('${docSnap.id}')">🗑️</button>
+            </div>
+        </div>`;
+    });
 });
 
-/* EXCLUIR */
-window.excluir = async (id)=>{
-  if(confirm("Deseja excluir?")){
+window.excluirNoticia = async(id)=>{
     await deleteDoc(doc(db,"noticias",id));
-  }
+};
+
+window.editarNoticia = async(id, tituloAtual)=>{
+    const novo = prompt("Novo título:", tituloAtual);
+    if(novo){
+        await updateDoc(doc(db,"noticias",id),{ titulo: novo });
+    }
+};
+
+/* AGENDA */
+window.salvarAgenda = async ()=>{
+
+    if(!tituloAgenda.value || !dataInicio.value || !dataFim.value){
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    await addDoc(collection(db,"agenda"),{
+        titulo: tituloAgenda.value,
+        dataInicio: dataInicio.value,
+        dataFim: dataFim.value,
+        local: localAgenda.value,
+        aviso: avisoAgenda.value
+    });
+
+    tituloAgenda.value = "";
+    dataInicio.value = "";
+    dataFim.value = "";
+    localAgenda.value = "";
+    avisoAgenda.value = "";
+
+    alert("Evento salvo!");
+};
+
+onSnapshot(collection(db,"agenda"), snap=>{
+    listaAgenda.innerHTML="";
+    totalAgenda.innerText = snap.size;
+
+    snap.forEach(docSnap=>{
+        const d = docSnap.data();
+
+        listaAgenda.innerHTML += `
+        <div class="item">
+            <span>
+                <strong>${d.titulo}</strong><br>
+                📅 ${d.dataInicio}   ${d.dataFim}<br>
+                📍 ${d.local}<br>
+                ⚠️ ${d.aviso || ""}
+            </span>
+            <div>
+                <button onclick="editarAgenda('${docSnap.id}','${d.titulo}','${d.dataInicio}','${d.dataFim}','${d.local}','${d.aviso || ""}')">✏️</button>
+                <button onclick="excluirAgenda('${docSnap.id}')">🗑️</button>
+            </div>
+        </div>`;
+    });
+});
+
+window.excluirAgenda = async(id)=>{
+    await deleteDoc(doc(db,"agenda",id));
+};
+
+window.editarAgenda = async(id, tituloAtual, inicioAtual, fimAtual, localAtual, avisoAtual)=>{
+
+    const novoTitulo = prompt("Título:", tituloAtual);
+    const novaInicio = prompt("Data início:", inicioAtual);
+    const novaFim = prompt("Data fim:", fimAtual);
+    const novoLocal = prompt("Local:", localAtual);
+    const novoAviso = prompt("Aviso:", avisoAtual);
+
+    if(novoTitulo && novaInicio && novaFim){
+        await updateDoc(doc(db,"agenda",id),{
+            titulo: novoTitulo,
+            dataInicio: novaInicio,
+            dataFim: novaFim,
+            local: novoLocal,
+            aviso: novoAviso
+        });
+    }
 };
 </script>
 
