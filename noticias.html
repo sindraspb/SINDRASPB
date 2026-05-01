@@ -52,37 +52,42 @@ const q = query(
 );
 
 onSnapshot(q, snap=>{
-  let imagens = "";
+  container.innerHTML = "";
 
-// 🔥 se tiver várias imagens
-if(n.imagens && n.imagens.length > 0){
+  snap.forEach(doc=>{
+    const n = doc.data();
 
-  imagens = `
-    <div class="mosaico">
-      <div class="img-principal">
-        <img src="${n.imagens[0]}">
+    let imagens = "";
+
+    // 🔥 várias imagens
+    if(n.imagens && n.imagens.length > 0){
+
+      imagens = `
+        <div class="mosaico">
+          <div class="img-principal">
+            <img src="${n.imagens[0]}">
+          </div>
+
+          <div class="img-secundarias">
+            ${n.imagens.slice(1,4).map(img => `<img src="${img}">`).join("")}
+          </div>
+        </div>
+      `;
+
+    } else {
+
+      // 🔥 fallback (antigo)
+      imagens = `<img src="${n.imagem}">`;
+
+    }
+
+    container.innerHTML += `
+      <div class="card">
+        ${imagens}
+        <h3>${n.titulo}</h3>
+        <p>${n.conteudo}</p>
       </div>
-
-      <div class="img-secundarias">
-        ${n.imagens.slice(1,4).map(img => `<img src="${img}">`).join("")}
-      </div>
-    </div>
-  `;
-
-} else {
-
-  // 🔥 fallback (notícias antigas)
-  imagens = `<img src="${n.imagem}">`;
-
-}
-
-container.innerHTML += `
-  <div class="card">
-    ${imagens}
-    <h3>${n.titulo}</h3>
-    <p>${n.conteudo}</p>
-  </div>
-`;
+    `;
   });
 });
 </script>
