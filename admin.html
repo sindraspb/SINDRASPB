@@ -142,7 +142,9 @@ button {
         <h3>Nova Notícia</h3>
         <input id="tituloNoticia" placeholder="Título">
         <textarea id="conteudoNoticia" placeholder="Conteúdo"></textarea>
-        <input id="imagemNoticia" placeholder="Link da imagem">
+       <div id="listaImagens"></div>
+
+<button type="button" onclick="addImagem()">+ Adicionar imagem</button>
         <button onclick="salvarNoticia()">Publicar</button>
     </div>
 </div>
@@ -183,6 +185,22 @@ const firebaseConfig = {
   appId: "1:1001203695194:web:b490ae077f26a83673e263"
 };
 
+window.addImagem = () => {
+  const div = document.createElement("div");
+  div.style.display = "flex";
+  div.style.gap = "10px";
+  div.style.marginBottom = "10px";
+
+  div.innerHTML = `
+    <input type="text" placeholder="Link da imagem" style="flex:1;">
+    <button type="button">X</button>
+  `;
+
+  div.querySelector("button").onclick = () => div.remove();
+
+  listaImagens.appendChild(div);
+};
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -215,8 +233,18 @@ window.salvarNoticia = async ()=>{
    await addDoc(collection(db,"noticias"),{
     titulo: tituloNoticia.value,
     conteudo: conteudoNoticia.value,
-    imagem: imagemNoticia.value,
-    criadoEm: new Date()
+    const inputs = document.querySelectorAll("#listaImagens input");
+
+const imagens = Array.from(inputs)
+  .map(i => i.value.trim())
+  .filter(i => i.startsWith("http"));
+
+await addDoc(collection(db,"noticias"),{
+  titulo: tituloNoticia.value,
+  conteudo: conteudoNoticia.value,
+  imagem: imagens[0] || "", // mantém compatibilidade
+  imagens: imagens, // 🔥 várias imagens
+  criadoEm: new Date()
    });
 
    tituloNoticia.value = "";
