@@ -62,8 +62,9 @@
   </div>
 </section>
 
+<!-- 🔥 VIDEO DINÂMICO -->
 <section class="video container">
-  <iframe src="https://www.youtube.com/embed/iu5_eBhW4_s" allowfullscreen></iframe>
+  <iframe id="videoYoutube" allowfullscreen></iframe>
 </section>
 
 <section class="noticias container">
@@ -83,7 +84,7 @@ A entidade atua na defesa, mobilização e garantia de direitos dos ACS e ACE, p
 Com atuação em diversos municípios, o Sindras-PB também participa de mobilizações nacionais, defendendo pautas importantes para a categoria. Filiado à CONACS e presidido por Giovanni Freire, o sindicato mantém transparência e diálogo constante com seus filiados por meio das assembleias e das redes sociais.
  <p>
 O Sindras-PB é a voz dos ACS e ACE na Paraíba.      </p>
-      <p>
+
       </p>
     </div>
   </div>
@@ -105,7 +106,7 @@ O Sindras-PB é a voz dos ACS e ACE na Paraíba.      </p>
     <i class="fab fa-facebook-f"></i>
   </a>
 
-  <a href="https://www.youtube.com/watch?v=iu5_eBhW4_s" target="_blank" class="social-btn">
+  <a href="#" class="social-btn">
     <i class="fab fa-youtube"></i>
   </a>
 
@@ -115,16 +116,13 @@ O Sindras-PB é a voz dos ACS e ACE na Paraíba.      </p>
 </section>
 
 <footer class="footer">
-  <p>Edifício Arius, Rua Maciel Pinheiro, 102 - 5º Andar, Centro, Campina Grande - PB, CEP 58400-100.</p>
-  <p>Telefone (83) 3099-7966 E-mail sindraspb@gmail.com</p>
-  <p> </p>
   <p>© Sindras-PB 2023</p>
 </footer>
 
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, query, orderBy, limit, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
@@ -138,6 +136,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+/* 🔥 CARREGAR VIDEO */
+async function carregarVideo(){
+  const ref = doc(db,"config","youtube");
+  const snap = await getDoc(ref);
+
+  if(snap.exists()){
+    let link = snap.data().link;
+
+    // 🔥 corrige automaticamente
+    if(link.includes("watch?v=")){
+      link = link.replace("watch?v=", "embed/");
+    }
+
+    document.getElementById("videoYoutube").src = link;
+  }
+}
+
+carregarVideo();
+
 /* NOTICIAS */
 const noticiasContainer = document.getElementById("noticias");
 
@@ -148,36 +165,30 @@ if(noticiasContainer){
     noticiasContainer.innerHTML = "";
     snap.forEach(doc=>{
       const n = doc.data();
+
       let imagens = "";
 
-// 🔥 se tiver várias imagens
-if(n.imagens && n.imagens.length > 0){
+      if(n.imagens && n.imagens.length > 0){
+        imagens = `
+          <div class="mosaico">
+            <div class="img-principal">
+              <img src="${n.imagens[0]}">
+            </div>
+            <div class="img-secundarias">
+              ${n.imagens.slice(1,4).map(img => `<img src="${img}">`).join("")}
+            </div>
+          </div>
+        `;
+      } else {
+        imagens = `<img src="${n.imagem}">`;
+      }
 
-  imagens = `
-    <div class="mosaico">
-      <div class="img-principal">
-        <img src="${n.imagens[0]}">
-      </div>
-
-      <div class="img-secundarias">
-        ${n.imagens.slice(1,4).map(img => `<img src="${img}">`).join("")}
-      </div>
-    </div>
-  `;
-
-} else {
-
-  // 🔥 fallback (compatível com antigo)
-  imagens = `<img src="${n.imagem}">`;
-
-}
-
-noticiasContainer.innerHTML += `
-  <div class="card">
-    ${imagens}
-    <h3>${n.titulo}</h3>
-    <p>${n.conteudo}</p>
-  </div>`;
+      noticiasContainer.innerHTML += `
+        <div class="card">
+          ${imagens}
+          <h3>${n.titulo}</h3>
+          <p>${n.conteudo}</p>
+        </div>`;
     });
   });
 }
@@ -195,12 +206,8 @@ if(agendaContainer){
       agendaContainer.innerHTML += `
         <div class="evento">
           <h3>${e.titulo}</h3>
-
-          <p>📅 ${e.dataInicio || ""} 
-          ${e.dataFim ? "   " + e.dataFim : ""}</p>
-
+          <p>📅 ${e.dataInicio || ""} ${e.dataFim || ""}</p>
           <p>📍 ${e.local || ""}</p>
-
           ${e.aviso ? `<p class="aviso">⚠️ ${e.aviso}</p>` : ""}
         </div>
       `;
@@ -209,27 +216,23 @@ if(agendaContainer){
 }
 </script>
 
-<!-- SCRIPT DO BANNER -->
+<!-- SLIDE -->
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
   let index = 0;
   const slides = document.querySelector('.slides');
-  const slideItems = document.querySelectorAll('.slide');
   const dots = document.querySelectorAll('.controls span');
-
-  const total = slideItems.length;
+  const total = document.querySelectorAll('.slide').length;
 
   function showSlide(i){
-    if(!slides) return;
     slides.style.transform = "translateX(" + (-i * 100) + "%)";
     dots.forEach(d => d.classList.remove("active"));
     if(dots[i]) dots[i].classList.add("active");
   }
 
   function nextSlide(){
-    index++;
-    if(index >= total) index = 0;
+    index = (index + 1) % total;
     showSlide(index);
   }
 
