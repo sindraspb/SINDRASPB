@@ -144,19 +144,29 @@ const noticiasContainer = document.getElementById("noticias");
 if(noticiasContainer){
   const q = query(collection(db,"noticias"), orderBy("criadoEm","desc"), limit(3));
 
-  onSnapshot(q, snap=>{
-    noticiasContainer.innerHTML = "";
-    snap.forEach(doc=>{
-      const n = doc.data();
-      noticiasContainer.innerHTML += `
-        <div class="card">
-          <img src="${n.imagem}">
-          <h3>${n.titulo}</h3>
-          <p>${n.conteudo}</p>
-        </div>`;
-    });
+ onSnapshot(collection(db,"noticias"), snap=>{
+  noticiasContainer.innerHTML = "";
+
+  snap.forEach(doc=>{
+    const n = doc.data();
+
+    let galeria = "";
+
+    if(n.imagens){
+      galeria = `<div class="galeria">` +
+        n.imagens.map(img => `<img src="${img}">`).join("") +
+      `</div>`;
+    }
+
+    noticiasContainer.innerHTML += `
+      <div class="noticia">
+        <h3>${n.titulo}</h3>
+        ${galeria}
+        <p>${n.conteudo}</p>
+      </div>
+    `;
   });
-}
+});
 
 /* AGENDA */
 const agendaContainer = document.getElementById("listaAgenda");
