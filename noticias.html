@@ -52,18 +52,37 @@ const q = query(
 );
 
 onSnapshot(q, snap=>{
-  container.innerHTML = "";
+  let imagens = "";
 
-  snap.forEach(doc=>{
-    const n = doc.data();
+// 🔥 se tiver várias imagens
+if(n.imagens && n.imagens.length > 0){
 
-    container.innerHTML += `
-      <div class="card">
-        <img src="${n.imagem}">
-        <h3>${n.titulo}</h3>
-        <p>${n.conteudo}</p>
+  imagens = `
+    <div class="mosaico">
+      <div class="img-principal">
+        <img src="${n.imagens[0]}">
       </div>
-    `;
+
+      <div class="img-secundarias">
+        ${n.imagens.slice(1,4).map(img => `<img src="${img}">`).join("")}
+      </div>
+    </div>
+  `;
+
+} else {
+
+  // 🔥 fallback (notícias antigas)
+  imagens = `<img src="${n.imagem}">`;
+
+}
+
+container.innerHTML += `
+  <div class="card">
+    ${imagens}
+    <h3>${n.titulo}</h3>
+    <p>${n.conteudo}</p>
+  </div>
+`;
   });
 });
 </script>
