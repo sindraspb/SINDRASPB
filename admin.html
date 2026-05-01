@@ -71,33 +71,22 @@ button {
     padding:15px;
     margin-top:10px;
     border-radius:8px;
+    align-items:flex-start;
+}
+
+.item span {
+    font-size:14px;
+    line-height:1.4;
 }
 
 .tela { display:none; }
 .tela.active { display:block; }
-
-/* 🔥 IMAGENS */
-.imagem-item {
-    display:flex;
-    gap:10px;
-    margin-bottom:10px;
-}
-
-.imagem-item input {
-    flex:1;
-}
-
-.imagem-item img {
-    width:60px;
-    height:60px;
-    object-fit:cover;
-    border-radius:5px;
-}
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
 <div class="login" id="login">
     <h2>Login</h2>
     <input id="email" placeholder="Email">
@@ -105,6 +94,7 @@ button {
     <button onclick="entrar()">Entrar</button>
 </div>
 
+<!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
 
 <div class="topo">
@@ -116,36 +106,62 @@ button {
 
 <div class="sidebar">
     <p onclick="mostrar('home')">📊 Dashboard</p>
+
     <p onclick="mostrar('noticias')">📰 Notícias</p>
     <p onclick="mostrar('novaNoticia')">➕ Nova Notícia</p>
+
+    <hr>
+
+    <p onclick="mostrar('agenda')">📅 Agenda</p>
+    <p onclick="mostrar('novaAgenda')">➕ Novo Evento</p>
 </div>
 
 <div class="content">
 
+<!-- DASHBOARD -->
 <div id="home" class="tela active">
     <div class="card">
         <h3>Total de notícias</h3>
         <p id="totalNoticias"></p>
     </div>
+
+    <div class="card">
+        <h3>Total de eventos</h3>
+        <p id="totalAgenda"></p>
+    </div>
 </div>
 
+<!-- LISTA NOTICIAS -->
 <div id="noticias" class="tela">
     <div id="listaNoticias"></div>
 </div>
 
+<!-- NOVA NOTICIA -->
 <div id="novaNoticia" class="tela">
     <div class="card">
         <h3>Nova Notícia</h3>
-
         <input id="tituloNoticia" placeholder="Título">
         <textarea id="conteudoNoticia" placeholder="Conteúdo"></textarea>
-
-        <!-- 🔥 MULTIPLAS IMAGENS -->
-        <div id="listaImagens"></div>
-        <button type="button" onclick="addImagem()">+ Adicionar imagem</button>
-
-        <br><br>
+        <input id="imagemNoticia" placeholder="Link da imagem">
         <button onclick="salvarNoticia()">Publicar</button>
+    </div>
+</div>
+
+<!-- LISTA AGENDA -->
+<div id="agenda" class="tela">
+    <div id="listaAgenda"></div>
+</div>
+
+<!-- NOVA AGENDA -->
+<div id="novaAgenda" class="tela">
+    <div class="card">
+        <h3>Novo Evento</h3>
+        <input id="tituloAgenda" placeholder="Título">
+        <input id="dataInicio" placeholder="Data início (20/04/2026)">
+        <input id="dataFim" placeholder="Data fim (22/04/2026)">
+        <input id="localAgenda" placeholder="Local">
+        <textarea id="avisoAgenda" placeholder="Aviso"></textarea>
+        <button onclick="salvarAgenda()">Salvar Evento</button>
     </div>
 </div>
 
@@ -155,13 +171,16 @@ button {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "SUA_API",
-  authDomain: "SUA_AUTH",
-  projectId: "sindraspb-35551"
+  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
+  authDomain: "sindraspb-35551.firebaseapp.com",
+  projectId: "sindraspb-35551",
+  storageBucket: "sindraspb-35551.firebasestorage.app",
+  messagingSenderId: "1001203695194",
+  appId: "1:1001203695194:web:b490ae077f26a83673e263"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -186,80 +205,125 @@ window.mostrar = (tela)=>{
     document.getElementById(tela).classList.add("active");
 };
 
-/* 🔥 ADD IMAGEM */
-window.addImagem = () => {
-    const div = document.createElement("div");
-    div.className = "imagem-item";
-
-    div.innerHTML = `
-        <input type="text" placeholder="Link da imagem">
-        <img style="display:none;">
-        <button type="button">X</button>
-    `;
-
-    const input = div.querySelector("input");
-    const img = div.querySelector("img");
-    const btn = div.querySelector("button");
-
-    input.oninput = () => {
-        if(input.value.startsWith("http")){
-            img.src = input.value;
-            img.style.display = "block";
-        }
-    };
-
-    btn.onclick = () => div.remove();
-
-    listaImagens.appendChild(div);
-};
-
-/* SALVAR */
+/* NOTICIAS */
 window.salvarNoticia = async ()=>{
-   const inputs = document.querySelectorAll("#listaImagens input");
-
-   const imagens = Array.from(inputs)
-     .map(i => i.value.trim())
-     .filter(i => i.startsWith("http"));
-
-   if(!tituloNoticia.value || !conteudoNoticia.value || imagens.length === 0){
-     alert("Preencha tudo!");
+   if(!tituloNoticia.value || !conteudoNoticia.value){
+     alert("Preencha todos os campos!");
      return;
    }
 
    await addDoc(collection(db,"noticias"),{
     titulo: tituloNoticia.value,
     conteudo: conteudoNoticia.value,
-    imagens: imagens,
-    imagem: imagens[0],
+    imagem: imagemNoticia.value,
     criadoEm: new Date()
    });
 
-   tituloNoticia.value="";
-   conteudoNoticia.value="";
-   listaImagens.innerHTML="";
+   tituloNoticia.value = "";
+   conteudoNoticia.value = "";
+   imagemNoticia.value = "";
 
-   alert("Publicado!");
+   alert("Notícia publicada!");
 };
 
-/* LISTAR */
 onSnapshot(collection(db,"noticias"), snap=>{
     listaNoticias.innerHTML="";
     totalNoticias.innerText = snap.size;
 
     snap.forEach(docSnap=>{
-        const n = docSnap.data();
+        const d = docSnap.data();
 
         listaNoticias.innerHTML += `
         <div class="item">
-            <strong>${n.titulo}</strong>
-            <button onclick="excluir('${docSnap.id}')">Excluir</button>
+            <span>${d.titulo}</span>
+            <div>
+                <button onclick="editarNoticia('${docSnap.id}','${d.titulo}')">✏️</button>
+                <button onclick="excluirNoticia('${docSnap.id}')">🗑️</button>
+            </div>
         </div>`;
     });
 });
 
-/* EXCLUIR */
-window.excluir = async(id)=>{
+window.excluirNoticia = async(id)=>{
     await deleteDoc(doc(db,"noticias",id));
+};
+
+window.editarNoticia = async(id, tituloAtual)=>{
+    const novo = prompt("Novo título:", tituloAtual);
+    if(novo){
+        await updateDoc(doc(db,"noticias",id),{ titulo: novo });
+    }
+};
+
+/* AGENDA */
+window.salvarAgenda = async ()=>{
+
+    if(!tituloAgenda.value || !dataInicio.value || !dataFim.value){
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    await addDoc(collection(db,"agenda"),{
+        titulo: tituloAgenda.value,
+        dataInicio: dataInicio.value,
+        dataFim: dataFim.value,
+        local: localAgenda.value,
+        aviso: avisoAgenda.value
+    });
+
+    tituloAgenda.value = "";
+    dataInicio.value = "";
+    dataFim.value = "";
+    localAgenda.value = "";
+    avisoAgenda.value = "";
+
+    alert("Evento salvo!");
+};
+
+onSnapshot(collection(db,"agenda"), snap=>{
+    listaAgenda.innerHTML="";
+    totalAgenda.innerText = snap.size;
+
+    snap.forEach(docSnap=>{
+        const d = docSnap.data();
+
+        listaAgenda.innerHTML += `
+        <div class="item">
+            <span>
+                <strong>${d.titulo}</strong><br>
+                📅 ${d.dataInicio}   ${d.dataFim}<br>
+                📍 ${d.local}<br>
+                ⚠️ ${d.aviso || ""}
+            </span>
+            <div>
+                <button onclick="editarAgenda('${docSnap.id}','${d.titulo}','${d.dataInicio}','${d.dataFim}','${d.local}','${d.aviso || ""}')">✏️</button>
+                <button onclick="excluirAgenda('${docSnap.id}')">🗑️</button>
+            </div>
+        </div>`;
+    });
+});
+
+window.excluirAgenda = async(id)=>{
+    await deleteDoc(doc(db,"agenda",id));
+};
+
+window.editarAgenda = async(id, tituloAtual, inicioAtual, fimAtual, localAtual, avisoAtual)=>{
+
+    const novoTitulo = prompt("Título:", tituloAtual);
+    const novaInicio = prompt("Data início:", inicioAtual);
+    const novaFim = prompt("Data fim:", fimAtual);
+    const novoLocal = prompt("Local:", localAtual);
+    const novoAviso = prompt("Aviso:", avisoAtual);
+
+    if(novoTitulo && novaInicio && novaFim){
+        await updateDoc(doc(db,"agenda",id),{
+            titulo: novoTitulo,
+            dataInicio: novaInicio,
+            dataFim: novaFim,
+            local: novoLocal,
+            aviso: novoAviso
+        });
+    }
 };
 </script>
 
