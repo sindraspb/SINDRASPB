@@ -207,7 +207,12 @@ const auth = getAuth(app);
 
 /* LOGIN */
 window.entrar = async () => {
+  try {
     await signInWithEmailAndPassword(auth, email.value, senha.value);
+  } catch (e) {
+    console.error(e);
+    alert("Erro no login: " + e.code);
+  }
 };
 
 window.sair = () => signOut(auth);
@@ -225,33 +230,32 @@ window.mostrar = (tela)=>{
 
 /* NOTICIAS */
 window.salvarNoticia = async ()=>{
-   if(!tituloNoticia.value || !conteudoNoticia.value){
-     alert("Preencha todos os campos!");
-     return;
-   }
 
-   await addDoc(collection(db,"noticias"),{
+  if(!tituloNoticia.value || !conteudoNoticia.value){
+    alert("Preencha todos os campos!");
+    return;
+  }
+
+  // pegar imagens
+  const inputs = document.querySelectorAll("#listaImagens input");
+
+  const imagens = Array.from(inputs)
+    .map(i => i.value.trim())
+    .filter(i => i.startsWith("http"));
+
+  await addDoc(collection(db,"noticias"),{
     titulo: tituloNoticia.value,
     conteudo: conteudoNoticia.value,
-    const inputs = document.querySelectorAll("#listaImagens input");
+    imagem: imagens[0] || "", // compatibilidade
+    imagens: imagens, // 🔥 várias imagens
+    criadoEm: new Date()
+  });
 
-const imagens = Array.from(inputs)
-  .map(i => i.value.trim())
-  .filter(i => i.startsWith("http"));
+  tituloNoticia.value = "";
+  conteudoNoticia.value = "";
+  listaImagens.innerHTML = "";
 
-await addDoc(collection(db,"noticias"),{
-  titulo: tituloNoticia.value,
-  conteudo: conteudoNoticia.value,
-  imagem: imagens[0] || "", // mantém compatibilidade
-  imagens: imagens, // 🔥 várias imagens
-  criadoEm: new Date()
-   });
-
-   tituloNoticia.value = "";
-   conteudoNoticia.value = "";
-   imagemNoticia.value = "";
-
-   alert("Notícia publicada!");
+  alert("Notícia publicada!");
 };
 
 onSnapshot(collection(db,"noticias"), snap=>{
