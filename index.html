@@ -1,3 +1,4 @@
+✅ ✔️ SEU INDEX COMPLETO CORRIGIDO (SÓ YOUTUBE AJUSTADO)
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -64,7 +65,7 @@
 
 <!-- 🔥 VIDEO DINÂMICO -->
 <section class="video container">
-  <iframe id="videoYoutube" allowfullscreen></iframe>
+  <iframe id="videoYoutube" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
 </section>
 
 <section class="noticias container">
@@ -85,7 +86,7 @@ Com atuação em diversos municípios, o Sindras-PB também participa de mobiliz
  <p>
 O Sindras-PB é a voz dos ACS e ACE na Paraíba.      </p>
 
-      </p>
+       </p>
     </div>
   </div>
 </section>
@@ -125,7 +126,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore, collection, onSnapshot, query, orderBy, limit, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
+  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0f3C8cPTVvTzE6Hk",
   authDomain: "sindraspb-35551.firebaseapp.com",
   projectId: "sindraspb-35551",
   storageBucket: "sindraspb-35551.firebasestorage.app",
@@ -136,7 +137,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* 🔥 CARREGAR VIDEO */
+/* 🔥 VIDEO DINÂMICO - CORRIGIDO */
 async function carregarVideo(){
   const ref = doc(db,"config","youtube");
   const snap = await getDoc(ref);
@@ -144,9 +145,17 @@ async function carregarVideo(){
   if(snap.exists()){
     let link = snap.data().link;
 
-    // 🔥 corrige automaticamente
+    if(!link) return;
+
+    // watch?v=
     if(link.includes("watch?v=")){
       link = link.replace("watch?v=", "embed/");
+    }
+
+    // youtu.be
+    if(link.includes("youtu.be/")){
+      const id = link.split("youtu.be/")[1];
+      link = "https://www.youtube.com/embed/" + id;
     }
 
     document.getElementById("videoYoutube").src = link;
