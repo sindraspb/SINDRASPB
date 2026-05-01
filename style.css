@@ -404,24 +404,10 @@ section {
   gap:5px;
 }
 
-.img-principal img {
-  width:100%;
-  aspect-ratio:16/9;
-  object-fit:cover;
-  object-position:center;
-  border-radius:5px;
-}
-
+.img-principal img,
 .img-secundarias img {
   width:100%;
-  aspect-ratio:16/9;
-  object-fit:cover;
-  object-position:center;
-  border-radius:5px;
-}
-.img-secundarias img {
-  width:100%;
-  height:63px;
-  object-fit:cover;
+  height:auto;
+  object-fit:contain;
   border-radius:5px;
 }
