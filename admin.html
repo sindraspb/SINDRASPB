@@ -52,8 +52,12 @@ body { margin:0; font-family:Arial; background:#eef1f5; }
 
 input, textarea {
     width:100%;
-    padding:10px;
-    margin-bottom:10px;
+    padding:12px;
+    margin-bottom:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    background:#fff;
+    font-size:14px;
 }
 
 button {
@@ -138,8 +142,8 @@ button {
 <div id="novaNoticia" class="tela">
     <div class="card">
         <h3>Nova Notícia</h3>
-        <input id="tituloNoticia">
-        <textarea id="conteudoNoticia"></textarea>
+        <input id="tituloNoticia" placeholder="Título da notícia">
+<textarea id="conteudoNoticia" placeholder="Conteúdo da notícia"></textarea>
 
         <div id="listaImagens"></div>
 
@@ -156,11 +160,17 @@ button {
 <!-- NOVA AGENDA -->
 <div id="novaAgenda" class="tela">
     <div class="card">
-        <input id="tituloAgenda">
-        <input id="dataInicio">
-        <input id="dataFim">
-        <input id="localAgenda">
-        <textarea id="avisoAgenda"></textarea>
+        <h3>Novo Evento</h3>
+
+        <input id="tituloAgenda" placeholder="Título do evento">
+
+        <input id="dataInicio" type="date">
+        <input id="dataFim" type="date">
+
+        <input id="localAgenda" placeholder="Local do evento">
+
+        <textarea id="avisoAgenda" placeholder="Descrição / aviso"></textarea>
+
         <button onclick="salvarAgenda()">Salvar</button>
     </div>
 </div>
