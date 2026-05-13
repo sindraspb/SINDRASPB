@@ -85,8 +85,9 @@ onSnapshot(q, snap=>{
       <div class="card">
         ${imagens}
         <h3>${n.titulo}</h3>
-        <p>${n.conteudo}</p>
-      </div>
+        <div class="texto-noticia">
+  ${n.conteudo.replace(/\n/g, "<br>")}
+</div>
     `;
   });
 });
