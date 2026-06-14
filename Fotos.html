@@ -72,11 +72,28 @@
   transform:scale(1.03);
 }
 
-/* ========================================================
-   🔥 NOVO CSS: MODAL DE ZOOM (LIGHTBOX)
-   ======================================================== */
+/* 🔥 BOTÃO VER MAIS CORRIGIDO */
+.ver-mais{
+  display:inline-block;
+  margin-top:15px;
+  background:#f7941d;
+  color:#fff;
+  text-decoration:none;
+  padding:10px 20px;
+  border-radius:8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  border: none;
+}
+
+.ver-mais:hover {
+  background: #d97f14;
+}
+
+/* MODAL DE ZOOM (LIGHTBOX) */
 .lightbox-modal {
-  display: none; /* Escondido por padrão */
+  display: none;
   position: fixed;
   z-index: 9999;
   top: 0;
@@ -123,27 +140,30 @@
   color: #f7941d;
 }
 
+/* 🔥 NAVEGAÇÃO DO MODAL (Para ver todas as fotos clicando em avançar/voltar) */
+.lightbox-nav {
+  position: absolute;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 15px;
+  user-select: none;
+  transition: 0.2s;
+}
+.lightbox-nav:hover { color: #f7941d; }
+.nav-left { left: 20px; }
+.nav-right { right: 20px; }
+
 @media(max-width:768px){
-  .mosaico{
-    grid-template-columns:1fr;
-  }
-
-  .mosaico.uma-imagem {
-    grid-template-columns: 1fr;
-  }
-
-  .img-principal img{
-    height:250px;
-  }
-
-  .img-secundarias{
-    grid-template-columns:repeat(3,1fr);
-    grid-template-rows:none;
-  }
-
-  .img-secundarias img{
-    height:90px;
-  }
+  .mosaico{ grid-template-columns:1fr; }
+  .mosaico.uma-imagem { grid-template-columns: 1fr; }
+  .img-principal img{ height:250px; }
+  .img-secundarias{ grid-template-columns:repeat(3,1fr); grid-template-rows:none; }
+  .img-secundarias img{ height:90px; }
+  .lightbox-nav { font-size: 30px; padding: 5px; }
 }
 </style>
 </head>
@@ -169,7 +189,9 @@
 
 <div id="lightbox" class="lightbox-modal">
   <span class="lightbox-close" id="lightboxClose">&times;</span>
+  <span class="lightbox-nav nav-left" id="lightboxPrev">&#10094;</span>
   <img class="lightbox-content" id="lightboxImg" src="" alt="Imagem ampliada">
+  <span class="lightbox-nav nav-right" id="lightboxNext">&#10095;</span>
 </div>
 
 <footer class="footer">
@@ -191,6 +213,9 @@ const db = getFirestore(app);
 
 const container = document.getElementById("Eventos");
 
+// Objeto global temporário para guardar as fotos de cada álbum mapeado por ID
+let albunsCarregados = {};
+
 const q = query(
   collection(db,"Fotos"),
   orderBy("criadoEm","desc")
@@ -198,6 +223,7 @@ const q = query(
 
 onSnapshot(q,(snap)=>{
   container.innerHTML = "";
+  albunsCarregados = {}; // limpa cache
 
   if(snap.empty){
     container.innerHTML = `
@@ -209,21 +235,25 @@ onSnapshot(q,(snap)=>{
   }
 
   snap.forEach(docItem=>{
+    const idAlbum = docItem.id;
     const album = docItem.data();
     let htmlImagens = "";
 
     if(album.imagens && album.imagens.length > 0){
       const fotosValidas = album.imagens.filter(img => img && img.trim() !== "");
+      
+      // Salvamos as fotos deste álbum no objeto global para o slider usar depois
+      albunsCarregados[idAlbum] = fotosValidas;
+
       const classeMosaico = fotosValidas.length > 1 ? "mosaico" : "mosaico uma-imagem";
       const secundarias = fotosValidas.slice(1,4);
       
       let htmlSecundarias = "";
-      
       if(secundarias.length > 0) {
         htmlSecundarias = `
           <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr)">
-            ${secundarias.map(img => `
-              <img src="${img}" class="abrir-zoom" style="cursor: pointer;">
+            ${secundarias.map((img, index) => `
+              <img src="${img}" class="abrir-zoom" data-album="${idAlbum}" data-index="${index + 1}" style="cursor: pointer;">
             `).join("")}
           </div>
         `;
@@ -232,53 +262,91 @@ onSnapshot(q,(snap)=>{
       htmlImagens = `
       <div class="${classeMosaico}">
         <div class="img-principal">
-          <img src="${fotosValidas[0]}" class="abrir-zoom" style="cursor: pointer;">
+          <img src="${fotosValidas[0]}" class="abrir-zoom" data-album="${idAlbum}" data-index="0" style="cursor: pointer;">
         </div>
         ${htmlSecundarias}
       </div>
       `;
     }
 
+    // 🔥 ADICIONADO: O botão "Ver todas as fotos" agora é renderizado se o total de fotos do álbum for maior que 4
+    const totalFotos = album.imagens ? album.imagens.length : 0;
+    const botaoVerMais = totalFotos > 4 
+      ? `<button class="ver-mais" onclick="abrirAlbumCompleto('${idAlbum}')">Ver todas as (${totalFotos}) fotos</button>` 
+      : "";
+
     container.innerHTML += `
       <div class="album">
         ${htmlImagens}
         <h2>${album.titulo || ""}</h2>
         <p>${album.descricao || ""}</p>
-        <p><strong>Total de Fotos:</strong> ${album.imagens ? album.imagens.length : 0}</p>
+        <p><strong>Total de Fotos:</strong> ${totalFotos}</p>
+        ${botaoVerMais}
       </div>
     `;
   });
 
-  // Ativa as escutas de clique nas novas imagens criadas dinamicamente
   configurarZoom();
 });
 
-/* ========================================================
-   🔥 NOVO SCRIPT: MECANISMO DE AMPLIAR IMAGEM IN-PAGE
-   ======================================================== */
+// Variáveis de controle do slider do Lightbox
+let fotosAtuaisDoSlider = [];
+let indexAtualDoSlider = 0;
+
 function configurarZoom() {
   const lightbox = document.getElementById("lightbox");
   const lightboxImg = document.getElementById("lightboxImg");
   const btnClose = document.getElementById("lightboxClose");
+  const btnPrev = document.getElementById("lightboxPrev");
+  const btnNext = document.getElementById("lightboxNext");
   const imagensGaleria = document.querySelectorAll(".abrir-zoom");
 
   imagensGaleria.forEach(img => {
     img.onclick = function() {
-      lightboxImg.src = this.src; // Passa o caminho da foto pro modal
-      lightbox.classList.add("active"); // Mostra o modal com efeito suave
+      const idAlbum = this.getAttribute("data-album");
+      const indexFoto = parseInt(this.getAttribute("data-index"));
+      
+      fotosAtuaisDoSlider = albunsCarregados[idAlbum];
+      indexAtualDoSlider = indexFoto;
+
+      atualizarImagemSlider();
+      lightbox.classList.add("active");
     }
   });
 
-  // Fecha ao clicar no botão 'X'
-  btnClose.onclick = function() {
-    lightbox.classList.remove("active");
+  // Função para mudar a foto ativa no Zoom
+  function atualizarImagemSlider() {
+    lightboxImg.src = fotosAtuaisDoSlider[indexAtualDoSlider];
   }
 
-  // Fecha se o usuário clicar em qualquer parte escura fora da imagem
+  // Avançar Foto
+  btnNext.onclick = function(e) {
+    e.stopPropagation();
+    indexAtualDoSlider = (indexAtualDoSlider + 1) % fotosAtuaisDoSlider.length;
+    atualizarImagemSlider();
+  }
+
+  // Voltar Foto
+  btnPrev.onclick = function(e) {
+    e.stopPropagation();
+    indexAtualDoSlider = (indexAtualDoSlider - 1 + fotosAtuaisDoSlider.length) % fotosAtuaisDoSlider.length;
+    atualizarImagemSlider();
+  }
+
+  // Fechar
+  btnClose.onclick = function() { lightbox.classList.remove("active"); }
   lightbox.onclick = function(e) {
-    if(e.target !== lightboxImg && e.target !== btnClose) {
+    if(e.target !== lightboxImg && e.target !== btnClose && e.target !== btnPrev && e.target !== btnNext) {
       lightbox.classList.remove("active");
     }
+  }
+
+  // 🔥 Expõe a função do botão "Ver todas as fotos" para o escopo global do botão HTML
+  window.abrirAlbumCompleto = function(idAlbum) {
+    fotosAtuaisDoSlider = albunsCarregados[idAlbum];
+    indexAtualDoSlider = 0; // começa da primeira
+    atualizarImagemSlider();
+    lightbox.classList.add("active");
   }
 }
 </script>
