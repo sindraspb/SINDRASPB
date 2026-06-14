@@ -28,10 +28,11 @@
     </div>
 
     <ul class="menu">
+      <li><a href="index.html">Início</a></li>
       <li><a href="noticias.html">Notícias</a></li>
       <li><a href="#quemSomos">Quem Somos</a></li>
       <li><a href="#agenda">Agenda</a></li>
-      <li><a href="https://www.unasus.gov.br/" target="_blank">Cursos</a></li>
+      <li><a href="Fotos.html">Fotos</a></li> <li><a href="https://www.unasus.gov.br/" target="_blank">Cursos</a></li>
       <li><a href="parceiros.html">Parceiros</a></li>
     </ul>
 
@@ -62,13 +63,12 @@
   </div>
 </section>
 
-<!-- 🔥 VIDEO DINÂMICO -->
 <section class="video container">
   <iframe id="videoYoutube" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
 </section>
 
 <section class="noticias container">
-  <h2>Notícias</h2>
+  <h2>Notícias Recentes</h2>
   <div id="noticias" class="cards"></div>
 </section>
 
@@ -76,59 +76,40 @@
   <div class="container">
     <h2>Quem Somos</h2>
     <div class="conteudo-quem">
-      <p>
-O Sindras-PB é o Sindicato dos Agentes Comunitários de Saúde (ACS) e dos Agentes de Combate às Endemias (ACE) da Regional de Saúde da Paraíba. Surgiu com o objetivo de representar de forma exclusiva a categoria, fortalecendo a luta por direitos e valorização profissional.
- <p>
-A entidade atua na defesa, mobilização e garantia de direitos dos ACS e ACE, promovendo assembleias e lutando por conquistas como o piso salarial e o pagamento do Incentivo Financeiro Adicional (IFA).
- <p>
-Com atuação em diversos municípios, o Sindras-PB também participa de mobilizações nacionais, defendendo pautas importantes para a categoria. Filiado à CONACS e presidido por Giovanni Freire, o sindicato mantém transparência e diálogo constante com seus filiados por meio das assembleias e das redes sociais.
- <p>
-O Sindras-PB é a voz dos ACS e ACE na Paraíba.      </p>
-
-       </p>
+      <p>O Sindras-PB é o Sindicato dos Agentes Comunitários de Saúde (ACS) e dos Agentes de Combate às Endemias (ACE) da Regional de Saúde da Paraíba. Surgiu com o objetivo de representar de forma exclusiva a categoria, fortalecendo a luta por direitos e valorização profissional.</p>
+      <p>A entidade atua na defesa, mobilização e garantia de direitos dos ACS e ACE, promovendo assembleias e lutando por conquistas como o piso salarial e o pagamento do Incentivo Financeiro Adicional (IFA).</p>
+      <p>Com atuação em diversos municípios, o Sindras-PB também participa de mobilizações nacionais, defendendo pautas importantes para a categoria. Filiado à CONACS e presidido por Giovanni Freire, o sindicato mantém transparência e diálogo constante com seus filiados por meio das assembleias e das redes sociais.</p>
+      <p><strong>O Sindras-PB é a voice dos ACS e ACE na Paraíba.</strong></p>
     </div>
   </div>
 </section>
 
 <section id="agenda" class="agenda">
   <div class="container agenda-banner">
-    <h2>Agenda</h2>
+    <h2>Agenda Próximos Eventos</h2>
     <div id="listaAgenda" class="agenda-lista"></div>
   </div>
 </section>
 
 <section class="social">
-  <a href="https://www.instagram.com/sindraspb/" target="_blank" class="social-btn">
-    <i class="fab fa-instagram"></i>
-  </a>
-
-  <a href="https://www.facebook.com/p/Sindraspb-61553589940838/" target="_blank" class="social-btn">
-    <i class="fab fa-facebook-f"></i>
-  </a>
-
-  <a href="https://www.youtube.com/@Sindraspb" target="_blank" class="social-btn">
-    <i class="fab fa-youtube"></i>
-  </a>
-
-  <a href="https://wa.me/558330997966" target="_blank" class="social-btn">
-    <i class="fab fa-whatsapp"></i>
-  </a>
+  <a href="https://www.instagram.com/sindraspb/" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
+  <a href="https://www.facebook.com/p/Sindraspb-61553589940838/" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+  <a href="https://www.youtube.com/@Sindraspb" target="_blank" class="social-btn"><i class="fab fa-youtube"></i></a>
+  <a href="https://wa.me/558330997966" target="_blank" class="social-btn"><i class="fab fa-whatsapp"></i></a>
 </section>
 
 <footer class="footer">
   <p>Edifício Arius, Rua Maciel Pinheiro, 102 - 5º Andar, Centro, Campina Grande - PB, CEP 58400-100.</p>
   <p>Telefone (83) 3099-7966 E-mail sindraspb@gmail.com</p>
-  <p> </p>
   <p>© Sindras-PB 2023</p>
 </footer>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, onSnapshot, query, orderBy, limit, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0f3C8cPTVvTzE6Hk",
+  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
   authDomain: "sindraspb-35551.firebaseapp.com",
   projectId: "sindraspb-35551",
   storageBucket: "sindraspb-35551.firebasestorage.app",
@@ -139,14 +120,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* 🔥 VIDEO DINÂMICO - CORRIGIDO */
+// Função auxiliar para formatar a exibição da data local de YYYY-MM-DD para DD/MM/AAAA
+function formatarDataBR(dataString) {
+  if(!dataString) return "";
+  const partes = dataString.split("-");
+  if(partes.length !== 3) return dataString;
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+/* VIDEO DINÂMICO */
 async function carregarVideo(){
   const ref = doc(db,"config","youtube");
   const snap = await getDoc(ref);
 
   if(snap.exists()){
     let link = snap.data().link;
-
     if(!link) return;
 
     // watch?v=
@@ -154,16 +142,16 @@ async function carregarVideo(){
       link = link.replace("watch?v=", "embed/");
     }
 
-    // youtu.be
+    // youtu.be (Melhoria de isolamento de ID contra parâmetros de tracking "?si=...")
     if(link.includes("youtu.be/")){
-      const id = link.split("youtu.be/")[1];
-      link = "https://www.youtube.com/embed/" + id;
+      let parteId = link.split("youtu.be/")[1];
+      const idLimpo = parteId.split("?")[0]; 
+      link = "https://www.youtube.com/embed/" + idLimpo;
     }
 
     document.getElementById("videoYoutube").src = link;
   }
 }
-
 carregarVideo();
 
 /* NOTICIAS */
@@ -174,56 +162,81 @@ if(noticiasContainer){
 
   onSnapshot(q, snap=>{
     noticiasContainer.innerHTML = "";
-    snap.forEach(doc=>{
-      const n = doc.data();
+    
+    if(snap.empty){
+      noticiasContainer.innerHTML = "<p>Nenhuma notícia recente cadastrada.</p>";
+      return;
+    }
 
-      let imagens = "";
+    snap.forEach(docItem=>{
+      const n = docItem.data();
+      let htmlImagens = "";
 
+      // Tratamento dinâmico para evitar que o mosaico quebre caso venham arrays curtos
       if(n.imagens && n.imagens.length > 0){
-        imagens = `
-          <div class="mosaico">
+        const fotosValidas = n.imagens.filter(img => img && img.trim() !== "");
+        const secundarias = fotosValidas.slice(1, 4);
+        const classeMosaico = fotosValidas.length > 1 ? "mosaico" : "mosaico uma-imagem";
+        
+        let htmlSecundarias = "";
+        if(secundarias.length > 0) {
+          htmlSecundarias = `
+            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr)">
+              ${secundarias.map(img => `<img src="${img}">`).join("")}
+            </div>
+          `;
+        }
+
+        htmlImagens = `
+          <div class="${classeMosaico}">
             <div class="img-principal">
-              <img src="${n.imagens[0]}">
+              <img src="${fotosValidas[0]}">
             </div>
-            <div class="img-secundarias">
-              ${n.imagens.slice(1,4).map(img => `<img src="${img}">`).join("")}
-            </div>
+            ${htmlSecundarias}
           </div>
         `;
       } else {
-        imagens = `<img src="${n.imagem}">`;
+        htmlImagens = n.imagem ? `<img src="${n.imagem}" style="width:100%; border-radius:8px; height:220px; object-fit:cover;">` : "";
       }
 
       noticiasContainer.innerHTML += `
         <div class="card">
-          ${imagens}
+          ${htmlImagens}
           <h3>${n.titulo}</h3>
-
-<div class="texto-noticia">
-  ${n.conteudo.replace(/\n/g, "<br>")}
-</div>
-
+          <div class="texto-noticia">
+            ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
+          </div>
         </div>`;
     });
   });
 }
 
-/* AGENDA */
+/* AGENDA (CORREÇÃO: Query agora é ordenada por dataInicio e sincronizada com o Admin) */
 const agendaContainer = document.getElementById("listaAgenda");
 
 if(agendaContainer){
-  onSnapshot(collection(db,"agenda"), snap=>{
+  const agendaQuery = query(collection(db, "agenda"), orderBy("dataInicio", "asc"));
+
+  onSnapshot(agendaQuery, snap=>{
     agendaContainer.innerHTML = "";
 
-    snap.forEach(doc=>{
-      const e = doc.data();
+    if(snap.empty){
+      agendaContainer.innerHTML = "<p style='color: #fff;'>Nenhum compromisso agendado no momento.</p>";
+      return;
+    }
+
+    snap.forEach(docItem=>{
+      const e = docItem.data();
+      
+      const dataInicioFormatada = formatarDataBR(e.dataInicio);
+      const dataFimFormatada = e.dataFim ? ` até ${formatarDataBR(e.dataFim)}` : "";
 
       agendaContainer.innerHTML += `
         <div class="evento">
           <h3>${e.titulo}</h3>
-          <p>📅 ${e.dataInicio || ""} ${e.dataFim || ""}</p>
-          <p>📍 ${e.local || ""}</p>
-          ${e.aviso ? `<p class="aviso">⚠️ ${e.aviso}</p>` : ""}
+          <p>📅 ${dataInicioFormatada}${dataFimFormatada}</p>
+          <p>📍 ${e.local || "Não informado"}</p>
+          ${e.aviso ? `<p class="aviso" style="color:#f7941d; font-weight:bold;">⚠️ ${e.aviso}</p>` : ""}
         </div>
       `;
     });
@@ -231,22 +244,25 @@ if(agendaContainer){
 }
 </script>
 
-<!-- SLIDE -->
 <script>
 document.addEventListener("DOMContentLoaded", function(){
-
   let index = 0;
   const slides = document.querySelector('.slides');
   const dots = document.querySelectorAll('.controls span');
-  const total = document.querySelectorAll('.slide').length;
+  
+  // Executa uma checagem preventiva de elementos antes do bind
+  if(!slides) return;
+  const slideItems = document.querySelectorAll('.slide');
+  const total = slideItems.length;
 
   function showSlide(i){
-    slides.style.transform = "translateX(" + (-i * 100) + "%)";
+    if(slides) slides.style.transform = "translateX(" + (-i * 100) + "%)";
     dots.forEach(d => d.classList.remove("active"));
     if(dots[i]) dots[i].classList.add("active");
   }
 
   function nextSlide(){
+    if(total === 0) return;
     index = (index + 1) % total;
     showSlide(index);
   }

@@ -5,7 +5,12 @@
 <title>Painel SINDRAS</title>
 
 <style>
-body { margin:0; font-family:Arial; background:#eef1f5; }
+/* CORREÇÃO 1: Fundo corrigido e padronizado */
+body {
+    margin:0;
+    font-family:Arial;
+    background:#f4f6f9;
+}
 
 .login {
     max-width:320px;
@@ -28,20 +33,45 @@ body { margin:0; font-family:Arial; background:#eef1f5; }
 
 .main { display:flex; }
 
+/* MELHORIA 9: Sidebar mais larga e escura */
 .sidebar {
-    width:220px;
-    background:#2b2b3c;
+    width:260px;
+    background:#1e1e2f;
     color:#fff;
     min-height:100vh;
     padding:20px;
 }
 
+/* MELHORIA 9: Efeito hover na sidebar */
 .sidebar p {
     cursor:pointer;
     margin:15px 0;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.sidebar p:hover{
+    background:#f7941d;
 }
 
 .content { flex:1; padding:20px; }
+
+/* MELHORIA 10: Estrutura para os mini cards de estatísticas em linha */
+.estatisticas-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.estatisticas-container .card {
+    flex: 1;
+    min-width: 150px;
+    margin-bottom: 0;
+    padding: 15px;
+    text-align: center;
+}
 
 .card {
     background:#fff;
@@ -66,6 +96,7 @@ button {
     border:none;
     padding:10px;
     cursor:pointer;
+    border-radius: 4px;
 }
 
 .item {
@@ -84,7 +115,6 @@ button {
 
 <body>
 
-<!-- LOGIN -->
 <div class="login" id="login">
     <h2>Login</h2>
     <input id="email" placeholder="Email">
@@ -92,7 +122,6 @@ button {
     <button onclick="entrar()">Entrar</button>
 </div>
 
-<!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
 
 <div class="topo">
@@ -110,6 +139,11 @@ button {
 
     <hr>
 
+    <p onclick="mostrar('galeria')">📸 Galeria</p>
+    <p onclick="mostrar('novaGaleria')">➕ Novo Álbum</p>
+
+    <hr>
+
     <p onclick="mostrar('agenda')">📅 Agenda</p>
     <p onclick="mostrar('novaAgenda')">➕ Novo Evento</p>
 
@@ -120,62 +154,80 @@ button {
 
 <div class="content">
 
-<!-- DASHBOARD -->
 <div id="home" class="tela active">
-    <div class="card">
-        <h3>Total de notícias</h3>
-        <p id="totalNoticias"></p>
-    </div>
+    <div class="estatisticas-container">
+        <div class="card">
+            <h3>📰 Notícias</h3>
+            <p id="totalNoticias">0</p>
+        </div>
 
-    <div class="card">
-        <h3>Total de eventos</h3>
-        <p id="totalAgenda"></p>
+        <div class="card">
+            <h3>📅 Eventos</h3>
+            <p id="totalAgenda">0</p>
+        </div>
+
+        <div class="card">
+            <h3>📸 Álbuns</h3>
+            <p id="totalGaleria">0</p>
+        </div>
+
+        <div class="card">
+            <h3>📷 Fotos</h3>
+            <p id="totalFotos">0</p>
+        </div>
     </div>
 </div>
 
-<!-- NOTICIAS -->
 <div id="noticias" class="tela">
     <div id="listaNoticias"></div>
 </div>
 
-<!-- NOVA NOTICIA -->
 <div id="novaNoticia" class="tela">
     <div class="card">
         <h3>Nova Notícia</h3>
         <input id="tituloNoticia" placeholder="Título da notícia">
-<textarea id="conteudoNoticia" placeholder="Conteúdo da notícia"></textarea>
+        <textarea id="conteudoNoticia" placeholder="Conteúdo da notícia"></textarea>
 
         <div id="listaImagens"></div>
 
         <button onclick="addImagem()">+ Adicionar imagem</button>
         <button onclick="salvarNoticia()">Publicar</button>
     </div>
+</div> 
+
+<div id="galeria" class="tela">
+    <div id="listaGaleria"></div>
 </div>
 
-<!-- AGENDA -->
+<div id="novaGaleria" class="tela">
+    <div class="card">
+        <h3>Novo Álbum</h3>
+        <input id="tituloGaleria" placeholder="Nome do evento">
+        <textarea id="descricaoGaleria" placeholder="Descrição do evento"></textarea>
+
+        <div id="listaFotosGaleria"></div>
+
+        <button onclick="addFotoGaleria()">+ Adicionar Foto</button>
+        <button onclick="salvarGaleria()">Salvar Álbum</button>
+    </div>
+</div>
+
 <div id="agenda" class="tela">
     <div id="listaAgenda"></div>
 </div>
 
-<!-- NOVA AGENDA -->
 <div id="novaAgenda" class="tela">
     <div class="card">
         <h3>Novo Evento</h3>
-
         <input id="tituloAgenda" placeholder="Título do evento">
-
         <input id="dataInicio" type="date">
         <input id="dataFim" type="date">
-
         <input id="localAgenda" placeholder="Local do evento">
-
         <textarea id="avisoAgenda" placeholder="Descrição / aviso"></textarea>
-
         <button onclick="salvarAgenda()">Salvar</button>
     </div>
 </div>
 
-<!-- YOUTUBE -->
 <div id="youtube" class="tela">
     <div class="card">
         <h3>Vídeo do YouTube</h3>
@@ -188,10 +240,19 @@ button {
 </div>
 </div>
 
-<script type="module"> import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"; import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"; 
+<script type="module"> 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"; 
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, setDoc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; 
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"; 
 
-const firebaseConfig = { apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk", authDomain: "sindraspb-35551.firebaseapp.com", projectId: "sindraspb-35551", storageBucket: "sindraspb-35551.firebasestorage.app", messagingSenderId: "1001203695194", appId: "1:1001203695194:web:b490ae077f26a83673e263" };
+const firebaseConfig = { 
+    apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk", 
+    authDomain: "sindraspb-35551.firebaseapp.com", 
+    projectId: "sindraspb-35551", 
+    storageBucket: "sindraspb-35551.firebasestorage.app", 
+    messagingSenderId: "1001203695194", 
+    appId: "1:1001203695194:web:b490ae077f26a83673e263" 
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -202,7 +263,6 @@ window.entrar = async () => {
   try {
     const email = document.getElementById("email").value;
     const senha = document.getElementById("senha").value;
-
     await signInWithEmailAndPassword(auth, email, senha);
   } catch(e){
     alert("Erro: " + e.code);
@@ -225,42 +285,35 @@ window.mostrar = (tela)=>{
 /* YOUTUBE */
 window.salvarYoutube = async () => {
   let link = linkYoutube.value;
-
   if(link.includes("watch?v=")){
     link = link.replace("watch?v=", "embed/");
   }
-
-  await setDoc(doc(db,"config","youtube"),{
-    link: link
-  });
-
-  alert("Vídeo atualizado!");
+  await setDoc(doc(db,"config","youtube"),{ link: link });
+  alert("Vídeo updated!");
 };
 
 async function carregarYoutube(){
   const snap = await getDoc(doc(db,"config","youtube"));
-
   if(snap.exists()){
     linkYoutube.value = snap.data().link;
   }
 }
-
 carregarYoutube();
 
-/* IMAGENS */
+/* IMAGENS NOTÍCIA - MELHORIA 6 (Adaptada para notícias também) */
 window.addImagem = () => {
   const div = document.createElement("div");
-  div.innerHTML = `<input placeholder="Link da imagem">`;
+  div.innerHTML = `
+    <input placeholder="Link da imagem" oninput="this.nextElementSibling.src=this.value">
+    <img style="width:120px; margin-top:5px; display:block; border-radius:8px;">
+  `;
   listaImagens.appendChild(div);
 };
 
 /* NOTICIAS */
 window.salvarNoticia = async ()=>{
   const inputs = document.querySelectorAll("#listaImagens input");
-
-  const imagens = Array.from(inputs)
-    .map(i => i.value)
-    .filter(i => i);
+  const imagens = Array.from(inputs).map(i => i.value).filter(i => i);
 
   await addDoc(collection(db,"noticias"),{
     titulo: tituloNoticia.value,
@@ -271,17 +324,128 @@ window.salvarNoticia = async ()=>{
   });
 
   alert("Salvo!");
+  
+  /* MELHORIA 3: Limpar formulário de notícias */
+  tituloNoticia.value = "";
+  conteudoNoticia.value = "";
+  listaImagens.innerHTML = "";
 };
 
-/* 🔥 LISTAR + EDITAR + EXCLUIR NOTÍCIAS */
+/* =========================
+    GALERIA DE FOTOS
+========================= */
+
+/* MELHORIA 6: Pré-visualização das imagens ao digitar o link */
+window.addFotoGaleria = () => {
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <input placeholder="Link da foto (PostImage)" oninput="this.nextElementSibling.src=this.value">
+    <img style="width:120px; margin-top:5px; display:block; border-radius:8px;">
+  `;
+  document.getElementById("listaFotosGaleria").appendChild(div);
+};
+
+window.salvarGaleria = async () => {
+  const inputs = document.querySelectorAll("#listaFotosGaleria input");
+  const imagens = Array.from(inputs).map(i => i.value.trim()).filter(i => i);
+
+  if(!tituloGaleria.value){
+    alert("Informe o nome do evento");
+    return;
+  }
+
+  await addDoc(collection(db,"Fotos"),{
+    titulo: tituloGaleria.value,
+    descricao: descricaoGaleria.value,
+    imagens: imagens,
+    criadoEm: new Date()
+  });
+
+  tituloGaleria.value = "";
+  descricaoGaleria.value = "";
+  listaFotosGaleria.innerHTML = "";
+
+  alert("Álbum salvo com sucesso!");
+};
+
+/* LISTAGEM GALERIA */
+onSnapshot(collection(db,"Fotos"), snap=>{
+  const lista = document.getElementById("listaGaleria");
+  if(!lista) return;
+
+  lista.innerHTML = "";
+
+  if(totalGaleria){
+    totalGaleria.innerText = snap.size;
+  }
+
+  /* MELHORIA 7: Contador global de fotos */
+  let totalImagensGlobais = 0;
+
+  snap.forEach(docItem=>{
+    const g = docItem.data();
+    
+    // Incrementa a contagem de imagens do álbum atual ao totalizador global
+    if (g.imagens && Array.from(g.imagens).length) {
+        totalImagensGlobais += g.imagens.length;
+    }
+
+    /* MELHORIA 2 & MELHORIA 8: Miniatura da foto da capa e Botão Editar adicionados */
+    lista.innerHTML += `
+      <div class="item">
+        <div style="display:flex;gap:15px;align-items:center;">
+          <img src="${g.imagens && g.imagens[0] ? g.imagens[0] : 'https://placehold.co/100x70?text=Sem+Foto'}" style="width:100px;height:70px;object-fit:cover;border-radius:8px;">
+          <div>
+            <strong>${g.titulo}</strong><br>
+            ${g.descricao || ""}<br>
+            📷 ${g.imagens ? g.imagens.length : 0} fotos
+          </div>
+        </div>
+        <div>
+          <button style="background: #f7941d; margin-right: 5px;" onclick="editarGaleria('${docItem.id}', '${g.titulo}', \`${g.descricao || ''}\`)">
+            Editar
+          </button>
+          <button onclick="excluirGaleria('${docItem.id}')">
+            Excluir
+          </button>
+        </div>
+      </div>
+    `;
+  });
+
+  // Atualiza o elemento no painel inicial
+  if(document.getElementById("totalFotos")){
+      document.getElementById("totalFotos").innerText = totalImagensGlobais;
+  }
+});
+
+/* MELHORIA 8: Função de edição da galeria via prompt */
+window.editarGaleria = async (id, tituloAtual, descricaoAtual) => {
+  const novoTitulo = prompt("Nome do evento:", tituloAtual);
+  const novaDescricao = prompt("Descrição do evento:", descricaoAtual);
+
+  if(novoTitulo !== null){
+    await updateDoc(doc(db,"Fotos",id),{
+      titulo: novoTitulo,
+      descricao: novaDescricao || ""
+    });
+    alert("Álbum atualizado!");
+  }
+};
+
+window.excluirGaleria = async(id)=>{
+  if(confirm("Excluir álbum?")){
+    await deleteDoc(doc(db,"Fotos",id));
+  }
+};
+
+/* LISTAR + EDITAR + EXCLUIR NOTÍCIAS */
 onSnapshot(collection(db,"noticias"), snap=>{
   totalNoticias.innerText = snap.size;
-
   listaNoticias.innerHTML = "";
 
   snap.forEach(docItem=>{
     const n = docItem.data();
-
     const div = document.createElement("div");
     div.className = "item";
 
@@ -290,13 +454,11 @@ onSnapshot(collection(db,"noticias"), snap=>{
         <strong>${n.titulo}</strong><br>
         <small>${n.conteudo}</small>
       </div>
-
       <div>
-        <button onclick="editarNoticia('${docItem.id}', '${n.titulo}', \`${n.conteudo}\`)">Editar</button>
+        <button style="background: #f7941d;" onclick="editarNoticia('${docItem.id}', '${n.titulo}', \`${n.conteudo}\`)">Editar</button>
         <button onclick="excluirNoticia('${docItem.id}')">Excluir</button>
       </div>
     `;
-
     listaNoticias.appendChild(div);
   });
 });
@@ -330,17 +492,24 @@ window.salvarAgenda = async ()=>{
   });
 
   alert("Evento salvo!");
+
+  /* MELHORIA 4: Limpar formulário da agenda */
+  tituloAgenda.value = "";
+  dataInicio.value = "";
+  dataFim.value = "";
+  localAgenda.value = "";
+  avisoAgenda.value = "";
 };
 
-/* 🔥 LISTAR + EDITAR + EXCLUIR AGENDA */
-onSnapshot(collection(db,"agenda"), snap=>{
-  totalAgenda.innerText = snap.size;
+/* LISTAR + EDITAR + EXCLUIR AGENDA (MELHORIA 5: Ordenada por dataInicio) */
+const agendaQuery = query(collection(db, "agenda"), orderBy("dataInicio", "asc"));
 
+onSnapshot(agendaQuery, snap=>{
+  totalAgenda.innerText = snap.size;
   listaAgenda.innerHTML = "";
 
   snap.forEach(docItem=>{
     const a = docItem.data();
-
     const div = document.createElement("div");
     div.className = "item";
 
@@ -351,13 +520,11 @@ onSnapshot(collection(db,"agenda"), snap=>{
         ${a.local}<br>
         <small>${a.aviso}</small>
       </div>
-
       <div>
-        <button onclick="editarAgenda('${docItem.id}', '${a.titulo}', '${a.local}')">Editar</button>
+        <button style="background: #f7941d;" onclick="editarAgenda('${docItem.id}', '${a.titulo}', '${a.local}')">Editar</button>
         <button onclick="excluirAgenda('${docItem.id}')">Excluir</button>
       </div>
     `;
-
     listaAgenda.appendChild(div);
   });
 });

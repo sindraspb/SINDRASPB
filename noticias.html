@@ -6,6 +6,64 @@
 <title>Notícias - SINDRAS</title>
 
 <link rel="stylesheet" href="style.css">
+
+<style>
+/* Ajustes preventivos para o mosaico de notícias caso as classes não estejam no style.css global */
+.mosaico {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.mosaico.uma-imagem {
+  grid-template-columns: 1fr;
+}
+
+.img-principal img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.img-secundarias {
+  display: grid;
+  gap: 5px;
+}
+
+.img-secundarias img {
+  width: 100%;
+  height: 100%;
+  min-height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card img.fallback-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+@media(max-width:768px){
+  .mosaico {
+    grid-template-columns: 1fr;
+  }
+  .img-principal img {
+    height: 220px;
+  }
+  .img-secundarias {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .img-secundarias img {
+    height: 80px;
+    min-height: auto;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -17,13 +75,13 @@
     <ul class="menu">
       <li><a href="index.html">Início</a></li>
       <li><a href="noticias.html">Notícias</a></li>
-      <li><a href="parceiros.html">Parceiros</a></li>
+      <li><a href="Fotos.html">Fotos</a></li> <li><a href="parceiros.html">Parceiros</a></li>
     </ul>
   </div>
 </header>
 
 <section class="noticias container">
-  <h1>Notícias</h1>
+  <h1>📰 Central de Notícias</h1>
   <div id="listaNoticias" class="cards"></div>
 </section>
 
@@ -54,40 +112,55 @@ const q = query(
 onSnapshot(q, snap=>{
   container.innerHTML = "";
 
+  if(snap.empty){
+    container.innerHTML = "<p>Nenhuma notícia cadastrada no momento.</p>";
+    return;
+  }
+
   snap.forEach(doc=>{
     const n = doc.data();
+    let htmlImagens = "";
 
-    let imagens = "";
-
-    // 🔥 várias imagens
+    // Tratamento adaptativo para o mosaico de fotos da notícia
     if(n.imagens && n.imagens.length > 0){
+      const fotosValidas = n.imagens.filter(img => img && img.trim() !== "");
+      
+      if(fotosValidas.length > 0){
+        const secundarias = fotosValidas.slice(1, 4);
+        const classeMosaico = fotosValidas.length > 1 ? "mosaico" : "mosaico uma-imagem";
+        
+        let htmlSecundarias = "";
+        if(secundarias.length > 0) {
+          htmlSecundarias = `
+            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr)">
+              ${secundarias.map(img => `<img src="${img}">`).join("")}
+            </div>
+          `;
+        }
 
-      imagens = `
-        <div class="mosaico">
-          <div class="img-principal">
-            <img src="${n.imagens[0]}">
+        htmlImagens = `
+          <div class="${classeMosaico}">
+            <div class="img-principal">
+              <img src="${fotosValidas[0]}">
+            </div>
+            ${htmlSecundarias}
           </div>
-
-          <div class="img-secundarias">
-            ${n.imagens.slice(1,4).map(img => `<img src="${img}">`).join("")}
-          </div>
-        </div>
-      `;
-
-    } else {
-
-      // 🔥 fallback (antigo)
-      imagens = `<img src="${n.imagem}">`;
-
+        `;
+      }
+    } else if(n.imagem && n.imagem.trim() !== "") {
+      // Fallback para posts antigos estruturados com campo único de imagem
+      htmlImagens = `<img src="${n.imagem}" class="fallback-img">`;
     }
 
+    // CORREÇÃO: Inclusão do fechamento correto das tags </div> no final do template literal
     container.innerHTML += `
-      <div class="card">
-        ${imagens}
-        <h3>${n.titulo}</h3>
-        <div class="texto-noticia">
-  ${n.conteudo.replace(/\n/g, "<br>")}
-</div>
+      <div class="card" style="margin-bottom: 30px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        ${htmlImagens}
+        <h3 style="margin-top: 10px; font-size: 20px;">${n.titulo || "Sem título"}</h3>
+        <div class="texto-noticia" style="color: #444; line-height: 1.6; margin-top: 10px;">
+          ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
+        </div>
+      </div>
     `;
   });
 });

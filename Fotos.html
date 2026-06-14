@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galeria de Fotos - SINDRAS-PB</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+.galeria-page{
+  padding:50px 0;
+}
+
+.galeria-page h1{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.album{
+  background:#fff;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:30px;
+  box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.album h2{
+  margin:15px 0 10px;
+}
+
+.album p{
+  color:#555;
+}
+
+/* Ajuste preventivo para layouts com poucas imagens */
+.mosaico{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:5px;
+}
+
+/* Caso o álbum tenha APENAS 1 imagem cadastrada, ela ocupa o espaço total */
+.mosaico.uma-imagem {
+  grid-template-columns: 1fr;
+}
+
+.img-principal img{
+  width:100%;
+  height:450px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.img-secundarias{
+  display:grid;
+  grid-template-rows:repeat(3,1fr);
+  gap:5px;
+}
+
+.img-secundarias img{
+  width:100%;
+  height:146px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.mosaico img{
+  cursor:pointer;
+  transition:.3s;
+}
+
+.mosaico img:hover{
+  transform:scale(1.03);
+}
+
+.ver-mais{
+  display:inline-block;
+  margin-top:15px;
+  background:#f7941d;
+  color:#fff;
+  text-decoration:none;
+  padding:10px 15px;
+  border-radius:8px;
+}
+
+@media(max-width:768px){
+  .mosaico{
+    grid-template-columns:1fr;
+  }
+
+  .mosaico.uma-imagem {
+    grid-template-columns: 1fr;
+  }
+
+  .img-principal img{
+    height:250px;
+  }
+
+  .img-secundarias{
+    grid-template-columns:repeat(3,1fr);
+    grid-template-rows:none;
+  }
+
+  .img-secundarias img{
+    height:90px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="container nav">
+    <img src="logo.png" class="logo">
+    <ul class="menu">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="noticias.html">Notícias</a></li>
+      <li><a href="Fotos.html">Fotos</a></li>
+      <li><a href="parceiros.html">Parceiros</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="galeria-page container">
+  <h1>📸 Galeria de Fotos</h1>
+  <div id="Eventos"></div>
+</section>
+
+<footer class="footer">
+  <p>© Sindras-PB</p>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
+  authDomain: "sindraspb-35551.firebaseapp.com",
+  projectId: "sindraspb-35551"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const container = document.getElementById("Eventos");
+
+const q = query(
+  collection(db,"Fotos"),
+  orderBy("criadoEm","desc")
+);
+
+onSnapshot(q,(snap)=>{
+  container.innerHTML = "";
+
+  if(snap.empty){
+    container.innerHTML = `
+      <div class="album">
+        <h2>Nenhum álbum cadastrado.</h2>
+      </div>
+    `;
+    return;
+  }
+
+  snap.forEach(docItem=>{
+    const album = docItem.data();
+    let htmlImagens = "";
+
+    if(album.imagens && album.imagens.length > 0){
+      // Filtra links vazios que possam vir do banco por acidente
+      const fotosValidas = album.imagens.filter(img => img && img.trim() !== "");
+      
+      // Se tiver mais de uma imagem, usa o layout completo. Se tiver apenas 1, aplica a classe 'uma-imagem'
+      const classeMosaico = fotosValidas.length > 1 ? "mosaico" : "mosaico uma-imagem";
+
+      // Renderiza as fotos secundárias apenas se elas realmente existirem
+      const secundarias = fotosValidas.slice(1,4);
+      let htmlSecundarias = "";
+      
+      if(secundarias.length > 0) {
+        htmlSecundarias = `
+          <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr)">
+            ${secundarias.map(img => `
+              <a href="${img}" target="_blank">
+                <img src="${img}">
+              </a>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      htmlImagens = `
+      <div class="${classeMosaico}">
+        <div class="img-principal">
+          <a href="${fotosValidas[0]}" target="_blank">
+            <img src="${fotosValidas[0]}">
+          </a>
+        </div>
+        ${htmlSecundarias}
+      </div>
+      `;
+    }
+
+    // Botão de "Ver mais" só aparece de forma útil se o álbum tiver mais de 4 fotos totais
+    const botaoVerMais = album.imagens && album.imagens.length > 4 
+      ? `<br><a href="${album.imagens[0]}" target="_blank" class="ver-mais">Ver todas as fotos</a>` 
+      : "";
+
+    container.innerHTML += `
+      <div class="album">
+        ${htmlImagens}
+        <h2>${album.titulo || "Evento sem título"}</h2>
+        <p>${album.descricao || ""}</p>
+        <p><strong>Total de Fotos:</strong> ${album.imagens ? album.imagens.length : 0}</p>
+        ${botaoVerMais}
+      </div>
+    `;
+  });
+});
+</script>
+
+</body>
+</html>
