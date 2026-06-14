@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SINDRAS-PB</title>
 
-<link rel="stylesheet" href="style.css">
+<!-- FORÇANDO ATUALIZAÇÃO DO DESIGN -->
+<link rel="stylesheet" href="style.css?v=3">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -32,7 +33,8 @@
       <li><a href="noticias.html">Notícias</a></li>
       <li><a href="#quemSomos">Quem Somos</a></li>
       <li><a href="#agenda">Agenda</a></li>
-      <li><a href="Fotos.html">Fotos</a></li> <li><a href="https://www.unasus.gov.br/" target="_blank">Cursos</a></li>
+      <li><a href="Fotos.html">Fotos</a></li> 
+      <li><a href="https://www.unasus.gov.br/" target="_blank">Cursos</a></li>
       <li><a href="parceiros.html">Parceiros</a></li>
     </ul>
 
@@ -120,7 +122,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Função auxiliar para formatar a exibição da data local de YYYY-MM-DD para DD/MM/AAAA
 function formatarDataBR(dataString) {
   if(!dataString) return "";
   const partes = dataString.split("-");
@@ -128,7 +129,6 @@ function formatarDataBR(dataString) {
   return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
-/* VIDEO DINÂMICO */
 async function carregarVideo(){
   const ref = doc(db,"config","youtube");
   const snap = await getDoc(ref);
@@ -137,12 +137,10 @@ async function carregarVideo(){
     let link = snap.data().link;
     if(!link) return;
 
-    // watch?v=
     if(link.includes("watch?v=")){
       link = link.replace("watch?v=", "embed/");
     }
 
-    // youtu.be (Melhoria de isolamento de ID contra parâmetros de tracking "?si=...")
     if(link.includes("youtu.be/")){
       let parteId = link.split("youtu.be/")[1];
       const idLimpo = parteId.split("?")[0]; 
@@ -154,7 +152,6 @@ async function carregarVideo(){
 }
 carregarVideo();
 
-/* NOTICIAS */
 const noticiasContainer = document.getElementById("noticias");
 
 if(noticiasContainer){
@@ -172,7 +169,6 @@ if(noticiasContainer){
       const n = docItem.data();
       let htmlImagens = "";
 
-      // Tratamento dinâmico para evitar que o mosaico quebre caso venham arrays curtos
       if(n.imagens && n.imagens.length > 0){
         const fotosValidas = n.imagens.filter(img => img && img.trim() !== "");
         const secundarias = fotosValidas.slice(1, 4);
@@ -196,7 +192,7 @@ if(noticiasContainer){
           </div>
         `;
       } else {
-        htmlImagens = n.imagem ? `<img src="${n.imagem}" style="width:100%; border-radius:8px; height:220px; object-fit:cover;">` : "";
+        htmlImagens = n.imagem ? `<img src="${n.imagem}" class="fallback-img">` : "";
       }
 
       noticiasContainer.innerHTML += `
@@ -211,7 +207,6 @@ if(noticiasContainer){
   });
 }
 
-/* AGENDA (CORREÇÃO: Query agora é ordenada por dataInicio e sincronizada com o Admin) */
 const agendaContainer = document.getElementById("listaAgenda");
 
 if(agendaContainer){
@@ -250,7 +245,6 @@ document.addEventListener("DOMContentLoaded", function(){
   const slides = document.querySelector('.slides');
   const dots = document.querySelectorAll('.controls span');
   
-  // Executa uma checagem preventiva de elementos antes do bind
   if(!slides) return;
   const slideItems = document.querySelectorAll('.slide');
   const total = slideItems.length;
