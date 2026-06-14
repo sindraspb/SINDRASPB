@@ -33,14 +33,12 @@
   color:#555;
 }
 
-/* Ajuste preventivo para layouts com poucas imagens */
 .mosaico{
   display:grid;
   grid-template-columns:2fr 1fr;
   gap:5px;
 }
 
-/* Caso o álbum tenha APENAS 1 imagem cadastrada, ela ocupa o espaço total */
 .mosaico.uma-imagem {
   grid-template-columns: 1fr;
 }
@@ -74,14 +72,55 @@
   transform:scale(1.03);
 }
 
-.ver-mais{
-  display:inline-block;
-  margin-top:15px;
-  background:#f7941d;
-  color:#fff;
-  text-decoration:none;
-  padding:10px 15px;
-  border-radius:8px;
+/* ========================================================
+   🔥 NOVO CSS: MODAL DE ZOOM (LIGHTBOX)
+   ======================================================== */
+.lightbox-modal {
+  display: none; /* Escondido por padrão */
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.lightbox-modal.active {
+  display: flex;
+  opacity: 1;
+}
+
+.lightbox-content {
+  max-width: 90%;
+  max-height: 85vh;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.1);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.lightbox-modal.active .lightbox-content {
+  transform: scale(1);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.lightbox-close:hover {
+  color: #f7941d;
 }
 
 @media(max-width:768px){
@@ -128,6 +167,11 @@
   <div id="Eventos"></div>
 </section>
 
+<div id="lightbox" class="lightbox-modal">
+  <span class="lightbox-close" id="lightboxClose">&times;</span>
+  <img class="lightbox-content" id="lightboxImg" src="" alt="Imagem ampliada">
+</div>
+
 <footer class="footer">
   <p>© Sindras-PB</p>
 </footer>
@@ -169,23 +213,17 @@ onSnapshot(q,(snap)=>{
     let htmlImagens = "";
 
     if(album.imagens && album.imagens.length > 0){
-      // Filtra links vazios que possam vir do banco por acidente
       const fotosValidas = album.imagens.filter(img => img && img.trim() !== "");
-      
-      // Se tiver mais de uma imagem, usa o layout completo. Se tiver apenas 1, aplica a classe 'uma-imagem'
       const classeMosaico = fotosValidas.length > 1 ? "mosaico" : "mosaico uma-imagem";
-
-      // Renderiza as fotos secundárias apenas se elas realmente existirem
       const secundarias = fotosValidas.slice(1,4);
+      
       let htmlSecundarias = "";
       
       if(secundarias.length > 0) {
         htmlSecundarias = `
           <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr)">
             ${secundarias.map(img => `
-              <a href="${img}" target="_blank">
-                <img src="${img}">
-              </a>
+              <img src="${img}" class="abrir-zoom" style="cursor: pointer;">
             `).join("")}
           </div>
         `;
@@ -194,31 +232,55 @@ onSnapshot(q,(snap)=>{
       htmlImagens = `
       <div class="${classeMosaico}">
         <div class="img-principal">
-          <a href="${fotosValidas[0]}" target="_blank">
-            <img src="${fotosValidas[0]}">
-          </a>
+          <img src="${fotosValidas[0]}" class="abrir-zoom" style="cursor: pointer;">
         </div>
         ${htmlSecundarias}
       </div>
       `;
     }
 
-    // Botão de "Ver mais" só aparece de forma útil se o álbum tiver mais de 4 fotos totais
-    const botaoVerMais = album.imagens && album.imagens.length > 4 
-      ? `<br><a href="${album.imagens[0]}" target="_blank" class="ver-mais">Ver todas as fotos</a>` 
-      : "";
-
     container.innerHTML += `
       <div class="album">
         ${htmlImagens}
-        <h2>${album.titulo || "Evento sem título"}</h2>
+        <h2>${album.titulo || ""}</h2>
         <p>${album.descricao || ""}</p>
         <p><strong>Total de Fotos:</strong> ${album.imagens ? album.imagens.length : 0}</p>
-        ${botaoVerMais}
       </div>
     `;
   });
+
+  // Ativa as escutas de clique nas novas imagens criadas dinamicamente
+  configurarZoom();
 });
+
+/* ========================================================
+   🔥 NOVO SCRIPT: MECANISMO DE AMPLIAR IMAGEM IN-PAGE
+   ======================================================== */
+function configurarZoom() {
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightboxImg");
+  const btnClose = document.getElementById("lightboxClose");
+  const imagensGaleria = document.querySelectorAll(".abrir-zoom");
+
+  imagensGaleria.forEach(img => {
+    img.onclick = function() {
+      lightboxImg.src = this.src; // Passa o caminho da foto pro modal
+      lightbox.classList.add("active"); // Mostra o modal com efeito suave
+    }
+  });
+
+  // Fecha ao clicar no botão 'X'
+  btnClose.onclick = function() {
+    lightbox.classList.remove("active");
+  }
+
+  // Fecha se o usuário clicar em qualquer parte escura fora da imagem
+  lightbox.onclick = function(e) {
+    if(e.target !== lightboxImg && e.target !== btnClose) {
+      lightbox.classList.remove("active");
+    }
+  }
+}
 </script>
 
 </body>
