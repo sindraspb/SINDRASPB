@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SINDRAS-PB</title>
 
-<link rel="stylesheet" href="style.css?v=4">
+<!-- Forçando nova versão do CSS externo -->
+<link rel="stylesheet" href="style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -176,31 +177,36 @@ if(noticiasContainer){
         let htmlSecundarias = "";
         if(secundarias.length > 0) {
           htmlSecundarias = `
-            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr)">
-              ${secundarias.map(img => `<img src="${img}">`).join("")}
+            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr); height: 100%;">
+              ${secundarias.map(img => `<img src="${img}" style="width:100%; height:100%; object-fit:cover; display:block;">`).join("")}
             </div>
           `;
         }
 
+        // Forçando alturas fixas diretamente nas tags de imagem via style="..."
         htmlImagens = `
-          <div class="${classeMosaico}">
-            <div class="img-principal">
-              <img src="${fotosValidas[0]}">
+          <div class="${classeMosaico}" style="height: 220px; margin-bottom: 15px; display: grid; gap: 5px;">
+            <div class="img-principal" style="height: 100%;">
+              <img src="${fotosValidas[0]}" style="width:100%; height:100%; object-fit:cover; display:block; border-radius: 8px 0 0 8px;">
             </div>
             ${htmlSecundarias}
           </div>
         `;
       } else {
-        htmlImagens = n.imagem ? `<img src="${n.imagem}" class="fallback-img">` : "";
+        htmlImagens = n.imagem ? `<img src="${n.imagem}" class="fallback-img" style="width:100%; height:200px; object-fit:cover; border-radius:6px; margin-bottom:10px; display:block;">` : "";
       }
 
-      // 🔥 ALTERAÇÃO APLICADA AQUI: Fechamento correto das duas </div> no final do card!
+      // Isolamento total do card adicionando uma folga interna (padding-top) e limpando flutuações (clear:both)
       noticiasContainer.innerHTML += `
-        <div class="card">
-          ${htmlImagens}
-          <h3>${n.titulo}</h3>
-          <div class="texto-noticia">
-            ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
+        <div class="card" style="display: flex; flex-direction: column; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; box-sizing: border-box; clear: both;">
+          <div class="container-imagem-noticia" style="width: 100%; display: block; position: relative;">
+            ${htmlImagens}
+          </div>
+          <div class="conteudo-card-noticia" style="width: 100%; display: block; margin-top: 10px; position: relative; clear: both;">
+            <h3 style="margin: 10px 0 5px 0; font-size: 18px; line-height: 1.3; color: black; font-weight: bold; display: block;">${n.titulo}</h3>
+            <div class="texto-noticia" style="color: #555; font-size: 14px; line-height: 1.5; display: block;">
+              ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
+            </div>
           </div>
         </div>`;
     });
