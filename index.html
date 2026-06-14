@@ -6,7 +6,7 @@
 <title>SINDRAS-PB</title>
 
 <!-- Forçando nova versão do CSS externo -->
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -79,7 +79,7 @@
     <h2>Quem Somos</h2>
     <div class="conteudo-quem">
       <p>O Sindras-PB é o Sindicato dos Agentes Comunitários de Saúde (ACS) e dos Agentes de Combate às Endemias (ACE) da Regional de Saúde da Paraíba. Surgiu com o objetivo de representar de forma exclusiva a categoria, fortalecendo a luta por direitos e valorização profissional.</p>
-      <p>A entidade atua na defesa, mobilização e garantia de direitos dos ACS e ACE, promovendo assembleias e lutando por conquistas como o piso salarial e o pagamento do Incentivo Financeiro Adicional (IFA).</p>
+      <p>A entidade atua na defense, mobilização e garantia de direitos dos ACS e ACE, promovendo assembleias e lutando por conquistas como o piso salarial e o pagamento do Incentivo Financeiro Adicional (IFA).</p>
       <p>Com atuação em diversos municípios, o Sindras-PB também participa de mobilizações nacionais, defendendo pautas importantes para a categoria. Filiado à CONACS e presidido por Giovanni Freire, o sindicato mantém transparência e diálogo constante com seus filiados por meio das assembleias e das redes sociais.</p>
       <p><strong>O Sindras-PB é a voice dos ACS e ACE na Paraíba.</strong></p>
     </div>
@@ -177,37 +177,40 @@ if(noticiasContainer){
         let htmlSecundarias = "";
         if(secundarias.length > 0) {
           htmlSecundarias = `
-            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr); height: 100%;">
-              ${secundarias.map(img => `<img src="${img}" style="width:100%; height:100%; object-fit:cover; display:block;">`).join("")}
+            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr); height: 100% !important;">
+              ${secundarias.map(img => `<img src="${img}" style="width:100% !important; height:100% !important; object-fit:cover !important; display:block !important;">`).join("")}
             </div>
           `;
         }
 
-        // Forçando alturas fixas diretamente nas tags de imagem via style="..."
+        // 🔥 CAIXA BLINDADA: Definindo altura rígida de 220px com !important e limpando flutuações
         htmlImagens = `
-          <div class="${classeMosaico}" style="height: 220px; margin-bottom: 15px; display: grid; gap: 5px;">
-            <div class="img-principal" style="height: 100%;">
-              <img src="${fotosValidas[0]}" style="width:100%; height:100%; object-fit:cover; display:block; border-radius: 8px 0 0 8px;">
+          <div class="${classeMosaico}" style="height: 220px !important; min-height: 220px !important; max-height: 220px !important; margin-bottom: 15px !important; display: grid !important; gap: 5px !important; clear: both !important; overflow: hidden !important;">
+            <div class="img-principal" style="height: 100% !important;">
+              <img src="${fotosValidas[0]}" style="width:100% !important; height:100% !important; object-fit:cover !important; display:block !important; border-radius: 8px 0 0 8px !important;">
             </div>
             ${htmlSecundarias}
           </div>
         `;
       } else {
-        htmlImagens = n.imagem ? `<img src="${n.imagem}" class="fallback-img" style="width:100%; height:200px; object-fit:cover; border-radius:6px; margin-bottom:10px; display:block;">` : "";
+        htmlImagens = n.imagem ? `<div style="height:200px !important; min-height:200px !important; margin-bottom:10px !important; overflow:hidden !important;"><img src="${n.imagem}" class="fallback-img" style="width:100% !important; height:100% !important; object-fit:cover !important; border-radius:6px !important; display:block !important;"></div>` : "";
       }
 
-      // Isolamento total do card adicionando uma folga interna (padding-top) e limpando flutuações (clear:both)
+      // 🔥 SEPARAÇÃO MATEMÁTICA: O bloco de texto agora tem margem superior forçada e isolamento estrutural absoluto
       noticiasContainer.innerHTML += `
-        <div class="card" style="display: flex; flex-direction: column; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; box-sizing: border-box; clear: both;">
-          <div class="container-imagem-noticia" style="width: 100%; display: block; position: relative;">
+        <div class="card" style="display: block !important; background: white !important; padding: 15px !important; border-radius: 10px !important; box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important; margin-bottom: 30px !important; box-sizing: border-box !important; clear: both !important; position: relative !important;">
+          
+          <div class="container-imagem-noticia" style="width: 100% !important; display: block !important; position: relative !important; clear: both !important; z-index: 1 !important;">
             ${htmlImagens}
           </div>
-          <div class="conteudo-card-noticia" style="width: 100%; display: block; margin-top: 10px; position: relative; clear: both;">
-            <h3 style="margin: 10px 0 5px 0; font-size: 18px; line-height: 1.3; color: black; font-weight: bold; display: block;">${n.titulo}</h3>
-            <div class="texto-noticia" style="color: #555; font-size: 14px; line-height: 1.5; display: block;">
+
+          <div class="conteudo-card-noticia" style="width: 100% !important; display: block !important; padding-top: 15px !important; position: relative !important; clear: both !important; z-index: 2 !important; background: white !important;">
+            <h3 style="margin: 5px 0 10px 0 !important; font-size: 18px !important; line-height: 1.3 !important; color: black !important; font-weight: bold !important; display: block !important;">${n.titulo}</h3>
+            <div class="texto-noticia" style="color: #555 !important; font-size: 14px !important; line-height: 1.5 !important; display: block !important; max-height: 150px; overflow: hidden; text-overflow: ellipsis;">
               ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
             </div>
           </div>
+
         </div>`;
     });
   });
