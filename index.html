@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SINDRAS-PB</title>
 
-<!-- Forçando nova versão do CSS externo -->
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -79,9 +78,9 @@
     <h2>Quem Somos</h2>
     <div class="conteudo-quem">
       <p>O Sindras-PB é o Sindicato dos Agentes Comunitários de Saúde (ACS) e dos Agentes de Combate às Endemias (ACE) da Regional de Saúde da Paraíba. Surgiu com o objetivo de representar de forma exclusiva a categoria, fortalecendo a luta por direitos e valorização profissional.</p>
-      <p>A entidade atua na defense, mobilização e garantia de direitos dos ACS e ACE, promovendo assembleias e lutando por conquistas como o piso salarial e o pagamento do Incentivo Financeiro Adicional (IFA).</p>
+      <p>A entidade atua na defesa, mobilização e garantia de direitos dos ACS e ACE, promovendo assembleias e lutando por conquistas como o piso salarial e o pagamento do Incentivo Financeiro Adicional (IFA).</p>
       <p>Com atuação em diversos municípios, o Sindras-PB também participa de mobilizações nacionais, defendendo pautas importantes para a categoria. Filiado à CONACS e presidido por Giovanni Freire, o sindicato mantém transparência e diálogo constante com seus filiados por meio das assembleias e das redes sociais.</p>
-      <p><strong>O Sindras-PB é a voice dos ACS e ACE na Paraíba.</strong></p>
+      <p><strong>O Sindras-PB é a voz dos ACS e ACE na Paraíba.</strong></p>
     </div>
   </div>
 </section>
@@ -178,35 +177,36 @@ if(noticiasContainer){
         if(secundarias.length > 0) {
           htmlSecundarias = `
             <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr); height: 100% !important;">
-              ${secundarias.map(img => `<img src="${img}" style="width:100% !important; height:100% !important; object-fit:cover !important; display:block !important;">`).join("")}
+              ${secundarias.map(img => `<img src="${img}" style="width:100% !important; height:100% !important; object-fit: cover !important; display:block !important;">`).join("")}
             </div>
           `;
         }
 
-        // 🔥 CAIXA BLINDADA: Definindo altura rígida de 220px com !important e limpando flutuações
+        // 🔥 ALTERAÇÃO AQUI: Mudamos de "height: 220px" para "aspect-ratio: 16/9". 
+        // Isso remove o limite de altura fixo e faz o mosaico redimensionar-se mantendo a foto inteira!
         htmlImagens = `
-          <div class="${classeMosaico}" style="height: 220px !important; min-height: 220px !important; max-height: 220px !important; margin-bottom: 15px !important; display: grid !important; gap: 5px !important; clear: both !important; overflow: hidden !important;">
+          <div class="${classeMosaico}" style="width: 100% !important; aspect-ratio: 16 / 9 !important; margin-bottom: 15px !important; display: grid !important; gap: 5px !important; clear: both !important;">
             <div class="img-principal" style="height: 100% !important;">
-              <img src="${fotosValidas[0]}" style="width:100% !important; height:100% !important; object-fit:cover !important; display:block !important; border-radius: 8px 0 0 8px !important;">
+              <img src="${fotosValidas[0]}" style="width:100% !important; height:100% !important; object-fit: cover !important; display:block !important; border-radius: 8px 0 0 8px !important;">
             </div>
             ${htmlSecundarias}
           </div>
         `;
       } else {
-        htmlImagens = n.imagem ? `<div style="height:200px !important; min-height:200px !important; margin-bottom:10px !important; overflow:hidden !important;"><img src="${n.imagem}" class="fallback-img" style="width:100% !important; height:100% !important; object-fit:cover !important; border-radius:6px !important; display:block !important;"></div>` : "";
+        // Para notícias com apenas 1 imagem única, também aplicamos a proporção 16/9 fluida
+        htmlImagens = n.imagem ? `<div style="width: 100% !important; aspect-ratio: 16 / 9 !important; margin-bottom:10px !important;"><img src="${n.imagem}" class="fallback-img" style="width:100% !important; height:100% !important; object-fit: cover !important; border-radius:6px !important; display:block !important;"></div>` : "";
       }
 
-      // 🔥 SEPARAÇÃO MATEMÁTICA: O bloco de texto agora tem margem superior forçada e isolamento estrutural absoluto
       noticiasContainer.innerHTML += `
-        <div class="card" style="display: block !important; background: white !important; padding: 15px !important; border-radius: 10px !important; box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important; margin-bottom: 30px !important; box-sizing: border-box !important; clear: both !important; position: relative !important;">
+        <div class="card" style="display: flex !important; flex-direction: column !important; background: white !important; padding: 15px !important; border-radius: 10px !important; box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important; margin-bottom: 20px !important; box-sizing: border-box !important; clear: both !important; position: relative !important;">
           
-          <div class="container-imagem-noticia" style="width: 100% !important; display: block !important; position: relative !important; clear: both !important; z-index: 1 !important;">
+          <div class="container-imagem-noticia" style="width: 100% !important; display: block !important; position: relative !important; clear: both !important;">
             ${htmlImagens}
           </div>
 
-          <div class="conteudo-card-noticia" style="width: 100% !important; display: block !important; padding-top: 15px !important; position: relative !important; clear: both !important; z-index: 2 !important; background: white !important;">
+          <div class="conteudo-card-noticia" style="width: 100% !important; display: block !important; padding-top: 10px !important; position: relative !important; clear: both !important; background: white !important;">
             <h3 style="margin: 5px 0 10px 0 !important; font-size: 18px !important; line-height: 1.3 !important; color: black !important; font-weight: bold !important; display: block !important;">${n.titulo}</h3>
-            <div class="texto-noticia" style="color: #555 !important; font-size: 14px !important; line-height: 1.5 !important; display: block !important; max-height: 150px; overflow: hidden; text-overflow: ellipsis;">
+            <div class="texto-noticia" style="color: #555 !important; font-size: 14px !important; line-height: 1.5 !important; display: block !important;">
               ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
             </div>
           </div>
