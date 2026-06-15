@@ -3,56 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SINDRAS-PB - Todas as Notícias</title>
+<title>Notícias - SINDRAS</title>
 
-<!-- Forçando a versão mais recente do CSS -->
-<link rel="stylesheet" href="style.css?v=110">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+
+<style>
+/* Ajustes preventivos para o mosaico de notícias caso as classes não estejam no style.css global */
+.mosaico {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.mosaico.uma-imagem {
+  grid-template-columns: 1fr;
+}
+
+.img-principal img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.img-secundarias {
+  display: grid;
+  gap: 5px;
+}
+
+.img-secundarias img {
+  width: 100%;
+  height: 100%;
+  min-height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card img.fallback-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+@media(max-width:768px){
+  .mosaico {
+    grid-template-columns: 1fr;
+  }
+  .img-principal img {
+    height: 220px;
+  }
+  .img-secundarias {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .img-secundarias img {
+    height: 80px;
+    min-height: auto;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <header class="header">
-  <div class="container header-content">
-    <div class="logo-area">
-      <img src="logo.png" alt="SINDRAS-PB" class="logo">
-      <div class="logo-text">
-        <strong>SINDRAS-PB</strong>
-        <p>
-          SINDICATO DOS AGENTES COMUNITÁRIOS DE SAÚDE<br>
-          E DOS AGENTES DE COMBATE ÀS ENDEMIAS<br>
-          REGIONAL DE SAÚDE DA PARAÍBA
-        </p>
-      </div>
-    </div>
+  <div class="container nav">
+    <img src="logo.png" class="logo">
 
     <ul class="menu">
       <li><a href="index.html">Início</a></li>
       <li><a href="noticias.html">Notícias</a></li>
-      <li><a href="index.html#quemSomos">Quem Somos</a></li>
-      <li><a href="index.html#agenda">Agenda</a></li>
-      <li><a href="Fotos.html">Fotos</a></li> 
-      <li><a href="https://www.unasus.gov.br/" target="_blank">Cursos</a></li>
-      <li><a href="parceiros.html">Parceiros</a></li>
+      <li><a href="Fotos.html">Fotos</a></li> <li><a href="parceiros.html">Parceiros</a></li>
     </ul>
-
-    <div class="actions">
-      <a href="admin.html" class="btn-black">ADM</a>
-      <a href="filiacao.html" class="btn-black">Filie-se</a>
-    </div>
   </div>
 </header>
 
 <section class="noticias container">
-  <h2>Todas as Notícias</h2>
-  <!-- Grid principal onde os cards corrigidos serão injetados -->
-  <div id="noticiasGrid" class="cards"></div>
+  <h1>📰 Central de Notícias</h1>
+  <div id="listaNoticias" class="cards"></div>
 </section>
 
 <footer class="footer">
-  <p>Edifício Arius, Rua Maciel Pinheiro, 102 - 5º Andar, Centro, Campina Grande - PB, CEP 58400-100.</p>
-  <p>Telefone (83) 3099-7966 E-mail sindraspb@gmail.com</p>
-  <p>© Sindras-PB 2023</p>
+  <p>© Sindras-PB</p>
 </footer>
 
 <script type="module">
@@ -62,44 +96,43 @@ import { getFirestore, collection, onSnapshot, query, orderBy } from "https://ww
 const firebaseConfig = {
   apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
   authDomain: "sindraspb-35551.firebaseapp.com",
-  projectId: "sindraspb-35551",
-  storageBucket: "sindraspb-35551.firebasestorage.app",
-  messagingSenderId: "1001203695194",
-  appId: "1:1001203695194:web:b490ae077f26a83673e263"
+  projectId: "sindraspb-35551"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Seleciona o container correto
-const noticiasGrid = document.getElementById("noticiasGrid");
+const container = document.getElementById("listaNoticias");
 
-if(noticiasGrid){
-  // Busca todas as notícias ordenadas pelas mais recentes
-  const q = query(collection(db, "noticias"), orderBy("criadoEm", "desc"));
+const q = query(
+  collection(db,"noticias"),
+  orderBy("criadoEm","desc")
+);
 
-  onSnapshot(q, snap => {
-    noticiasGrid.innerHTML = "";
-    
-    if(snap.empty){
-      noticiasGrid.innerHTML = "<p>Nenhuma notícia cadastrada no momento.</p>";
-      return;
-    }
+onSnapshot(q, snap=>{
+  container.innerHTML = "";
 
-    snap.forEach(docItem => {
-      const n = docItem.data();
-      let htmlImagens = "";
+  if(snap.empty){
+    container.innerHTML = "<p>Nenhuma notícia cadastrada no momento.</p>";
+    return;
+  }
 
-      // Tratamento do mosaico de imagens idêntico ao da página inicial
-      if(n.imagens && n.imagens.length > 0){
-        const fotosValidas = n.imagens.filter(img => img && img.trim() !== "");
+  snap.forEach(doc=>{
+    const n = doc.data();
+    let htmlImagens = "";
+
+    // Tratamento adaptativo para o mosaico de fotos da notícia
+    if(n.imagens && n.imagens.length > 0){
+      const fotosValidas = n.imagens.filter(img => img && img.trim() !== "");
+      
+      if(fotosValidas.length > 0){
         const secundarias = fotosValidas.slice(1, 4);
         const classeMosaico = fotosValidas.length > 1 ? "mosaico" : "mosaico uma-imagem";
         
         let htmlSecundarias = "";
         if(secundarias.length > 0) {
           htmlSecundarias = `
-            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr);">
+            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr)">
               ${secundarias.map(img => `<img src="${img}">`).join("")}
             </div>
           `;
@@ -113,24 +146,24 @@ if(noticiasGrid){
             ${htmlSecundarias}
           </div>
         `;
-      } else {
-        htmlImagens = n.imagem ? `<img src="${n.imagem}" class="fallback-img">` : "";
       }
+    } else if(n.imagem && n.imagem.trim() !== "") {
+      // Fallback para posts antigos estruturados com campo único de imagem
+      htmlImagens = `<img src="${n.imagem}" class="fallback-img">`;
+    }
 
-      // Injeta a estrutura perfeitamente compatível com o novo style.css
-      noticiasGrid.innerHTML += `
-        <div class="card">
-          ${htmlImagens}
-          <div class="conteudo-card-noticia">
-            <h3>${n.titulo}</h3>
-            <div class="texto-noticia">
-              ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
-            </div>
-          </div>
-        </div>`;
-    });
+    // CORREÇÃO: Inclusão do fechamento correto das tags </div> no final do template literal
+    container.innerHTML += `
+      <div class="card" style="margin-bottom: 30px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        ${htmlImagens}
+        <h3 style="margin-top: 10px; font-size: 20px;">${n.titulo || "Sem título"}</h3>
+        <div class="texto-noticia" style="color: #444; line-height: 1.6; margin-top: 10px;">
+          ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
+        </div>
+      </div>
+    `;
   });
-}
+});
 </script>
 
 </body>
