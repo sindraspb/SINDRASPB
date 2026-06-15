@@ -3,34 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notícias - SINDRAS</title>
+<title>SINDRAS-PB - Todas as Notícias</title>
 
-<!-- FORÇANDO ATUALIZAÇÃO DO DESIGN -->
-<link rel="stylesheet" href="style.css?v=3">
+<!-- Forçando a versão mais recente do CSS -->
+<link rel="stylesheet" href="style.css?v=20">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
 
 <header class="header">
-  <div class="container nav">
-    <img src="logo.png" class="logo">
+  <div class="container header-content">
+    <div class="logo-area">
+      <img src="logo.png" alt="SINDRAS-PB" class="logo">
+      <div class="logo-text">
+        <strong>SINDRAS-PB</strong>
+        <p>
+          SINDICATO DOS AGENTES COMUNITÁRIOS DE SAÚDE<br>
+          E DOS AGENTES DE COMBATE ÀS ENDEMIAS<br>
+          REGIONAL DE SAÚDE DA PARAÍBA
+        </p>
+      </div>
+    </div>
 
     <ul class="menu">
       <li><a href="index.html">Início</a></li>
       <li><a href="noticias.html">Notícias</a></li>
+      <li><a href="index.html#quemSomos">Quem Somos</a></li>
+      <li><a href="index.html#agenda">Agenda</a></li>
       <li><a href="Fotos.html">Fotos</a></li> 
+      <li><a href="https://www.unasus.gov.br/" target="_blank">Cursos</a></li>
       <li><a href="parceiros.html">Parceiros</a></li>
     </ul>
+
+    <div class="actions">
+      <a href="admin.html" class="btn-black">ADM</a>
+      <a href="filiacao.html" class="btn-black">Filie-se</a>
+    </div>
   </div>
 </header>
 
 <section class="noticias container">
-  <h1>📰 Central de Notícias</h1>
-  <div id="listaNoticias" class="cards"></div>
+  <h2>Todas as Notícias</h2>
+  <!-- Grid principal onde os cards corrigidos serão injetados -->
+  <div id="noticiasGrid" class="cards"></div>
 </section>
 
 <footer class="footer">
-  <p>© Sindras-PB</p>
+  <p>Edifício Arius, Rua Maciel Pinheiro, 102 - 5º Andar, Centro, Campina Grande - PB, CEP 58400-100.</p>
+  <p>Telefone (83) 3099-7966 E-mail sindraspb@gmail.com</p>
+  <p>© Sindras-PB 2023</p>
 </footer>
 
 <script type="module">
@@ -40,42 +62,44 @@ import { getFirestore, collection, onSnapshot, query, orderBy } from "https://ww
 const firebaseConfig = {
   apiKey: "AIzaSyBmwzsjxXLCU0M3SRf0v3C8cPTVvTzE6Hk",
   authDomain: "sindraspb-35551.firebaseapp.com",
-  projectId: "sindraspb-35551"
+  projectId: "sindraspb-35551",
+  storageBucket: "sindraspb-35551.firebasestorage.app",
+  messagingSenderId: "1001203695194",
+  appId: "1:1001203695194:web:b490ae077f26a83673e263"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const container = document.getElementById("listaNoticias");
+// Seleciona o container correto
+const noticiasGrid = document.getElementById("noticiasGrid");
 
-const q = query(
-  collection(db,"noticias"),
-  orderBy("criadoEm","desc")
-);
+if(noticiasGrid){
+  // Busca todas as notícias ordenadas pelas mais recentes
+  const q = query(collection(db, "noticias"), orderBy("criadoEm", "desc"));
 
-onSnapshot(q, snap=>{
-  container.innerHTML = "";
+  onSnapshot(q, snap => {
+    noticiasGrid.innerHTML = "";
+    
+    if(snap.empty){
+      noticiasGrid.innerHTML = "<p>Nenhuma notícia cadastrada no momento.</p>";
+      return;
+    }
 
-  if(snap.empty){
-    container.innerHTML = "<p>Nenhuma notícia cadastrada no momento.</p>";
-    return;
-  }
+    snap.forEach(docItem => {
+      const n = docItem.data();
+      let htmlImagens = "";
 
-  snap.forEach(doc=>{
-    const n = doc.data();
-    let htmlImagens = "";
-
-    if(n.imagens && n.imagens.length > 0){
-      const fotosValidas = n.imagens.filter(img => img && img.trim() !== "");
-      
-      if(fotosValidas.length > 0){
+      // Tratamento do mosaico de imagens idêntico ao da página inicial
+      if(n.imagens && n.imagens.length > 0){
+        const fotosValidas = n.imagens.filter(img => img && img.trim() !== "");
         const secundarias = fotosValidas.slice(1, 4);
         const classeMosaico = fotosValidas.length > 1 ? "mosaico" : "mosaico uma-imagem";
         
         let htmlSecundarias = "";
         if(secundarias.length > 0) {
           htmlSecundarias = `
-            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr)">
+            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr);">
               ${secundarias.map(img => `<img src="${img}">`).join("")}
             </div>
           `;
@@ -89,22 +113,24 @@ onSnapshot(q, snap=>{
             ${htmlSecundarias}
           </div>
         `;
+      } else {
+        htmlImagens = n.imagem ? `<img src="${n.imagem}" class="fallback-img">` : "";
       }
-    } else if(n.imagem && n.imagem.trim() !== "") {
-      htmlImagens = `<img src="${n.imagem}" class="fallback-img">`;
-    }
 
-    container.innerHTML += `
-      <div class="card">
-        ${htmlImagens}
-        <h3>${n.titulo || "Sem título"}</h3>
-        <div class="texto-noticia">
-          ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
-        </div>
-      </div>
-    `;
+      // Injeta a estrutura perfeitamente compatível com o novo style.css
+      noticiasGrid.innerHTML += `
+        <div class="card">
+          ${htmlImagens}
+          <div class="conteudo-card-noticia">
+            <h3>${n.titulo}</h3>
+            <div class="texto-noticia">
+              ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
+            </div>
+          </div>
+        </div>`;
+    });
   });
-});
+}
 </script>
 
 </body>

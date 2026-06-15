@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SINDRAS-PB</title>
 
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=10">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -16,7 +16,6 @@
 
     <div class="logo-area">
       <img src="logo.png" alt="SINDRAS-PB" class="logo">
-
       <div class="logo-text">
         <strong>SINDRAS-PB</strong>
         <p>
@@ -131,21 +130,14 @@ function formatarDataBR(dataString) {
 async function carregarVideo(){
   const ref = doc(db,"config","youtube");
   const snap = await getDoc(ref);
-
   if(snap.exists()){
     let link = snap.data().link;
     if(!link) return;
-
-    if(link.includes("watch?v=")){
-      link = link.replace("watch?v=", "embed/");
-    }
-
+    if(link.includes("watch?v=")) link = link.replace("watch?v=", "embed/");
     if(link.includes("youtu.be/")){
       let parteId = link.split("youtu.be/")[1];
-      const idLimpo = parteId.split("?")[0]; 
-      link = "https://www.youtube.com/embed/" + idLimpo;
+      link = "https://www.youtube.com/embed/" + parteId.split("?")[0];
     }
-
     document.getElementById("videoYoutube").src = link;
   }
 }
@@ -158,7 +150,6 @@ if(noticiasContainer){
 
   onSnapshot(q, snap=>{
     noticiasContainer.innerHTML = "";
-    
     if(snap.empty){
       noticiasContainer.innerHTML = "<p>Nenhuma notícia recente cadastrada.</p>";
       return;
@@ -176,71 +167,58 @@ if(noticiasContainer){
         let htmlSecundarias = "";
         if(secundarias.length > 0) {
           htmlSecundarias = `
-            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr); height: 100% !important;">
-              ${secundarias.map(img => `<img src="${img}" style="width:100% !important; height:100% !important; object-fit: cover !important; display:block !important;">`).join("")}
+            <div class="img-secundarias" style="grid-template-rows: repeat(${secundarias.length}, 1fr);">
+              ${secundarias.map(img => `<img src="${img}">`).join("")}
             </div>
           `;
         }
 
-        // 🔥 ALTERAÇÃO AQUI: Mudamos de "height: 220px" para "aspect-ratio: 16/9". 
-        // Isso remove o limite de altura fixo e faz o mosaico redimensionar-se mantendo a foto inteira!
         htmlImagens = `
-          <div class="${classeMosaico}" style="width: 100% !important; aspect-ratio: 16 / 9 !important; margin-bottom: 15px !important; display: grid !important; gap: 5px !important; clear: both !important;">
-            <div class="img-principal" style="height: 100% !important;">
-              <img src="${fotosValidas[0]}" style="width:100% !important; height:100% !important; object-fit: cover !important; display:block !important; border-radius: 8px 0 0 8px !important;">
+          <div class="${classeMosaico}">
+            <div class="img-principal">
+              <img src="${fotosValidas[0]}">
             </div>
             ${htmlSecundarias}
           </div>
         `;
       } else {
-        // Para notícias com apenas 1 imagem única, também aplicamos a proporção 16/9 fluida
-        htmlImagens = n.imagem ? `<div style="width: 100% !important; aspect-ratio: 16 / 9 !important; margin-bottom:10px !important;"><img src="${n.imagem}" class="fallback-img" style="width:100% !important; height:100% !important; object-fit: cover !important; border-radius:6px !important; display:block !important;"></div>` : "";
+        htmlImagens = n.imagem ? `<div class="fallback-img-container"><img src="${n.imagem}"></div>` : "";
       }
 
+      // Renderização limpa, sem estilos inline para o CSS comandar a estrutura perfeitamente
       noticiasContainer.innerHTML += `
-        <div class="card" style="display: flex !important; flex-direction: column !important; background: white !important; padding: 15px !important; border-radius: 10px !important; box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important; margin-bottom: 20px !important; box-sizing: border-box !important; clear: both !important; position: relative !important;">
-          
-          <div class="container-imagem-noticia" style="width: 100% !important; display: block !important; position: relative !important; clear: both !important;">
-            ${htmlImagens}
-          </div>
-
-          <div class="conteudo-card-noticia" style="width: 100% !important; display: block !important; padding-top: 10px !important; position: relative !important; clear: both !important; background: white !important;">
-            <h3 style="margin: 5px 0 10px 0 !important; font-size: 18px !important; line-height: 1.3 !important; color: black !important; font-weight: bold !important; display: block !important;">${n.titulo}</h3>
-            <div class="texto-noticia" style="color: #555 !important; font-size: 14px !important; line-height: 1.5 !important; display: block !important;">
+        <div class="card">
+          ${htmlImagens}
+          <div class="conteudo-card-noticia">
+            <h3>${n.titulo}</h3>
+            <div class="texto-noticia">
               ${n.conteudo ? n.conteudo.replace(/\n/g, "<br>") : ""}
             </div>
           </div>
-
         </div>`;
     });
   });
 }
 
 const agendaContainer = document.getElementById("listaAgenda");
-
 if(agendaContainer){
   const agendaQuery = query(collection(db, "agenda"), orderBy("dataInicio", "asc"));
-
   onSnapshot(agendaQuery, snap=>{
     agendaContainer.innerHTML = "";
-
     if(snap.empty){
       agendaContainer.innerHTML = "<p style='color: #fff;'>Nenhum compromisso agendado no momento.</p>";
       return;
     }
-
     snap.forEach(docItem=>{
       const e = docItem.data();
-      
       const dataInicioFormatada = formatarDataBR(e.dataInicio);
       const dataFimFormatada = e.dataFim ? ` até ${formatarDataBR(e.dataFim)}` : "";
-
       agendaContainer.innerHTML += `
         <div class="evento">
           <h3>${e.titulo}</h3>
           <p>📅 ${dataInicioFormatada}${dataFimFormatada}</p>
           <p>📍 ${e.local || "Não informado"}</p>
-          ${e.aviso ? `<p class="aviso" style="color:#f7941d; font-weight:bold;">⚠️ ${e.aviso}</p>` : ""}
+          ${e.aviso ? `<p class="aviso" style="color:red; font-weight:bold;">⚠️ ${e.aviso}</p>` : ""}
         </div>
       `;
     });
@@ -253,7 +231,6 @@ document.addEventListener("DOMContentLoaded", function(){
   let index = 0;
   const slides = document.querySelector('.slides');
   const dots = document.querySelectorAll('.controls span');
-  
   if(!slides) return;
   const slideItems = document.querySelectorAll('.slide');
   const total = slideItems.length;
