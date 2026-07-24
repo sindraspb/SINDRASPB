@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Unificado PEC 14 - Sindras-PB</title>
+    <style>
+        :root {
+            --primary-dark: #0f172a;
+            --union-blue: #1e40af;
+            --health-green: #065f46;
+            --accent-orange: #d97706;
+            --bg-slate: #f8fafc;
+            --card-white: #ffffff;
+            --text-main: #334155;
+            --border-light: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-slate);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 4rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--union-blue) 0%, var(--health-green) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.6rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .disclaimer-banner {
+            background-color: #fef3c7;
+            border-bottom: 2px solid #f59e0b;
+            color: #92400e;
+            text-align: center;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .assembly-tag {
+            background-color: var(--accent-orange);
+            color: white;
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-top: 1rem;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            padding: 0 24px;
+        }
+
+        /* Abas ou Seções Informativas */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (min-width: 900px) {
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .full-width-card {
+                grid-column: span 2;
+            }
+        }
+
+        .info-card {
+            background: var(--card-white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            border-top: 5px solid var(--union-blue);
+        }
+
+        .info-card h2 {
+            color: var(--primary-dark);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            font-size: 0.95rem;
+            text-align: justify;
+            margin-bottom: 1rem;
+            color: #475569;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            background: white;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--primary-dark);
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: top;
+            line-height: 1.6;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+
+        .highlight-text {
+            color: var(--union-blue);
+            font-weight: 600;
+        }
+
+        .note-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid var(--health-green);
+            padding: 1.2rem;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            color: #166534;
+        }
+
+        /* Seção Interativa do Simulador */
+        .simulator-box {
+            background: var(--card-white);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-light);
+            margin-bottom: 3rem;
+        }
+
+        .simulator-box h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .simulator-box .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+            font-size: 0.95rem;
+        }
+
+        .form-group input, .form-group select {
+            padding: 12px 16px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            color: var(--text-main);
+            background-color: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--union-blue);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
+        }
+
+        .btn-container {
+            grid-column: span 1;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        @media (min-width: 600px) {
+            .btn-container {
+                grid-column: span 2;
+            }
+        }
+
+        button {
+            background: linear-gradient(to right, var(--union-blue), #2563eb);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px -1px rgba(30, 64, 175, 0.4);
+            filter: brightness(1.1);
+        }
+
+        /* Resultados */
+        .results-section {
+            display: none;
+            margin-top: 3rem;
+            border-top: 2px dashed var(--border-light);
+            padding-top: 2.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-section h3 {
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .current-status-bar {
+            background-color: #f1f5f9;
+            padding: 1.2rem;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-light);
+        }
+
+        .status-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-item .lbl {
+            font-size: 0.85rem;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .status-item .val {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-top: 2px;
+        }
+
+        /* O Veredito / Melhor Opção */
+        .verdict-card {
+            background: linear-gradient(to bottom right, #f0fdf4, #dcfce7);
+            border: 2px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .verdict-card h4 {
+            color: var(--health-green);
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .verdict-badge {
+            background-color: var(--health-green);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .verdict-main-rules {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .verdict-details {
+            font-size: 1rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        /* Comparativo de Regras Side-by-Side */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .rule-box {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .rule-box h5 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 8px;
+        }
+
+        .rule-box.active-rule {
+            border-left: 5px solid var(--union-blue);
+        }
+        .rule-box.alternative-rule {
+            border-left: 5px solid #64748b;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed #f1f5f9;
+            font-size: 0.95rem;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-row .r-val {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .alert-box-info {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--union-blue);
+            padding: 1rem;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            color: #1e40af;
+            margin-top: 1.5rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            background-color: var(--primary-dark);
+            color: #94a3b8;
+            margin-top: 4rem;
+            font-size: 0.9rem;
+            border-top: 4px solid var(--union-blue);
+        }
+
+        footer p {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="disclaimer-banner">
+        ⚠️ Atenção: Este simulador é baseado no texto projetado da Proposta de Emenda Constitucional nº 14 (PEC 14/2021).
+    </div>
+
+    <header>
+        <span class="assembly-tag">Sindras-PB®</span>
+        <h1>Simulação de Aposentadoria de Acordo Com a — PEC 14</h1>
+        <p>Análise de Variáveis Compiladas: Regra de Idade Progressiva com Redutor e Regra de Transição por Pontos para ACS e ACE</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- Bloco Informativo de Normas Reunidas -->
+        <div class="info-grid">
+            
+            <div class="info-card full-width-card">
+                <h2>Quadro Geral Consolidador de Regras (PEC 14)</h2>
+                <p>Este painel unifica as duas modalidades de transição trazidas pela Proposta de Emenda à Constituição (PEC 14), destinadas exclusivamente aos Agentes Comunitários de Saúde (ACS) e Agentes de Combate às Endemias (ACE).</p>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Regra Constitucional</th>
+                                <th>Requisitos (Feminino)</th>
+                                <th>Requisitos (Masculino)</th>
+                                <th>Destaques / Condições de Bônus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Regra Geral Definitiva</strong><br><small>(Pós-Transição Completa)</small></td>
+                                <td>• 57 anos de idade<br>• 25 anos de efetivo exercício</td>
+                                <td>• 60 anos de idade<br>• 25 anos de efetivo exercício</td>
+                                <td>Aplicada para novos ingressos após a promulgação ou estabilização das idades de transição.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Idade Progressiva com Redutor</strong><br><small>(Art. 3º - Ingresso até a vigência)</small></td>
+                                <td>• Idade mínima progressiva:<br>&nbsp;&nbsp;- Até 2030: 50 anos<br>&nbsp;&nbsp;- Até 2035: 52 anos<br>&nbsp;&nbsp;- Até 2040: 54 anos<br>• 25 anos de efetivo exercício</td>
+                                <td>• Idade mínima progressiva:<br>&nbsp;&nbsp;- Até 2030: 52 anos<br>&nbsp;&nbsp;- Até 2035: 54 anos<br>&nbsp;&nbsp;- Até 2040: 56 anos<br>• 25 anos de efetivo exercício</td>
+                                <td><strong class="highlight-text">Art. 3º, § 1º:</strong> A idade mínima exigida cai 1 ano para cada ano de exercício como ACS/ACE que exceder os 25 anos mínimos, <span style="text-decoration: underline;">limitado ao teto máximo de 5 anos de redução</span>.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Transição por Pontos</strong><br><small>(Art. 4º - RPPS / Art. 7º - RGPS)</small></td>
+                                <td>• 60 anos de idade<br>• 15 anos de contribuição total<br>• 10 anos de efetivo exercício<br>• <strong class="highlight-text">Soma: 83 pontos</strong></td>
+                                <td>• 63 anos de idade<br>• 15 anos de contribuição total<br>• 10 anos de efetivo exercício<br>• <strong class="highlight-text">Soma: 86 pontos</strong></td>
+                                <td>Permite somar tempos de contribuição de <span style="text-decoration: underline;">outras profissões</span> (Estatutario ou CLT anterior), exigindo apenas 10 anos mínimos na função de ACS/ACE.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="note-box">
+                    <strong>Orientações:</strong> A simulação automatizada abaixo projeta ano a ano a evolução cronológica do ACS E ACE e aponta qual das regras constitucionais garantirá o direito ao benefício no menor prazo possível.
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Painel Interativo de Simulação -->
+        <div class="simulator-box">
+            <h2>Calculadora de Variáveis Integradas</h2>
+            <p class="subtitle">Insira as datas cronológicas do trabalhador para projetar simultaneamente as duas regras da PEC 14</p>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="genero">Gênero do(a) Trabalhador(a):</label>
+                    <select id="genero">
+                        <option value="F">Feminino</option>
+                        <option value="M">Masculino</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="regime">Regime Previdenciário:</label>
+                    <select id="regime">
+                        <option value="RPPS">RPPS (Servidor Público / Estatutário)</option>
+                        <option value="RGPS">RGPS (INSS / Celetista)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="dataNascimento">Data de Nascimento:</label>
+                    <input type="date" id="dataNascimento">
+                </div>
+
+                <div class="form-group">
+                    <label for="dataAdmissao">Data de Admissão na Função (ACS/ACE):</label>
+                    <input type="date" id="dataAdmissao">
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label for="tempoAnterior">Tempo de Contribuição Anterior / Outras Atividades (Anos Integrais):</label>
+                    <input type="number" id="tempoAnterior" min="0" max="40" value="0" placeholder="Ex: 4">
+                </div>
+
+                <div class="btn-container">
+                    <button onclick="processarSimulacaoSindicato()">Calcular e Comparar Melhor Opção</button>
+                </div>
+            </div>
+
+            <!-- Bloco de Exibição Dinâmica dos Resultados -->
+            <div class="results-section" id="secaoResultados">
+                <h3>Resultado Comparativo da Simulação</h3>
+                
+                <!-- Barra de Status Atual -->
+                <div class="current-status-bar">
+                    <div class="status-item">
+                        <span class="lbl">Idade Atual</span>
+                        <span class="val" id="resIdadeAtual">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="lbl">Tempo de Atividade ACS/ACE</span>
+                        <span class="val" id="resTempoACS">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="lbl">Contribuição Total Atual</span>
+                        <span class="val" id="resTempoTotal">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="lbl">Pontuação Atual</span>
+                        <span class="val" id="resPontosAtuais">-</span>
+                    </div>
+                </div>
+
+                <!-- O Veredito / Melhor Opção Encontrada -->
+                <div class="verdict-card">
+                    <h4><span class="verdict-badge">Recomendação do Sistema</span> Melhor Opção Encontrada</h4>
+                    <div class="verdict-main-rules" id="vencedorRegra">-</div>
+                    <div class="verdict-details">
+                        Ano Projetado para Concessão: <strong id="vencedorAno" class="highlight-text">-</strong><br>
+                        Status do Prazo: <span id="vencedorTempoRestante" style="font-weight: 600;">-</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: #334155; border-top: 1px solid #bbf7d0; padding-top: 10px;" id="vencedorExplicacao">
+                        -
+                    </div>
+                </div>
+
+                <!-- Painéis Comparativos Individuais -->
+                <div class="comparison-grid">
+                    
+                    <!-- Painel Regra Idade Progressiva -->
+                    <div class="rule-box active-rule">
+                        <h5>Projeção por Idade Progressiva (Art. 3º)</h5>
+                        <div class="result-row">
+                            <span class="r-lbl">Ano de Elegibilidade:</span>
+                            <span class="r-val" id="progAno">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="r-lbl">Idade Alcançada:</span>
+                            <span class="r-val" id="progIdade">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="r-lbl">Tempo de Exercício ACS ou ACE:</span>
+                            <span class="r-val" id="progExercicio">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="r-lbl">Redutor de Idade Ganho:</span>
+                            <span class="r-val" id="progRedutor">-</span>
+                        </div>
+                        <div class="result-row" style="color: var(--union-blue); font-size: 0.85rem; margin-top: 5px;">
+                            <span id="progDetalhe">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Painel Regra por Pontos -->
+                    <div class="rule-box alternative-rule">
+                        <h5>Projeção por Pontos (Art. 4º / 7º)</h5>
+                        <div class="result-row">
+                            <span class="r-lbl">Ano de Elegibilidade:</span>
+                            <span class="r-val" id="pontosAno">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="r-lbl">Idade Alcançada:</span>
+                            <span class="r-val" id="pontosIdade">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="r-lbl">Contribuição Total:</span>
+                            <span class="r-val" id="pontosContrib">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="r-lbl">Pontos Obtidos vs Exigidos:</span>
+                            <span class="r-val" id="pontosFinais">-</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="alert-box-info" id="alertaRegimeEspecifico">
+                    * Nota: A simulação pressupõe a permanência e vinculação ativa contínua do profissional na categoria até o cumprimento total dos requisitos projetados.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Sindicato dos Agentes Comunitários de Saúde e Agentes de Combate às Endemias Regional de Saúde da Paraiba Sindras-PB®.</p>
+        <p style="margin-top: 5px; font-size: 0.8rem; opacity: 0.7;">Ferramenta desenvolvida para apoio jurídico e previdenciário nas simulações de aposentadoria de ACS e ACE vinculados ao SINDRAS-PB. Seu uso é exclusivamente didático, destinado ao auxílio na elaboração de projeções previdenciárias, não possuindo valor de parecer técnico ou jurídico. A utilização é restrita ao SINDRAS-PB. 
+As normativas são restritas a Proposta de Emenda Constitucional 14.</p>
+    </footer>
+
+    <script>
+        function processarSimulacaoSindicato() {
+            const genero = document.getElementById('genero').value;
+            const regime = document.getElementById('regime').value;
+            const nascimentoInput = document.getElementById('dataNascimento').value;
+            const admissaoInput = document.getElementById('dataAdmissao').value;
+            const tempoAnterior = parseFloat(document.getElementById('tempoAnterior').value) || 0;
+
+            if (!nascimentoInput || !admissaoInput) {
+                alert("Por favor, selecione as datas de nascimento e de admissão.");
+                return;
+            }
+
+            const nascimento = new Date(nascimentoInput);
+            const admissao = new Date(admissaoInput);
+            const hoje = new Date();
+
+            if (admissao <= nascimento) {
+                alert("Erro cronológico: A data de admissão profissional não pode ser anterior ou igual à data de nascimento!");
+                return;
+            }
+
+            // Validação de ingresso pré/pós promulgação
+            const dataPromulgacaoPEC = new Date('2026-12-31');
+            const ehIngressanteAntigo = admissao <= dataPromulgacaoPEC;
+
+            // 1. APURAÇÃO DOS INDICADORES ATUAIS
+            let idadeAtual = hoje.getFullYear() - nascimento.getFullYear();
+            const mIdade = hoje.getMonth() - nascimento.getMonth();
+            if (mIdade < 0 || (mIdade === 0 && hoje.getDate() < nascimento.getDate())) {
+                idadeAtual--;
+            }
+
+            let exercicioACSAtual = hoje.getFullYear() - admissao.getFullYear();
+            const mACS = hoje.getMonth() - admissao.getMonth();
+            if (mACS < 0 || (mACS === 0 && hoje.getDate() < admissao.getDate())) {
+                exercicioACSAtual--;
+            }
+            if (exercicioACSAtual < 0) exercicioACSAtual = 0;
+
+            let contribTotalAtual = exercicioACSAtual + tempoAnterior;
+            let pontosAtuais = idadeAtual + contribTotalAtual;
+
+            // Alimenta os dados de cabeçalho nos resultados
+            document.getElementById('resIdadeAtual').innerText = idadeAtual + " anos";
+            document.getElementById('resTempoACS').innerText = exercicioACSAtual + " anos";
+            document.getElementById('resTempoTotal').innerText = contribTotalAtual + " anos";
+            document.getElementById('resPontosAtuais').innerText = pontosAtuais + " pts";
+
+            const anoAtual = hoje.getFullYear();
+
+            // 2. SIMULAÇÃO PROGRESSIVA (REGRA 1 - ARTIGO 3º)
+            let anoProg = anoAtual;
+            let idadeProg = idadeAtual;
+            let exercicioACSProg = exercicioACSAtual;
+            let contribTotalProg = contribTotalAtual;
+            let encontrouProg = false;
+            let redutorFinalProg = 0;
+            let idadeBaseProgFinal = 0;
+            let idadeExigidaProgFinal = 0;
+
+            for (let i = 0; i < 60; i++) {
+                if (!ehIngressanteAntigo) {
+                    // Servidor admitido pós-promulgação vai direto para a Regra Geral Permanente
+                    idadeBaseProgFinal = genero === 'F' ? 57 : 60;
+                    idadeExigidaProgFinal = idadeBaseProgFinal;
+                    redutorFinalProg = 0;
+
+                    if (exercicioACSProg >= 25 && idadeProg >= idadeExigidaProgFinal) {
+                        encontrouProg = true;
+                        break;
+                    }
+                } else {
+                    let idadeMinimaProgBase = 0;
+                    if (anoProg <= 2030) {
+                        idadeMinimaProgBase = genero === 'F' ? 50 : 52;
+                    } else if (anoProg <= 2035) {
+                        idadeMinimaProgBase = genero === 'F' ? 52 : 54;
+                    } else if (anoProg <= 2040) {
+                        idadeMinimaProgBase = genero === 'F' ? 54 : 56;
+                    } else {
+                        idadeMinimaProgBase = genero === 'F' ? 57 : 60;
+                    }
+
+                    // CORREÇÃO CRUCIAL: Excesso calculado exclusivamente sobre o EFETIVO EXERCÍCIO DE ACS/ACE (Art. 3º, § 1º)
+                    let excessoExercicio = exercicioACSProg - 25;
+                    let redutor = Math.min(Math.max(excessoExercicio, 0), 5); // Teto de 5 anos de abatimento
+                    let idadeExigida = idadeMinimaProgBase - redutor;
+
+                    if (exercicioACSProg >= 25 && contribTotalProg >= 25 && idadeProg >= idadeExigida) {
+                        encontrouProg = true;
+                        redutorFinalProg = redutor;
+                        idadeBaseProgFinal = idadeMinimaProgBase;
+                        idadeExigidaProgFinal = idadeExigida;
+                        break;
+                    }
+                }
+                anoProg++;
+                idadeProg++;
+                exercicioACSProg++;
+                contribTotalProg++;
+            }
+
+            // 3. SIMULAÇÃO PONTOS (REGRA 2 - ARTIGO 4º E 7º)
+            let anoPontos = anoAtual;
+            let idadePontos = idadeAtual;
+            let exercicioACSPontos = exercicioACSAtual;
+            let contribTotalPontos = contribTotalAtual;
+            let encontrouPontos = false;
+
+            const idadeMinimaPontosExigida = genero === 'F' ? 60 : 63;
+            const pontosExigidos = genero === 'F' ? 83 : 86;
+
+            if (ehIngressanteAntigo) {
+                for (let i = 0; i < 60; i++) {
+                    let pontosSimulados = idadePontos + contribTotalPontos;
+                    if (idadePontos >= idadeMinimaPontosExigida && contribTotalPontos >= 15 && exercicioACSPontos >= 10 && pontosSimulados >= pontosExigidos) {
+                        encontrouPontos = true;
+                        break;
+                    }
+                    anoPontos++;
+                    idadePontos++;
+                    exercicioACSPontos++;
+                    contribTotalPontos++;
+                }
+            }
+
+            // 4. ATUALIZAÇÃO DOS CARDS DE DETALHE INDIVIDUAL
+            if (encontrouProg) {
+                document.getElementById('progAno').innerText = anoProg;
+                document.getElementById('progIdade').innerText = idadeProg + " anos";
+                document.getElementById('progExercicio').innerText = exercicioACSProg + " anos de ACS";
+                document.getElementById('progRedutor').innerText = redutorFinalProg + " ano(s) de abatimento";
+                document.getElementById('progDetalhe').innerText = ehIngressanteAntigo 
+                    ? "* Idade mínima ajustada: de " + idadeBaseProgFinal + " anos para " + idadeExigidaProgFinal + " anos devido ao bônus."
+                    : "* Enquadramento na Regra Geral Permanente (servidor ingressou pós-promulgação).";
+            } else {
+                document.getElementById('progAno').innerText = "Fora dos limites";
+                document.getElementById('progIdade').innerText = "-";
+                document.getElementById('progExercicio').innerText = "-";
+                document.getElementById('progRedutor').innerText = "-";
+                document.getElementById('progDetalhe').innerText = "-";
+            }
+
+            if (encontrouPontos) {
+                document.getElementById('pontosAno').innerText = anoPontos;
+                document.getElementById('pontosIdade').innerText = idadePontos + " anos";
+                document.getElementById('pontosContrib').innerText = contribTotalPontos + " anos totais";
+                document.getElementById('pontosFinais').innerText = (idadePontos + contribTotalPontos) + " alcançados / " + pontosExigidos + " necessários";
+            } else {
+                document.getElementById('pontosAno').innerText = "Fora dos limites";
+                document.getElementById('pontosIdade').innerText = "-";
+                document.getElementById('pontosContrib').innerText = "-";
+                document.getElementById('pontosFinais').innerText = "-";
+            }
+
+            // 5. DETERMINAÇÃO DA MELHOR OPÇÃO (VEREDITO SINDICAL)
+            let melhorRegra = "";
+            let melhorAno = 0;
+            let textoExplicativo = "";
+
+            if (!encontrouProg && !encontrouPontos) {
+                melhorRegra = "Não há enquadramento direto no período analisado.";
+                melhorAno = "N/A";
+                textoExplicativo = "Orientação: Verifique as informações preenchidas ou consulte o departamento jurídico para um parecer individual sobre a contagem de tempo.";
+                document.getElementById('vencedorTempoRestante').innerText = "Sem previsão automática.";
+            } else {
+                if (encontrouProg && encontrouPontos) {
+                    if (anoProg < anoPontos) {
+                        melhorRegra = "Regra de Transição por Idade Progressiva com Redutor (Art. 3º)";
+                        melhorAno = anoProg;
+                        textoExplicativo = "Análise Técnica: Esta é a melhor opção porque o bônus de redução por tempo excedente em exercício de ACS/ACE (§ 1º) antecipou de forma expressiva o preenchimento dos requisitos antes de atingir a pontuação global.";
+                    } else if (anoPontos < anoProg) {
+                        melhorRegra = "Regra de Transição por Pontos (Art. 4º / 7º)";
+                        melhorAno = anoPontos;
+                        textoExplicativo = "Análise Técnica: Esta opção é mais rápida porque permite o aproveitamento do seu tempo de contribuição em outras funções/atividades anteriores, reduzindo a exigência de efetivo exercício na saúde de 25 para apenas 10 anos.";
+                    } else {
+                        melhorRegra = "Convergência de Regras (Ambas Disponíveis)";
+                        melhorAno = anoProg;
+                        textoExplicativo = "Análise Técnica: O preenchimento ocorre exatamente no mesmo ano para ambas as vias. O servidor poderá requerer por qualquer uma das modalidades. Sugere-se verificar junto ao departamento jurídico do sindicato se há vantagens específicas nas regras locais de cálculo de proventos (Integralidade vs Média).";
+                    }
+                } else if (encontrouProg) {
+                    melhorRegra = "Regra de Transição por Idade Progressiva com Redutor (Art. 3º)";
+                    melhorAno = anoProg;
+                    textoExplicativo = "Análise Técnica: Apenas esta regra oferece enquadramento válido baseado nas exigências de tempo mínimo de exercício.";
+                } else if (encontrouPontos) {
+                    melhorRegra = "Regra de Transição por Pontos (Art. 4º / 7º)";
+                    melhorAno = anoPontos;
+                    textoExplicativo = "Análise Técnica: Apenas a transição por pontos permite sua aposentadoria viável devido ao cômputo e aproveitamento de vínculos externos e menor exigência na atividade de agente.";
+                }
+
+                let diferencaAnos = melhorAno - anoAtual;
+                if (diferencaAnos <= 0) {
+                    document.getElementById('vencedorTempoRestante').innerText = "Requisitos cumpridos! O trabalhador já se encontra apto a protocolar o pedido.";
+                    document.getElementById('vencedorTempoRestante').style.color = "var(--health-green)";
+                } else {
+                    document.getElementById('vencedorTempoRestante').innerText = "Faltam aproximadamente " + diferencaAnos + (diferencaAnos === 1 ? " ano de trabalho." : " anos de trabalho.");
+                    document.getElementById('vencedorTempoRestante').style.color = "var(--accent-orange)";
+                }
+            }
+
+            document.getElementById('vencedorRegra').innerText = melhorRegra;
+            document.getElementById('vencedorAno').innerText = melhorAno;
+            document.getElementById('vencedorExplicacao').innerText = textoExplicativo;
+
+            // Alerta Informativo de Acordo com o Regime (RPPS x RGPS)
+            const elementoAlertaRegime = document.getElementById('alertaRegimeEspecifico');
+            if (regime === 'RGPS') {
+                elementoAlertaRegime.innerHTML = "<strong>Aviso RGPS (INSS / Art. 8º):</strong> Para celetistas/vinculados ao RGPS, a aposentadoria é paga pelo INSS, cabendo à União a complementação do <strong>Benefício Extraordinário</strong> para garantir a integralidade e a paridade ao trabalhador.";
+            } else {
+                elementoAlertaRegime.innerHTML = "<strong>Aviso RPPS (Servidor Público / Art. 3º e 4º):</strong> Para estatutários/vinculados ao Regime Próprio, os proventos de aposentadoria serão concedidos com integralidade e paridade diretamente pelo ente público empregador.";
+            }
+
+            // Torna visível a seção de resultados
+            document.getElementById('secaoResultados').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
